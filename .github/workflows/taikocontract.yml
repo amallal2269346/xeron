@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract MztacatCommunity {
+contract xeron community {
     string public name = "alphadegen";
     string public symbol = "ADG";
     uint8 public decimals = 18;
