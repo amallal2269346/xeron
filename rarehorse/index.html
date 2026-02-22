@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rare Horses – Ultra-Rare Digital Collectibles</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">🐴</span>
+        <span class="logo-text">RARE<span class="logo-accent">HORSES</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#rarity">Rarity</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="#mint" class="btn-primary">Mint Now</a>
+        <button class="hamburger" id="hamburger">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#about">About</a>
+      <a href="#collection">Collection</a>
+      <a href="#rarity">Rarity</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#faq">FAQ</a>
+      <a href="#mint" class="btn-primary">Mint Now</a>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <div class="hero-particles" id="particles"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        10,000 Unique Digital Horses on the Blockchain
+      </div>
+      <h1 class="hero-title">
+        The World's Most<br />
+        <span class="gradient-text">Rare Horses</span><br />
+        Are Here
+      </h1>
+      <p class="hero-subtitle">
+        Own a piece of digital equestrian history. Each Rare Horse is a one-of-a-kind NFT
+        featuring hand-crafted traits, breathtaking artwork, and exclusive community benefits.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-value">10,000</span>
+          <span class="stat-label">Total Supply</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">0.08 ETH</span>
+          <span class="stat-label">Mint Price</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">200+</span>
+          <span class="stat-label">Unique Traits</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">5</span>
+          <span class="stat-label">Rarity Tiers</span>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <a href="#mint" class="btn-primary btn-large">
+          <span>Mint Your Horse</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#collection" class="btn-secondary btn-large">View Collection</a>
+      </div>
+    </div>
+    <div class="hero-showcase">
+      <div class="showcase-ring">
+        <div class="showcase-card main-card">
+          <img src="images/horse1.png" alt="Rare Horse #1" />
+          <div class="card-shine"></div>
+          <div class="card-badge">LEGENDARY</div>
+        </div>
+        <div class="showcase-card side-card left">
+          <img src="images/horse2.png" alt="Rare Horse #2" />
+          <div class="card-badge rare">RARE</div>
+        </div>
+        <div class="showcase-card side-card right">
+          <img src="images/horse3.png" alt="Rare Horse #3" />
+          <div class="card-badge epic">EPIC</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MARQUEE TICKER ========== -->
+  <div class="ticker-wrapper">
+    <div class="ticker">
+      <span>🐴 RARE HORSES</span>
+      <span>⚡ 10,000 UNIQUE NFTS</span>
+      <span>🏆 EXCLUSIVE COMMUNITY</span>
+      <span>💎 LEGENDARY TRAITS</span>
+      <span>🔥 LIMITED SUPPLY</span>
+      <span>🌟 BLOCKCHAIN VERIFIED</span>
+      <span>🐴 RARE HORSES</span>
+      <span>⚡ 10,000 UNIQUE NFTS</span>
+      <span>🏆 EXCLUSIVE COMMUNITY</span>
+      <span>💎 LEGENDARY TRAITS</span>
+      <span>🔥 LIMITED SUPPLY</span>
+      <span>🌟 BLOCKCHAIN VERIFIED</span>
+    </div>
+  </div>
+
+  <!-- ========== ABOUT ========== -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-images">
+          <div class="about-card-stack">
+            <div class="stacked-card card-back-2">
+              <img src="images/horse4.png" alt="Rare Horse" />
+            </div>
+            <div class="stacked-card card-back-1">
+              <img src="images/horse5.png" alt="Rare Horse" />
+            </div>
+            <div class="stacked-card card-front">
+              <img src="images/horse1.png" alt="Rare Horse" />
+              <div class="stacked-badge">🐴 #0001</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-content">
+          <div class="section-tag">About the Collection</div>
+          <h2 class="section-title">
+            Born from the<br />
+            <span class="gradient-text">Digital Plains</span>
+          </h2>
+          <p class="about-text">
+            Rare Horses is a collection of 10,000 algorithmically generated NFTs living on the
+            Ethereum blockchain. Each horse is crafted from hundreds of unique traits — from
+            majestic manes and glowing eyes to legendary armor and mythical backgrounds.
+          </p>
+          <p class="about-text">
+            No two horses are alike. Some are common, some are rare, and a select few are
+            so legendary they may never be seen again. Will you be lucky enough to find one?
+          </p>
+          <div class="about-features">
+            <div class="feature-item">
+              <div class="feature-icon">🎨</div>
+              <div>
+                <strong>Hand-Crafted Art</strong>
+                <p>Each trait is drawn by world-class artists</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔒</div>
+              <div>
+                <strong>On-Chain Verified</strong>
+                <p>Ownership secured on the Ethereum blockchain</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">👑</div>
+              <div>
+                <strong>Holder Benefits</strong>
+                <p>Exclusive perks, events, and future drops</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== COLLECTION ========== -->
+  <section class="collection" id="collection">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">The Herd</div>
+        <h2 class="section-title">Meet the <span class="gradient-text">Rare Horses</span></h2>
+        <p class="section-subtitle">
+          A glimpse into the collection. Every horse tells a unique story.
+        </p>
+      </div>
+      <div class="collection-grid">
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="images/horse1.png" alt="Rare Horse #1" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0001</span></div>
+            <div class="nft-tier legendary">Legendary</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">2.4 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="images/horse2.png" alt="Rare Horse #2" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0042</span></div>
+            <div class="nft-tier epic">Epic</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">1.2 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="images/horse3.png" alt="Rare Horse #3" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0117</span></div>
+            <div class="nft-tier rare">Rare</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">0.8 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="images/horse4.png" alt="Rare Horse #4" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0253</span></div>
+            <div class="nft-tier rare">Rare</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">0.75 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="images/horse5.png" alt="Rare Horse #5" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0512</span></div>
+            <div class="nft-tier uncommon">Uncommon</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">0.4 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card nft-card-mystery">
+          <div class="nft-img-wrap mystery-wrap">
+            <div class="mystery-inner">
+              <span class="mystery-icon">🐴</span>
+              <p>???</p>
+              <small>Unminted</small>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Your Horse <span>#????</span></div>
+            <div class="nft-tier legendary">Could Be Legendary</div>
+            <div class="nft-price">
+              <span class="price-label">Mint</span>
+              <span class="price-value">0.08 ETH</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="collection-cta">
+        <a href="#" class="btn-secondary">View Full Collection on OpenSea</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RARITY ========== -->
+  <section class="rarity" id="rarity">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Rarity System</div>
+        <h2 class="section-title">How Rare is <span class="gradient-text">Your Horse?</span></h2>
+        <p class="section-subtitle">
+          5 tiers. 200+ traits. Infinite possibilities. Each horse is unique.
+        </p>
+      </div>
+      <div class="rarity-grid">
+        <div class="rarity-card legendary-card">
+          <div class="rarity-icon">👑</div>
+          <h3>Legendary</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 1%"></div>
+          </div>
+          <div class="rarity-pct">1% — 100 Horses</div>
+          <p>The rarest of all. Mythical appearances, golden traits, and god-tier attributes.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="images/horse1.png" alt="" /></div>
+          </div>
+        </div>
+        <div class="rarity-card epic-card">
+          <div class="rarity-icon">🔮</div>
+          <h3>Epic</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 5%"></div>
+          </div>
+          <div class="rarity-pct">5% — 500 Horses</div>
+          <p>Extraordinary horses with stunning visual effects and powerful traits.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="images/horse2.png" alt="" /></div>
+          </div>
+        </div>
+        <div class="rarity-card rare-card">
+          <div class="rarity-icon">💎</div>
+          <h3>Rare</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 15%"></div>
+          </div>
+          <div class="rarity-pct">15% — 1,500 Horses</div>
+          <p>Distinctive horses with unique combinations that stand out from the crowd.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="images/horse3.png" alt="" /></div>
+          </div>
+        </div>
+        <div class="rarity-card uncommon-card">
+          <div class="rarity-icon">⭐</div>
+          <h3>Uncommon</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 29%"></div>
+          </div>
+          <div class="rarity-pct">29% — 2,900 Horses</div>
+          <p>Noteworthy horses with interesting traits and solid collector value.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="images/horse4.png" alt="" /></div>
+          </div>
+        </div>
+        <div class="rarity-card common-card">
+          <div class="rarity-icon">🐴</div>
+          <h3>Common</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 50%"></div>
+          </div>
+          <div class="rarity-pct">50% — 5,000 Horses</div>
+          <p>The backbone of the herd. Beautiful horses with their own unique personality.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="images/horse5.png" alt="" /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TRAITS ========== -->
+  <section class="traits">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Trait Categories</div>
+        <h2 class="section-title">200+ <span class="gradient-text">Unique Traits</span></h2>
+      </div>
+      <div class="traits-grid">
+        <div class="trait-chip">🎨 Background</div>
+        <div class="trait-chip">🐴 Body Color</div>
+        <div class="trait-chip">👁️ Eyes</div>
+        <div class="trait-chip">💇 Mane Style</div>
+        <div class="trait-chip">👑 Headwear</div>
+        <div class="trait-chip">🛡️ Armor</div>
+        <div class="trait-chip">✨ Special Effects</div>
+        <div class="trait-chip">🌟 Aura</div>
+        <div class="trait-chip">🔥 Elements</div>
+        <div class="trait-chip">💎 Accessories</div>
+        <div class="trait-chip">🦄 Mythical</div>
+        <div class="trait-chip">🌈 Coat Pattern</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MINT SECTION ========== -->
+  <section class="mint" id="mint">
+    <div class="container">
+      <div class="mint-card">
+        <div class="mint-info">
+          <div class="section-tag">Minting is Live</div>
+          <h2 class="section-title">
+            Claim Your <span class="gradient-text">Rare Horse</span>
+          </h2>
+          <p>
+            Each wallet can mint up to 5 horses per transaction. The rarer the horse,
+            the more exclusive the community access. Don't miss your chance.
+          </p>
+          <ul class="mint-checklist">
+            <li>✅ 10,000 total supply — First come, first served</li>
+            <li>✅ Instant reveal after minting</li>
+            <li>✅ Full commercial rights for holders</li>
+            <li>✅ Access to exclusive Rare Horses Discord</li>
+            <li>✅ Future airdrops for early holders</li>
+          </ul>
+        </div>
+        <div class="mint-widget">
+          <div class="mint-widget-inner">
+            <div class="mint-progress-wrap">
+              <div class="mint-progress-header">
+                <span>Minted</span>
+                <span>6,248 / 10,000</span>
+              </div>
+              <div class="mint-progress-bar">
+                <div class="mint-progress-fill" style="width: 62.48%"></div>
+              </div>
+              <div class="mint-progress-footer">
+                <span>62.48% Minted</span>
+                <span>3,752 Remaining</span>
+              </div>
+            </div>
+            <div class="mint-quantity">
+              <button class="qty-btn" id="qtyMinus">−</button>
+              <span class="qty-value" id="qtyValue">1</span>
+              <button class="qty-btn" id="qtyPlus">+</button>
+            </div>
+            <div class="mint-price-display">
+              <span class="mp-label">Total Price</span>
+              <span class="mp-value" id="mintTotal">0.08 ETH</span>
+            </div>
+            <button class="btn-primary btn-full mint-btn" id="mintBtn">
+              Connect Wallet to Mint
+            </button>
+            <p class="mint-note">Max 5 per wallet · Gas fees apply</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ROADMAP ========== -->
+  <section class="roadmap" id="roadmap">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">The Journey</div>
+        <h2 class="section-title">Our <span class="gradient-text">Roadmap</span></h2>
+        <p class="section-subtitle">
+          A clear path forward for the Rare Horses community and ecosystem.
+        </p>
+      </div>
+      <div class="roadmap-timeline">
+        <div class="timeline-item completed">
+          <div class="timeline-marker">
+            <span class="timeline-icon">✅</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-phase">Phase 1</div>
+            <h3>Genesis</h3>
+            <ul>
+              <li>Concept and artwork creation</li>
+              <li>Smart contract development & audit</li>
+              <li>Website launch</li>
+              <li>Community building — Discord & Twitter</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item active">
+          <div class="timeline-marker">
+            <span class="timeline-icon">🔥</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-phase">Phase 2 — Current</div>
+            <h3>The Mint</h3>
+            <ul>
+              <li>Public mint opens</li>
+              <li>Rarity reveal for all holders</li>
+              <li>OpenSea listing</li>
+              <li>Holder exclusive Discord channels</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="timeline-icon">🏆</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-phase">Phase 3</div>
+            <h3>The Stable Expansion</h3>
+            <ul>
+              <li>Holder-only merch store</li>
+              <li>Real-world events for Legendary holders</li>
+              <li>Charity donation from secondary royalties</li>
+              <li>V2 collection teaser</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="timeline-icon">🌟</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-phase">Phase 4</div>
+            <h3>The Metaverse</h3>
+            <ul>
+              <li>3D model generation for all horses</li>
+              <li>Metaverse integration partnership</li>
+              <li>Rare Horses DAO governance launch</li>
+              <li>Breeding mechanics (V2)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TEAM ========== -->
+  <section class="team">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">The Riders</div>
+        <h2 class="section-title">Meet the <span class="gradient-text">Team</span></h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="images/horse1.png" alt="Founder" />
+          </div>
+          <div class="team-info">
+            <h3>StallionKing</h3>
+            <span class="team-role">Founder & Vision</span>
+            <p>Serial NFT builder with 3 successful collections. Horse enthusiast & blockchain native.</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="images/horse2.png" alt="Artist" />
+          </div>
+          <div class="team-info">
+            <h3>MareArtist</h3>
+            <span class="team-role">Lead Artist</span>
+            <p>World-renowned digital illustrator. Formerly at top gaming studios.</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="images/horse3.png" alt="Dev" />
+          </div>
+          <div class="team-info">
+            <h3>ColtsCode</h3>
+            <span class="team-role">Lead Developer</span>
+            <p>Smart contract engineer with 5+ years in Web3. Security-first mindset.</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="images/horse4.png" alt="Community" />
+          </div>
+          <div class="team-info">
+            <h3>GallopGuru</h3>
+            <span class="team-role">Community Lead</span>
+            <p>Built communities of 100k+ in the NFT space. Passionate about equestrian art.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FAQ ========== -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Got Questions?</div>
+        <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What are Rare Horses?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Rare Horses is a collection of 10,000 unique digital horse NFTs stored on the Ethereum blockchain. Each horse is algorithmically generated from hundreds of hand-drawn traits, making every single one completely unique.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do I mint a Rare Horse?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Connect your MetaMask or WalletConnect wallet, select the number of horses you want to mint (up to 5 per transaction), and click "Mint". The cost is 0.08 ETH per horse plus gas fees.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>When will rarity be revealed?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Rarity is revealed instantly upon minting. You'll know your horse's tier — Common, Uncommon, Rare, Epic, or Legendary — as soon as the transaction is confirmed.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What blockchain are Rare Horses on?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Rare Horses are minted on the Ethereum blockchain as ERC-721 tokens. This ensures full compatibility with all major NFT marketplaces like OpenSea, Blur, and LooksRare.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What are the holder benefits?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Holders get access to the exclusive Rare Horses Discord, future airdrops, voting rights on collection decisions, real-world events (Legendary holders), merch store access, and commercial rights to use their horse's artwork.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Is the smart contract audited?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. The Rare Horses smart contract has been fully audited by a leading blockchain security firm. The audit report is publicly available on our GitHub.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What are the secondary sale royalties?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>A 5% royalty is applied to all secondary sales. 3% goes to the team for continued development, and 2% is donated to equine charities worldwide.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== NEWSLETTER / CTA ========== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <h2>Don't Miss the <span class="gradient-text">Stampede</span></h2>
+        <p>Join 50,000+ collectors already in the Rare Horses community.</p>
+        <div class="cta-actions">
+          <a href="#" class="btn-primary btn-large">Join Discord</a>
+          <a href="#" class="btn-secondary btn-large">Follow on X</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">
+            <span class="logo-icon">🐴</span>
+            <span class="logo-text">RARE<span class="logo-accent">HORSES</span></span>
+          </a>
+          <p>10,000 unique digital horses on the Ethereum blockchain. Own a piece of digital equestrian history.</p>
+          <div class="footer-social">
+            <a href="#" class="social-link">𝕏</a>
+            <a href="#" class="social-link">💬</a>
+            <a href="#" class="social-link">📷</a>
+            <a href="#" class="social-link">🔵</a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#collection">Collection</a></li>
+            <li><a href="#rarity">Rarity</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">OpenSea</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Smart Contract</a></li>
+            <li><a href="#">Audit Report</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 Rare Horses. All rights reserved.</p>
+        <p class="footer-disclaimer">NFTs are digital collectibles. Not financial advice.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
