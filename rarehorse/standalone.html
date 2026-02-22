@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rare Horses – Ultra-Rare Digital Collectibles</title>
+  <style>
+/* =============================================
+   RARE HORSES — Main Stylesheet
+   ============================================= */
+
+:root {
+  --bg-dark:        #0a0a0f;
+  --bg-card:        #12121a;
+  --bg-card2:       #1a1a26;
+  --border:         rgba(255,255,255,0.08);
+  --border-glow:    rgba(139, 92, 246, 0.3);
+
+  --gold:           #f5c542;
+  --gold-dark:      #c9972b;
+  --purple:         #8b5cf6;
+  --purple-light:   #a78bfa;
+  --blue:           #3b82f6;
+  --pink:           #ec4899;
+  --green:          #10b981;
+
+  --text-primary:   #f8f8ff;
+  --text-secondary: #a0a0b8;
+  --text-muted:     #606080;
+
+  --gradient-main:  linear-gradient(135deg, #f5c542, #ec4899, #8b5cf6);
+  --gradient-gold:  linear-gradient(135deg, #f5c542, #c9972b);
+  --gradient-card:  linear-gradient(135deg, #12121a, #1e1e2e);
+
+  --font-primary:   'Space Grotesk', sans-serif;
+  --font-body:      'Inter', sans-serif;
+
+  --radius-sm:      8px;
+  --radius-md:      16px;
+  --radius-lg:      24px;
+  --radius-xl:      32px;
+
+  --shadow-glow:    0 0 40px rgba(139, 92, 246, 0.15);
+  --shadow-gold:    0 0 40px rgba(245, 197, 66, 0.2);
+  --shadow-card:    0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* ---- RESET & BASE ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; }
+
+/* ---- CONTAINER ---- */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---- TYPOGRAPHY ---- */
+.gradient-text {
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--purple-light);
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 6px 16px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+.section-title {
+  font-family: var(--font-primary);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin: 0 auto;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+/* ============ BUTTONS ============ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gradient-main);
+  color: #fff;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+.btn-primary:hover {
+  opacity: 0.88;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(139,92,246,0.4);
+}
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+.btn-secondary:hover {
+  border-color: var(--purple);
+  background: rgba(139,92,246,0.08);
+  transform: translateY(-2px);
+}
+.btn-large { padding: 16px 36px; font-size: 1rem; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ============ NAVBAR ============ */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.navbar.scrolled {
+  background: rgba(10, 10, 15, 0.95);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+}
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-primary);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+}
+.logo-icon { font-size: 1.4rem; }
+.logo-accent {
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+.nav-links a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text-primary); }
+.nav-actions { display: flex; align-items: center; gap: 16px; }
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: 0.3s;
+}
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  background: rgba(10,10,15,0.98);
+  border-top: 1px solid var(--border);
+  padding: 16px 24px 24px;
+}
+.mobile-menu a {
+  padding: 12px 0;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-menu a:last-child { border-bottom: none; margin-top: 12px; }
+.mobile-menu a:hover { color: var(--text-primary); }
+.mobile-menu.open { display: flex; }
+
+/* ============ HERO ============ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 120px 24px 80px;
+  overflow: hidden;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 60px;
+}
+.hero-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  top: -200px; left: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(245,197,66,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-particles {
+  position: absolute;
+  inset: 0;
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  max-width: 560px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(245,197,66,0.1);
+  border: 1px solid rgba(245,197,66,0.25);
+  padding: 8px 18px;
+  border-radius: 999px;
+  margin-bottom: 24px;
+}
+.badge-dot {
+  width: 7px; height: 7px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.hero-title {
+  font-family: var(--font-primary);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 40px;
+  max-width: 480px;
+}
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 36px;
+  width: fit-content;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px;
+}
+.stat-value {
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.stat-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+}
+.hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* HERO SHOWCASE */
+.hero-showcase {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.showcase-ring {
+  position: relative;
+  width: 380px;
+  height: 420px;
+}
+.showcase-card {
+  position: absolute;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s;
+}
+.showcase-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.main-card {
+  width: 260px;
+  height: 320px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 60px rgba(245,197,66,0.25), var(--shadow-card);
+  z-index: 3;
+}
+.main-card:hover { transform: translate(-50%, -50%) scale(1.04); }
+.side-card.left {
+  width: 180px; height: 220px;
+  left: -20px; top: 60px;
+  transform: rotate(-8deg);
+  z-index: 2;
+  opacity: 0.85;
+}
+.side-card.right {
+  width: 180px; height: 220px;
+  right: -20px; top: 100px;
+  transform: rotate(8deg);
+  z-index: 2;
+  opacity: 0.85;
+}
+.side-card:hover { transform: rotate(0deg) scale(1.04); opacity: 1; z-index: 4; }
+.card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.card-badge {
+  position: absolute;
+  top: 10px; right: 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--gradient-gold);
+  color: #000;
+}
+.card-badge.rare { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; }
+.card-badge.epic { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; }
+
+/* ============ TICKER ============ */
+.ticker-wrapper {
+  overflow: hidden;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+}
+.ticker {
+  display: flex;
+  gap: 60px;
+  white-space: nowrap;
+  animation: ticker 20s linear infinite;
+  width: max-content;
+}
+.ticker span {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ============ ABOUT ============ */
+.about {
+  padding: 120px 0;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.about-card-stack {
+  position: relative;
+  width: 320px;
+  height: 380px;
+  margin: 0 auto;
+}
+.stacked-card {
+  position: absolute;
+  width: 260px;
+  height: 320px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+.stacked-card img { width: 100%; height: 100%; object-fit: cover; }
+.card-back-2 {
+  bottom: 0; right: 0;
+  transform: rotate(10deg);
+  opacity: 0.6;
+  z-index: 1;
+}
+.card-back-1 {
+  bottom: 16px; left: 0;
+  transform: rotate(-6deg);
+  opacity: 0.8;
+  z-index: 2;
+}
+.card-front {
+  bottom: 32px; left: 30px;
+  z-index: 3;
+  border-color: var(--gold);
+  box-shadow: 0 0 40px rgba(245,197,66,0.2), var(--shadow-card);
+}
+.stacked-badge {
+  position: absolute;
+  bottom: 12px; left: 12px;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+.about-text {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.8;
+}
+.about-features { margin-top: 32px; display: flex; flex-direction: column; gap: 20px; }
+.feature-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.feature-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.feature-item strong { display: block; margin-bottom: 2px; }
+.feature-item p { font-size: 0.9rem; color: var(--text-secondary); }
+
+/* ============ COLLECTION ============ */
+.collection { padding: 120px 0; background: var(--bg-card); }
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
+}
+.nft-card {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.nft-card:hover {
+  border-color: var(--purple);
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(139,92,246,0.2);
+}
+.nft-img-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+.nft-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+.nft-card:hover .nft-img-wrap img { transform: scale(1.06); }
+.nft-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.nft-card:hover .nft-overlay { opacity: 1; }
+.nft-view-btn {
+  background: var(--gradient-main);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-primary);
+  transition: opacity 0.2s;
+}
+.nft-view-btn:hover { opacity: 0.85; }
+.nft-info {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.nft-name {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.nft-name span { color: var(--text-muted); }
+.nft-tier {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+.nft-tier.legendary { background: rgba(245,197,66,0.15); color: var(--gold); border: 1px solid rgba(245,197,66,0.3); }
+.nft-tier.epic      { background: rgba(139,92,246,0.15); color: var(--purple-light); border: 1px solid rgba(139,92,246,0.3); }
+.nft-tier.rare      { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+.nft-tier.uncommon  { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+.nft-tier.common    { background: rgba(255,255,255,0.06); color: var(--text-secondary); border: 1px solid var(--border); }
+.nft-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.price-label { font-size: 0.7rem; color: var(--text-muted); }
+.price-value { font-family: var(--font-primary); font-weight: 700; font-size: 1rem; }
+.nft-card-mystery .nft-img-wrap { background: linear-gradient(135deg, #1a1a26, #0a0a0f); }
+.mystery-wrap {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mystery-inner {
+  text-align: center;
+  color: var(--text-muted);
+}
+.mystery-icon { font-size: 3rem; display: block; margin-bottom: 8px; }
+.mystery-inner p { font-family: var(--font-primary); font-size: 1.5rem; font-weight: 700; }
+.mystery-inner small { font-size: 0.8rem; }
+.collection-cta { text-align: center; }
+
+/* ============ RARITY ============ */
+.rarity { padding: 120px 0; }
+.rarity-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.rarity-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.rarity-card:hover {
+  transform: translateY(-8px);
+}
+.legendary-card:hover { border-color: var(--gold); box-shadow: var(--shadow-gold); }
+.epic-card:hover { border-color: var(--purple); box-shadow: var(--shadow-glow); }
+.rare-card:hover { border-color: var(--blue); box-shadow: 0 0 40px rgba(59,130,246,0.15); }
+.uncommon-card:hover { border-color: var(--green); box-shadow: 0 0 40px rgba(16,185,129,0.15); }
+.rarity-icon { font-size: 2rem; margin-bottom: 12px; }
+.rarity-card h3 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+.rarity-bar-wrap {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.rarity-bar {
+  height: 100%;
+  width: var(--pct);
+  border-radius: 999px;
+  background: var(--gradient-main);
+  transition: width 1s ease;
+}
+.rarity-pct {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.rarity-card p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.rarity-examples { display: flex; justify-content: center; }
+.rarity-img {
+  width: 64px; height: 64px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.rarity-img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ============ TRAITS ============ */
+.traits {
+  padding: 80px 0;
+  background: var(--bg-card);
+}
+.traits-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.trait-chip {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 10px 22px;
+  border-radius: 999px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  cursor: default;
+}
+.trait-chip:hover {
+  border-color: var(--purple);
+  color: var(--text-primary);
+  background: rgba(139,92,246,0.08);
+}
+
+/* ============ MINT ============ */
+.mint {
+  padding: 120px 0;
+  position: relative;
+  overflow: hidden;
+}
+.mint::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 400px;
+  background: radial-gradient(ellipse, rgba(139,92,246,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.mint-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.mint-info .section-title { margin-top: 12px; }
+.mint-info p { color: var(--text-secondary); margin-bottom: 28px; line-height: 1.8; }
+.mint-checklist { display: flex; flex-direction: column; gap: 10px; }
+.mint-checklist li { font-size: 0.9rem; color: var(--text-secondary); }
+.mint-widget-inner {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+.mint-progress-wrap { margin-bottom: 28px; }
+.mint-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.mint-progress-bar {
+  height: 10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.mint-progress-fill {
+  height: 100%;
+  background: var(--gradient-main);
+  border-radius: 999px;
+  transition: width 1s ease;
+}
+.mint-progress-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.mint-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.qty-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  font-weight: 300;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.qty-btn:hover { border-color: var(--purple); background: rgba(139,92,246,0.1); }
+.qty-value {
+  font-family: var(--font-primary);
+  font-size: 2rem;
+  font-weight: 700;
+  min-width: 48px;
+  text-align: center;
+}
+.mint-price-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  margin-bottom: 20px;
+}
+.mp-label { font-size: 0.85rem; color: var(--text-muted); }
+.mp-value {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+.mint-btn { margin-bottom: 12px; }
+.mint-note { text-align: center; font-size: 0.78rem; color: var(--text-muted); }
+
+/* ============ ROADMAP ============ */
+.roadmap { padding: 120px 0; background: var(--bg-card); }
+.roadmap-timeline {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+.roadmap-timeline::before {
+  content: '';
+  position: absolute;
+  left: 28px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  padding-left: 80px;
+  margin-bottom: 48px;
+}
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: border-color 0.3s;
+}
+.timeline-icon { font-size: 1.2rem; }
+.timeline-item.completed .timeline-marker { border-color: var(--green); background: rgba(16,185,129,0.1); }
+.timeline-item.active .timeline-marker   { border-color: var(--gold);  background: rgba(245,197,66,0.1); box-shadow: 0 0 20px rgba(245,197,66,0.2); }
+.timeline-content {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  transition: border-color 0.3s;
+}
+.timeline-item.completed .timeline-content { border-color: rgba(16,185,129,0.2); }
+.timeline-item.active .timeline-content   { border-color: rgba(245,197,66,0.3); }
+.timeline-phase {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--purple-light);
+  margin-bottom: 6px;
+}
+.timeline-item.completed .timeline-phase { color: var(--green); }
+.timeline-item.active .timeline-phase   { color: var(--gold); }
+.timeline-content h3 {
+  font-family: var(--font-primary);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.timeline-content ul { display: flex; flex-direction: column; gap: 8px; }
+.timeline-content li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding-left: 14px;
+  position: relative;
+}
+.timeline-content li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* ============ TEAM ============ */
+.team { padding: 120px 0; }
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.team-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+  text-align: center;
+}
+.team-card:hover { transform: translateY(-6px); border-color: var(--purple); }
+.team-avatar {
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+.team-avatar img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+.team-card:hover .team-avatar img { transform: scale(1.06); }
+.team-info { padding: 20px; }
+.team-info h3 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.team-role {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--purple-light);
+  background: rgba(139,92,246,0.1);
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+.team-info p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* ============ FAQ ============ */
+.faq { padding: 120px 0; background: var(--bg-card); }
+.faq-list {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.faq-item {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.faq-item.open { border-color: var(--purple); }
+.faq-question {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  text-align: left;
+  transition: color 0.2s;
+}
+.faq-question:hover { color: var(--purple-light); }
+.faq-icon {
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  transition: transform 0.3s, color 0.2s;
+  flex-shrink: 0;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); color: var(--purple-light); }
+.faq-answer {
+  display: none;
+  padding: 0 24px 20px;
+}
+.faq-item.open .faq-answer { display: block; }
+.faq-answer p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.8; }
+
+/* ============ CTA SECTION ============ */
+.cta-section { padding: 120px 0; }
+.cta-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-card::before {
+  content: '';
+  position: absolute;
+  top: -100px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(139,92,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-card h2 {
+  font-family: var(--font-primary);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+.cta-card p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+}
+.cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+/* ============ FOOTER ============ */
+.footer {
+  padding: 80px 0 40px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+.footer-brand p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 16px;
+  margin-bottom: 24px;
+  line-height: 1.7;
+  max-width: 300px;
+}
+.footer-social { display: flex; gap: 12px; }
+.social-link {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.social-link:hover { border-color: var(--purple); background: rgba(139,92,246,0.1); }
+.footer-links h4 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.footer-links ul { display: flex; flex-direction: column; gap: 12px; }
+.footer-links a {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--text-primary); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ============ COUNTDOWN ============ */
+.mint-countdown {
+  margin-top: 32px;
+  background: var(--bg-dark);
+  border: 1px solid rgba(245,197,66,0.2);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+}
+.countdown-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+.countdown-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cd-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  min-width: 64px;
+}
+.cd-val {
+  font-family: var(--font-primary);
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cd-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.cd-sep {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  opacity: 0.5;
+  margin-bottom: 14px;
+}
+
+/* ============ LIGHTBOX ============ */
+.nft-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.nft-lightbox.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.lb-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+}
+.lb-card {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  transform: scale(0.92);
+  transition: transform 0.3s;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+}
+.nft-lightbox.open .lb-card { transform: scale(1); }
+.lb-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  z-index: 10;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.lb-close:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+.lb-img-wrap {
+  width: 380px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.lb-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.lb-details {
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  overflow-y: auto;
+}
+.lb-name {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.lb-tier { margin-bottom: 24px; }
+.lb-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lb-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.lb-stat-label { font-size: 0.85rem; color: var(--text-muted); }
+.lb-stat-val { font-family: var(--font-primary); font-weight: 700; font-size: 0.95rem; }
+@media (max-width: 640px) {
+  .lb-card { flex-direction: column; max-height: 95vh; overflow-y: auto; }
+  .lb-img-wrap { width: 100%; height: 240px; }
+}
+
+/* ============ PARTICLES ============ */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float linear infinite;
+}
+@keyframes float {
+  0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(-20px) rotate(720deg); opacity: 0; }
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .rarity-grid { grid-template-columns: repeat(3, 1fr); }
+  .collection-grid { grid-template-columns: repeat(2, 1fr); }
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero { flex-direction: column; text-align: center; padding-top: 140px; }
+  .hero-content { max-width: 100%; }
+  .hero-subtitle { margin: 0 auto 40px; }
+  .hero-stats { margin: 0 auto 36px; }
+  .hero-cta { justify-content: center; }
+  .hero-showcase { display: none; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-images { display: none; }
+  .mint-card { grid-template-columns: 1fr; padding: 40px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-actions .btn-primary { display: none; }
+  .hero-stats { flex-direction: column; gap: 12px; width: 100%; }
+  .stat-divider { width: 100%; height: 1px; }
+  .rarity-grid { grid-template-columns: 1fr 1fr; }
+  .collection-grid { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr; }
+  .cta-card { padding: 48px 24px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+}
+@media (max-width: 480px) {
+  .rarity-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 2.2rem; }
+  .mint-card { padding: 24px; }
+}
+
+</style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">🐴</span>
+        <span class="logo-text">RARE<span class="logo-accent">HORSES</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#rarity">Rarity</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="#mint" class="btn-primary">Mint Now</a>
+        <button class="hamburger" id="hamburger">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#about">About</a>
+      <a href="#collection">Collection</a>
+      <a href="#rarity">Rarity</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#faq">FAQ</a>
+      <a href="#mint" class="btn-primary">Mint Now</a>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <div class="hero-particles" id="particles"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        10,000 Unique Digital Horses on the Blockchain
+      </div>
+      <h1 class="hero-title">
+        The World's Most<br />
+        <span class="gradient-text">Rare Horses</span><br />
+        Are Here
+      </h1>
+      <p class="hero-subtitle">
+        Own a piece of digital equestrian history. Each Rare Horse is a one-of-a-kind NFT
+        featuring hand-crafted traits, breathtaking artwork, and exclusive community benefits.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-value">10,000</span>
+          <span class="stat-label">Total Supply</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">0.08 ETH</span>
+          <span class="stat-label">Mint Price</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">200+</span>
+          <span class="stat-label">Unique Traits</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">5</span>
+          <span class="stat-label">Rarity Tiers</span>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <a href="#mint" class="btn-primary btn-large">
+          <span>Mint Your Horse</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#collection" class="btn-secondary btn-large">View Collection</a>
+      </div>
+    </div>
+    <div class="hero-showcase">
+      <div class="showcase-ring">
+        <div class="showcase-card main-card">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxYTBhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMGQwNTIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2Y1YzU0MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNjOTk3MmIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cxIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowLjMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8L2RlZnM+CiAgPCEtLSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMSkiLz4KICA8IS0tIEdsb3cgYXVyYSAtLT4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MSkiIGZpbHRlcj0idXJsKCNibHVyMSkiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNjAiIHI9IjIiIGZpbGw9IiNmNWM1NDIiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEyMCIgY3k9IjMwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjM0MCIgY3k9IjgwIiByPSIyIiBmaWxsPSIjZjVjNTQyIiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIxNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIyMDAiIHI9IjEiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjM4MCIgY3k9IjMwMCIgcj0iMiIgZmlsbD0iI2Y1YzU0MiIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iNjAiIGN5PSIzNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPCEtLSBCb2R5IC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY1IiBmaWxsPSIjZDRhODQzIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxODAiIGN5PSIxODUiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjZDRhODQzIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTgwLDE4NSkiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1NSIgY3k9IjEzMCIgcng9IjM4IiByeT0iMzIiIGZpbGw9IiNkNGE4NDMiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTUsMTMwKSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEzMCIgY3k9IjE0OCIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiNjNDkwMzAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMzAsMTQ4KSIvPgogIDwhLS0gRXllIC0tPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iOCIgZmlsbD0iIzFhMWEyZSIvPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iNSIgZmlsbD0iIzJkMWIwMCIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjExOCIgcj0iMiIgZmlsbD0iI2ZmZiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTIwIiBjeT0iMTUyIiByeD0iNSIgcnk9IjMiIGZpbGw9IiM4YjYwMjAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjAsMTUyKSIvPgogIDwhLS0gTWFuZSAtIEdvbGRlbiBmbG93aW5nIC0tPgogIDxwYXRoIGQ9Ik0xNzUgODAgUTE5MCA1MCAxNzAgMzAgUTE1NSA1NSAxNjUgODAgUTE1MCA0NSAxNDAgMjUgUTEzNSA1NSAxNDggODIgUTEzMCA1MCAxMjUgMzAgUTExOCA2MCAxMzIgODUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTc4IDgwIFExODUgNTUgMTY4IDM1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIENyb3duIC0tPgogIDxwYXRoIGQ9Ik0xNDggODUgTDE1NSA2MCBMMTY1IDc1IEwxNzUgNTUgTDE4NSA3MiBMMTk1IDU4IEwyMDAgODUgWiIgZmlsbD0idXJsKCNnb2xkKSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8Y2lyY2xlIGN4PSIxNjUiIGN5PSI2MCIgcj0iNSIgZmlsbD0iI2VjNDg5OSIvPgogIDxjaXJjbGUgY3g9IjE4NSIgY3k9IjYzIiByPSI0IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0OCIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjUiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPHJlY3QgeD0iMTc4IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2NSIgcng9IjgiIGZpbGw9IiNjNDkwMzAiLz4KICA8cmVjdCB4PSIyMjIiIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYwIiByeD0iOCIgZmlsbD0iI2M0OTAzMCIvPgogIDxyZWN0IHg9IjI1MiIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjAiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPCEtLSBIb292ZXMgZ29sZCAtLT4KICA8cmVjdCB4PSIxNDgiIHk9IjM2NSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDxyZWN0IHg9IjE3OCIgeT0iMzY1IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSJ1cmwoI2dvbGQpIi8+CiAgPHJlY3QgeD0iMjIyIiB5PSIzNjAiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9InVybCgjZ29sZCkiLz4KICA8cmVjdCB4PSIyNTIiIHk9IjM2MCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg1IDI1NSBRMzMwIDIzMCAzNDAgMjYwIFEzNTAgMjkwIDMyMCAzMTAgUTMwMCAzMjAgMjg1IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjVjNTQyIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg1IDI1OCBRMzI1IDIzOCAzMzYgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIEFybW9yIGNoZXN0IHBsYXRlIC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjIwIFEyMDAgMjAwIDI1NSAyMjAgTDI2MCAyNzAgUTIwMCAyODUgMTQwIDI3MCBaIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZ29sZCkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC42Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSgyNDUsMTk3LDY2LDAuMikiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNzAiIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZjVjNTQyIj7wn5GRIExFR0VOREFSWTwvdGV4dD4KICA8IS0tIE51bWJlciAtLT4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDAxPC90ZXh0Pgo8L3N2Zz4K" alt="Rare Horse #1" />
+          <div class="card-shine"></div>
+          <div class="card-badge">LEGENDARY</div>
+        </div>
+        <div class="showcase-card side-card left">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMiIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwZDFhM2EiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUwZDIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJwdXJwbGUyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlYzQ4OTkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cyIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOGI1Y2Y2O3N0b3Atb3BhY2l0eTowLjI1Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIyIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxMCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzIpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNjAiIGZpbGw9InVybCgjZ2xvdzIpIiBmaWx0ZXI9InVybCgjYmx1cjIpIi8+CiAgPCEtLSBTdGFycyAtLT4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIyIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMCIgcj0iMS41IiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2MCIgcj0iMiIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC44Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMTgwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjgwIiByPSIyIiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIzNDAiIHI9IjEuNSIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZGFyayBibHVlIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjIiIHJ4PSI5MiIgcnk9IjY2IiBmaWxsPSIjMWUzYTZlIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzgiIGN5PSIxODMiIHJ4PSI0MiIgcnk9IjU3IiBmaWxsPSIjMWUzYTZlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc4LDE4MykiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MiIgY3k9IjEyOCIgcng9IjQwIiByeT0iMzMiIGZpbGw9IiMxZTNhNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTIsMTI4KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyNiIgY3k9IjE0NiIgcng9IjIzIiByeT0iMTciIGZpbGw9IiMxNTJkNTciIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjYsMTQ2KSIvPgogIDwhLS0gRXllIC0gZ2xvd2luZyBwdXJwbGUgLS0+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGEwYTFlIi8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPGNpcmNsZSBjeD0iMTYyIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjUiLz4KICA8IS0tIE5vc3RyaWwgLS0+CiAgPGVsbGlwc2UgY3g9IjExNiIgY3k9IjE1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjMGUyMjQ0IiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUsMTE2LDE1MCkiLz4KICA8IS0tIE1hbmUgLSBwdXJwbGUvcGluayAtLT4KICA8cGF0aCBkPSJNMTcyIDc4IFExODggNDggMTY4IDI4IFExNTMgNTMgMTYzIDc4IFExNDggNDMgMTM4IDIzIFExMzMgNTMgMTQ2IDgwIFExMjggNDggMTIzIDI4IFExMTYgNTggMTMwIDgzIiBmaWxsPSJub25lIiBzdHJva2U9IiM4YjVjZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3OCBRMTgyIDUzIDE2NSAzMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBHbG93aW5nIGhvcm4gKGVwaWMgdHJhaXQpIC0tPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSJ1cmwoI3B1cnBsZTIpIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMTg1IiBjeT0iMjgiIHI9IjUiIGZpbGw9IiNlYzQ4OTkiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTWFnaWMgcGFydGljbGVzIC0tPgogIDxjaXJjbGUgY3g9IjE3NSIgY3k9IjUwIiByPSIzIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxOTUiIGN5PSI0MCIgcj0iMiIgZmlsbD0iI2VjNDg5OSIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMzUiIHI9IjIiIGZpbGw9IiNhNzhiZmEiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTGVncyAtLT4KICA8cmVjdCB4PSIxNDYiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDxyZWN0IHg9IjE3NiIgeT0iMzEyIiB3aWR0aD0iMjMiIGhlaWdodD0iNjQiIHJ4PSI4IiBmaWxsPSIjMTUyZDU3Ii8+CiAgPHJlY3QgeD0iMjIwIiB5PSIzMTIiIHdpZHRoPSIyMyIgaGVpZ2h0PSI1OSIgcng9IjgiIGZpbGw9IiMxNTJkNTciLz4KICA8cmVjdCB4PSIyNTAiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjU5IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDwhLS0gR2xvd2luZyBob292ZXMgLS0+CiAgPHJlY3QgeD0iMTQ2IiB5PSIzNjYiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiM4YjVjZjYiLz4KICA8cmVjdCB4PSIxNzYiIHk9IjM2NiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzhiNWNmNiIvPgogIDxyZWN0IHg9IjIyMCIgeT0iMzYxIiB3aWR0aD0iMjMiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjZWM0ODk5Ii8+CiAgPHJlY3QgeD0iMjUwIiB5PSIzNjEiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiNlYzQ4OTkiLz4KICA8IS0tIFRhaWwgLS0+CiAgPHBhdGggZD0iTTI4NyAyNTcgUTMzMiAyMzIgMzQyIDI2MiBRMzUyIDI5MiAzMjIgMzEyIFEzMDIgMzIyIDI4NyAzMDIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTI4NyAyNjAgUTMyNyAyNDAgMzM4IDI2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSI5NSIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDEzOSw5MiwyNDYsMC4yKSIgc3Ryb2tlPSIjOGI1Y2Y2IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI1NyIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNhNzhiZmEiPvCflK4gRVBJQzwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDQyPC90ZXh0Pgo8L3N2Zz4K" alt="Rare Horse #2" />
+          <div class="card-badge rare">RARE</div>
+        </div>
+        <div class="showcase-card side-card right">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxNTI1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJibHVlMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMzYjgyZjYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDZiNmQ0Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnbG93MyIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNTAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MC4yIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIzIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI5Ii8+PC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMykiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MykiIGZpbHRlcj0idXJsKCNibHVyMykiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iNTAiIHI9IjIiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEzMCIgY3k9IjI1IiByPSIxLjUiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNyIvPgogIDxjaXJjbGUgY3g9IjM0NSIgY3k9IjcwIiByPSIyIiBmaWxsPSIjM2I4MmY2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIzNzUiIGN5PSIyMDAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSIzMTAiIHI9IjIiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gQm9keSAtIHN0ZWVsIGJsdWUgLS0+CiAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjI2MSIgcng9IjkxIiByeT0iNjUiIGZpbGw9IiMyNTYzYTgiLz4KICA8IS0tIE5lY2sgLS0+CiAgPGVsbGlwc2UgY3g9IjE3OSIgY3k9IjE4MiIgcng9IjQxIiByeT0iNTYiIGZpbGw9IiMyNTYzYTgiIHRyYW5zZm9ybT0icm90YXRlKC0xMCwxNzksMTgyKSIvPgogIDwhLS0gSGVhZCAtLT4KICA8ZWxsaXBzZSBjeD0iMTUzIiBjeT0iMTI3IiByeD0iMzkiIHJ5PSIzMiIgZmlsbD0iIzI1NjNhOCIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDE1MywxMjcpIi8+CiAgPCEtLSBTbm91dCAtLT4KICA8ZWxsaXBzZSBjeD0iMTI3IiBjeT0iMTQ1IiByeD0iMjIiIHJ5PSIxNiIgZmlsbD0iIzFhNGQ4YSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDEyNywxNDUpIi8+CiAgPCEtLSBEaWFtb25kIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTAwIEwxNzIgODggTDE4MiAxMDAgTDE3MiAxMTIgWiIgZmlsbD0idXJsKCNibHVlMykiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBFeWUgLSBpY3kgYmx1ZSAtLT4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjkiIGZpbGw9IiMwYTBmMWUiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjYiIGZpbGw9IiMwNmI2ZDQiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMTciIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE3IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMxNDNkNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTcsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGJsdWUvY3lhbiAtLT4KICA8cGF0aCBkPSJNMTczIDc3IFExODkgNDcgMTY5IDI3IFExNTQgNTIgMTY0IDc3IFExNDkgNDIgMTM5IDIyIFExMzQgNTIgMTQ3IDc5IFExMjkgNDcgMTI0IDI3IFExMTcgNTcgMTMxIDgyIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NiA3NyBRMTgzIDUyIDE2NiAzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDZiNmQ0IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBJY2UgY3J5c3RhbCBzcGlrZXMgaW4gbWFuZSAtLT4KICA8cGF0aCBkPSJNMTUwIDU1IEwxNDUgMzUgTDE1NSA1MCIgZmlsbD0iIzA2YjZkNCIgb3BhY2l0eT0iMC43Ii8+CiAgPHBhdGggZD0iTTE2NSA0MCBMMTYwIDE4IEwxNzAgMzgiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDwhLS0gQXJtb3Igc2hvdWxkZXIgLS0+CiAgPHBhdGggZD0iTTIxNSAxOTAgUTI0NSAxNzUgMjYwIDE5NSBRMjUwIDIyMCAyMjAgMjI1IFoiIGZpbGw9IiMxYTRkOGEiIHN0cm9rZT0idXJsKCNibHVlMykiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNjMiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzMTEiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxYTRkOGEiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjMxMSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjU4IiByeD0iOCIgZmlsbD0iIzFhNGQ4YSIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPCEtLSBJY2UgaG9vdmVzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzY0IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMDZiNmQ0Ii8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzNjQiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNmI2ZDQiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjM1OSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNiODJmNiIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzU5IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjM2I4MmY2Ii8+CiAgPCEtLSBUYWlsIC0tPgogIDxwYXRoIGQ9Ik0yODYgMjU2IFEzMzEgMjMxIDM0MSAyNjEgUTM1MSAyOTEgMzIxIDMxMSBRMzAxIDMyMSAyODYgMzAxIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0yODYgMjU5IFEzMjYgMjM5IDMzNyAyNjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2YjZkNCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNyIvPgogIDwhLS0gQmFkZ2UgLS0+CiAgPHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iOTUiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSg1OSwxMzAsMjQ2LDAuMikiIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNTciIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjBhNWZhIj7wn5KOIFJBUkU8L3RleHQ+CiAgPHRleHQgeD0iMzkwIiB5PSIzOTAiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIj4jMDExNzwvdGV4dD4KPC9zdmc+Cg==" alt="Rare Horse #3" />
+          <div class="card-badge epic">EPIC</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MARQUEE TICKER ========== -->
+  <div class="ticker-wrapper">
+    <div class="ticker">
+      <span>🐴 RARE HORSES</span>
+      <span>⚡ 10,000 UNIQUE NFTS</span>
+      <span>🏆 EXCLUSIVE COMMUNITY</span>
+      <span>💎 LEGENDARY TRAITS</span>
+      <span>🔥 LIMITED SUPPLY</span>
+      <span>🌟 BLOCKCHAIN VERIFIED</span>
+      <span>🐴 RARE HORSES</span>
+      <span>⚡ 10,000 UNIQUE NFTS</span>
+      <span>🏆 EXCLUSIVE COMMUNITY</span>
+      <span>💎 LEGENDARY TRAITS</span>
+      <span>🔥 LIMITED SUPPLY</span>
+      <span>🌟 BLOCKCHAIN VERIFIED</span>
+    </div>
+  </div>
+
+  <!-- ========== ABOUT ========== -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-images">
+          <div class="about-card-stack">
+            <div class="stacked-card card-back-2">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnNCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFmMGEiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxMjA1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmVlbjQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzA1OTY2OSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ2xvdzQiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjAuMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjAiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJibHVyNCI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iOCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzQpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNTUiIGZpbGw9InVybCgjZ2xvdzQpIiBmaWx0ZXI9InVybCgjYmx1cjQpIi8+CiAgPCEtLSBGaXJlZmxpZXMvc3RhcnMgLS0+CiAgPGNpcmNsZSBjeD0iNDUiIGN5PSI1NSIgcj0iMi41IiBmaWxsPSIjMTBiOTgxIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxMTUiIGN5PSIyOCIgcj0iMS41IiBmaWxsPSIjMzRkMzk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2NSIgcj0iMiIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC45Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMjIwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjIyIiBjeT0iMzAwIiByPSIyIiBmaWxsPSIjMzRkMzk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIzNTUiIHI9IjEuNSIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZm9yZXN0IGdyZWVuIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY0IiBmaWxsPSIjMWE2YjQwIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzkiIGN5PSIxODIiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjMWE2YjQwIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc5LDE4MikiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MyIgY3k9IjEyNyIgcng9IjM4IiByeT0iMzEiIGZpbGw9IiMxYTZiNDAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTMsMTI3KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyOCIgY3k9IjE0NSIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiMxMjUyMzIiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjgsMTQ1KSIvPgogIDwhLS0gTGVhZiBkZWNvcmF0aW9uIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTA1IFExNzUgOTAgMTkwIDEwMCBRMTgwIDExNSAxNjIgMTA1IFoiIGZpbGw9IiMzNGQzOTkiIG9wYWNpdHk9IjAuOSIvPgogIDxwYXRoIGQ9Ik0xNzUgOTUgTDE3NSAxMTIiIHN0cm9rZT0iIzEwYjk4MSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8IS0tIEV5ZSAtIGdyZWVuIGdsb3cgLS0+CiAgPGNpcmNsZSBjeD0iMTYxIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGExYTBhIi8+CiAgPGNpcmNsZSBjeD0iMTYxIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjMTBiOTgxIi8+CiAgPGNpcmNsZSBjeD0iMTYzIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzM0ZDM5OSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE4IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMwZTNkMjYiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTgsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGdyZWVuL3RlYWwgZmxvd2luZyAtLT4KICA8cGF0aCBkPSJNMTcyIDc2IFExODggNDYgMTY4IDI2IFExNTMgNTEgMTYzIDc2IFExNDggNDEgMTM4IDIxIFExMzMgNTEgMTQ2IDc4IFExMjggNDYgMTIzIDI2IFExMTYgNTYgMTMwIDgxIiBmaWxsPSJub25lIiBzdHJva2U9IiMxMGI5ODEiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3NiBRMTgyIDUxIDE2NSAzMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzRkMzk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBWaW5lL25hdHVyZSBtb3RpZiBvbiBib2R5IC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjMwIFExNjUgMjE1IDE4NSAyMjUgUTIwNSAyMTUgMjI1IDIzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzRkMzk5IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjIxNiIgcj0iNCIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMjA1IiBjeT0iMjE2IiByPSI0IiBmaWxsPSIjMTBiOTgxIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIExlZ3MgLS0+CiAgPHJlY3QgeD0iMTQ3IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxMjUyMzIiLz4KICA8cmVjdCB4PSIxNzciIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYzIiByeD0iOCIgZmlsbD0iIzEyNTIzMiIvPgogIDxyZWN0IHg9IjIyMSIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMTI1MjMyIi8+CiAgPHJlY3QgeD0iMjUxIiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1OCIgcng9IjgiIGZpbGw9IiMxMjUyMzIiLz4KICA8IS0tIEdyZWVuIGhvb3ZlcyAtLT4KICA8cmVjdCB4PSIxNDciIHk9IjM2MyIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzEwYjk4MSIvPgogIDxyZWN0IHg9IjE3NyIgeT0iMzYzIiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMTBiOTgxIi8+CiAgPHJlY3QgeD0iMjIxIiB5PSIzNTgiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNTk2NjkiLz4KICA8cmVjdCB4PSIyNTEiIHk9IjM1OCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzA1OTY2OSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg2IDI1NSBRMzMxIDIzMCAzNDEgMjYwIFEzNTEgMjkwIDMyMSAzMTAgUTMwMSAzMjAgMjg2IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTBiOTgxIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg2IDI1OCBRMzI2IDIzOCAzMzcgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiMzNGQzOTkiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIEJhZGdlIC0tPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjExOCIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDE2LDE4NSwxMjksMC4yKSIgc3Ryb2tlPSIjMTBiOTgxIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI2OSIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzNGQzOTkiPuKtkCBVTkNPTU1PTjwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMjUzPC90ZXh0Pgo8L3N2Zz4K" alt="Rare Horse" />
+            </div>
+            <div class="stacked-card card-back-1">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnNSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxYTBkMDUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTAwODA1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJicm93bjUiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOTI0MDBlIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6Izc4MzUwZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ2xvdzUiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNkOTc3MDY7c3RvcC1vcGFjaXR5OjAuMTUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZDk3NzA2O3N0b3Atb3BhY2l0eTowIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjUiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjYmc1KSIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjIwMCIgcj0iMTU1IiBmaWxsPSJ1cmwoI2dsb3c1KSIgZmlsdGVyPSJ1cmwoI2JsdXI1KSIvPgogIDwhLS0gU3RhcnMgLS0+CiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iMiIgZmlsbD0iI2Q5NzcwNiIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTI1IiBjeT0iMjIiIHI9IjEuNSIgZmlsbD0iI2ZiYmYyNCIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMzQ4IiBjeT0iNjgiIHI9IjIiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjM3OCIgY3k9IjIxMCIgcj0iMS41IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjQiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjMwNSIgcj0iMS41IiBmaWxsPSIjZmJiZjI0IiBvcGFjaXR5PSIwLjUiLz4KICA8IS0tIEJvZHkgLSBjaGVzdG51dCBicm93biBob3JzZSAtLT4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMjYwIiByeD0iODkiIHJ5PSI2MyIgZmlsbD0iIzkyNDAwZSIvPgogIDwhLS0gTmVjayAtLT4KICA8ZWxsaXBzZSBjeD0iMTc5IiBjeT0iMTgyIiByeD0iNDAiIHJ5PSI1NSIgZmlsbD0iIzkyNDAwZSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEwLDE3OSwxODIpIi8+CiAgPCEtLSBIZWFkIC0tPgogIDxlbGxpcHNlIGN4PSIxNTMiIGN5PSIxMjciIHJ4PSIzOCIgcnk9IjMxIiBmaWxsPSIjOTI0MDBlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUsMTUzLDEyNykiLz4KICA8IS0tIFNub3V0IC0gbGlnaHRlciAtLT4KICA8ZWxsaXBzZSBjeD0iMTI4IiBjeT0iMTQ1IiByeD0iMjIiIHJ5PSIxNiIgZmlsbD0iI2M0NzgzYSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDEyOCwxNDUpIi8+CiAgPCEtLSBXaGl0ZSBibGF6ZSBvbiBmYWNlIC0tPgogIDxlbGxpcHNlIGN4PSIxNTUiIGN5PSIxMjgiIHJ4PSI4IiByeT0iMjAiIGZpbGw9IiNmNWYwZTgiIG9wYWNpdHk9IjAuODUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTUsMTI4KSIvPgogIDwhLS0gRXllIC0gd2FybSBicm93biAtLT4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjkiIGZpbGw9IiMxYTBhMDAiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjYiIGZpbGw9IiM1YzJkMGEiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMTYiIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE4IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiM2YjJkMDgiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTgsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGRhcmsgYnJvd24vYW1iZXIgLS0+CiAgPHBhdGggZD0iTTE3MiA3NiBRMTg4IDQ2IDE2OCAyNiBRMTUzIDUxIDE2MyA3NiBRMTQ4IDQxIDEzOCAyMSBRMTMzIDUxIDE0NiA3OCBRMTI4IDQ2IDEyMyAyNiBRMTE2IDU2IDEzMCA4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDUxYTAzIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTc1IDc2IFExODIgNTEgMTY1IDMxIiBmaWxsPSJub25lIiBzdHJva2U9IiM3ODM1MGYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjgiLz4KICA8IS0tIFNpbXBsZSBiYW5kYW5hIC0tPgogIDxwYXRoIGQ9Ik0xNDggMTY1IFExNzggMTU1IDIwOCAxNjUgTDIwNSAxODUgUTE3OCAxNzggMTUxIDE4NSBaIiBmaWxsPSIjZGMyNjI2IiBvcGFjaXR5PSIwLjg1Ii8+CiAgPHBhdGggZD0iTTE0OCAxNjUgUTE3OCAxNTUgMjA4IDE2NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmNhNWE1IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8IS0tIFdoaXRlIHNvY2tzIG9uIGxlZ3MgLS0+CiAgPHJlY3QgeD0iMTQ3IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiM3YzM0MTAiLz4KICA8cmVjdCB4PSIxNzciIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYzIiByeD0iOCIgZmlsbD0iIzdjMzQxMCIvPgogIDxyZWN0IHg9IjIyMSIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjN2MzNDEwIi8+CiAgPHJlY3QgeD0iMjUxIiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1OCIgcng9IjgiIGZpbGw9IiM3YzM0MTAiLz4KICA8IS0tIFdoaXRlIHNvY2tzIGxvd2VyIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzQ1IiB3aWR0aD0iMjIiIGhlaWdodD0iMzAiIHJ4PSIwIiBmaWxsPSIjZjVmMGU4Ii8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzNDUiIHdpZHRoPSIyMiIgaGVpZ2h0PSIzMCIgcng9IjAiIGZpbGw9IiNmNWYwZTgiLz4KICA8IS0tIEhvb3ZlcyAtLT4KICA8cmVjdCB4PSIxNDciIHk9IjM2MyIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNkMWEwNyIvPgogIDxyZWN0IHg9IjE3NyIgeT0iMzYzIiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjM2QxYTA3Ii8+CiAgPHJlY3QgeD0iMjIxIiB5PSIzNTgiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMzZDFhMDciLz4KICA8cmVjdCB4PSIyNTEiIHk9IjM1OCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNkMWEwNyIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg2IDI1NSBRMzMxIDIzMCAzNDEgMjYwIFEzNTEgMjkwIDMyMSAzMTAgUTMwMSAzMjAgMjg2IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDUxYTAzIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg2IDI1OCBRMzI2IDIzOCAzMzcgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiM3ODM1MGYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIEJhZGdlIC0tPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjEwNSIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNjIiIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNykiPvCfkLQgQ09NTU9OPC90ZXh0PgogIDx0ZXh0IHg9IjM5MCIgeT0iMzkwIiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC40KSI+IzA1MTI8L3RleHQ+Cjwvc3ZnPgo=" alt="Rare Horse" />
+            </div>
+            <div class="stacked-card card-front">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxYTBhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMGQwNTIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2Y1YzU0MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNjOTk3MmIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cxIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowLjMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8L2RlZnM+CiAgPCEtLSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMSkiLz4KICA8IS0tIEdsb3cgYXVyYSAtLT4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MSkiIGZpbHRlcj0idXJsKCNibHVyMSkiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNjAiIHI9IjIiIGZpbGw9IiNmNWM1NDIiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEyMCIgY3k9IjMwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjM0MCIgY3k9IjgwIiByPSIyIiBmaWxsPSIjZjVjNTQyIiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIxNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIyMDAiIHI9IjEiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjM4MCIgY3k9IjMwMCIgcj0iMiIgZmlsbD0iI2Y1YzU0MiIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iNjAiIGN5PSIzNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPCEtLSBCb2R5IC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY1IiBmaWxsPSIjZDRhODQzIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxODAiIGN5PSIxODUiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjZDRhODQzIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTgwLDE4NSkiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1NSIgY3k9IjEzMCIgcng9IjM4IiByeT0iMzIiIGZpbGw9IiNkNGE4NDMiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTUsMTMwKSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEzMCIgY3k9IjE0OCIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiNjNDkwMzAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMzAsMTQ4KSIvPgogIDwhLS0gRXllIC0tPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iOCIgZmlsbD0iIzFhMWEyZSIvPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iNSIgZmlsbD0iIzJkMWIwMCIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjExOCIgcj0iMiIgZmlsbD0iI2ZmZiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTIwIiBjeT0iMTUyIiByeD0iNSIgcnk9IjMiIGZpbGw9IiM4YjYwMjAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjAsMTUyKSIvPgogIDwhLS0gTWFuZSAtIEdvbGRlbiBmbG93aW5nIC0tPgogIDxwYXRoIGQ9Ik0xNzUgODAgUTE5MCA1MCAxNzAgMzAgUTE1NSA1NSAxNjUgODAgUTE1MCA0NSAxNDAgMjUgUTEzNSA1NSAxNDggODIgUTEzMCA1MCAxMjUgMzAgUTExOCA2MCAxMzIgODUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTc4IDgwIFExODUgNTUgMTY4IDM1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIENyb3duIC0tPgogIDxwYXRoIGQ9Ik0xNDggODUgTDE1NSA2MCBMMTY1IDc1IEwxNzUgNTUgTDE4NSA3MiBMMTk1IDU4IEwyMDAgODUgWiIgZmlsbD0idXJsKCNnb2xkKSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8Y2lyY2xlIGN4PSIxNjUiIGN5PSI2MCIgcj0iNSIgZmlsbD0iI2VjNDg5OSIvPgogIDxjaXJjbGUgY3g9IjE4NSIgY3k9IjYzIiByPSI0IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0OCIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjUiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPHJlY3QgeD0iMTc4IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2NSIgcng9IjgiIGZpbGw9IiNjNDkwMzAiLz4KICA8cmVjdCB4PSIyMjIiIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYwIiByeD0iOCIgZmlsbD0iI2M0OTAzMCIvPgogIDxyZWN0IHg9IjI1MiIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjAiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPCEtLSBIb292ZXMgZ29sZCAtLT4KICA8cmVjdCB4PSIxNDgiIHk9IjM2NSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDxyZWN0IHg9IjE3OCIgeT0iMzY1IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSJ1cmwoI2dvbGQpIi8+CiAgPHJlY3QgeD0iMjIyIiB5PSIzNjAiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9InVybCgjZ29sZCkiLz4KICA8cmVjdCB4PSIyNTIiIHk9IjM2MCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg1IDI1NSBRMzMwIDIzMCAzNDAgMjYwIFEzNTAgMjkwIDMyMCAzMTAgUTMwMCAzMjAgMjg1IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjVjNTQyIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg1IDI1OCBRMzI1IDIzOCAzMzYgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIEFybW9yIGNoZXN0IHBsYXRlIC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjIwIFEyMDAgMjAwIDI1NSAyMjAgTDI2MCAyNzAgUTIwMCAyODUgMTQwIDI3MCBaIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZ29sZCkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC42Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSgyNDUsMTk3LDY2LDAuMikiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNzAiIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZjVjNTQyIj7wn5GRIExFR0VOREFSWTwvdGV4dD4KICA8IS0tIE51bWJlciAtLT4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDAxPC90ZXh0Pgo8L3N2Zz4K" alt="Rare Horse" />
+              <div class="stacked-badge">🐴 #0001</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-content">
+          <div class="section-tag">About the Collection</div>
+          <h2 class="section-title">
+            Born from the<br />
+            <span class="gradient-text">Digital Plains</span>
+          </h2>
+          <p class="about-text">
+            Rare Horses is a collection of 10,000 algorithmically generated NFTs living on the
+            Ethereum blockchain. Each horse is crafted from hundreds of unique traits — from
+            majestic manes and glowing eyes to legendary armor and mythical backgrounds.
+          </p>
+          <p class="about-text">
+            No two horses are alike. Some are common, some are rare, and a select few are
+            so legendary they may never be seen again. Will you be lucky enough to find one?
+          </p>
+          <div class="about-features">
+            <div class="feature-item">
+              <div class="feature-icon">🎨</div>
+              <div>
+                <strong>Hand-Crafted Art</strong>
+                <p>Each trait is drawn by world-class artists</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔒</div>
+              <div>
+                <strong>On-Chain Verified</strong>
+                <p>Ownership secured on the Ethereum blockchain</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">👑</div>
+              <div>
+                <strong>Holder Benefits</strong>
+                <p>Exclusive perks, events, and future drops</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== COLLECTION ========== -->
+  <section class="collection" id="collection">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">The Herd</div>
+        <h2 class="section-title">Meet the <span class="gradient-text">Rare Horses</span></h2>
+        <p class="section-subtitle">
+          A glimpse into the collection. Every horse tells a unique story.
+        </p>
+      </div>
+      <div class="collection-grid">
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxYTBhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMGQwNTIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2Y1YzU0MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNjOTk3MmIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cxIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowLjMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8L2RlZnM+CiAgPCEtLSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMSkiLz4KICA8IS0tIEdsb3cgYXVyYSAtLT4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MSkiIGZpbHRlcj0idXJsKCNibHVyMSkiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNjAiIHI9IjIiIGZpbGw9IiNmNWM1NDIiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEyMCIgY3k9IjMwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjM0MCIgY3k9IjgwIiByPSIyIiBmaWxsPSIjZjVjNTQyIiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIxNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIyMDAiIHI9IjEiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjM4MCIgY3k9IjMwMCIgcj0iMiIgZmlsbD0iI2Y1YzU0MiIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iNjAiIGN5PSIzNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPCEtLSBCb2R5IC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY1IiBmaWxsPSIjZDRhODQzIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxODAiIGN5PSIxODUiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjZDRhODQzIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTgwLDE4NSkiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1NSIgY3k9IjEzMCIgcng9IjM4IiByeT0iMzIiIGZpbGw9IiNkNGE4NDMiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTUsMTMwKSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEzMCIgY3k9IjE0OCIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiNjNDkwMzAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMzAsMTQ4KSIvPgogIDwhLS0gRXllIC0tPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iOCIgZmlsbD0iIzFhMWEyZSIvPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iNSIgZmlsbD0iIzJkMWIwMCIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjExOCIgcj0iMiIgZmlsbD0iI2ZmZiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTIwIiBjeT0iMTUyIiByeD0iNSIgcnk9IjMiIGZpbGw9IiM4YjYwMjAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjAsMTUyKSIvPgogIDwhLS0gTWFuZSAtIEdvbGRlbiBmbG93aW5nIC0tPgogIDxwYXRoIGQ9Ik0xNzUgODAgUTE5MCA1MCAxNzAgMzAgUTE1NSA1NSAxNjUgODAgUTE1MCA0NSAxNDAgMjUgUTEzNSA1NSAxNDggODIgUTEzMCA1MCAxMjUgMzAgUTExOCA2MCAxMzIgODUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTc4IDgwIFExODUgNTUgMTY4IDM1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIENyb3duIC0tPgogIDxwYXRoIGQ9Ik0xNDggODUgTDE1NSA2MCBMMTY1IDc1IEwxNzUgNTUgTDE4NSA3MiBMMTk1IDU4IEwyMDAgODUgWiIgZmlsbD0idXJsKCNnb2xkKSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8Y2lyY2xlIGN4PSIxNjUiIGN5PSI2MCIgcj0iNSIgZmlsbD0iI2VjNDg5OSIvPgogIDxjaXJjbGUgY3g9IjE4NSIgY3k9IjYzIiByPSI0IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0OCIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjUiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPHJlY3QgeD0iMTc4IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2NSIgcng9IjgiIGZpbGw9IiNjNDkwMzAiLz4KICA8cmVjdCB4PSIyMjIiIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYwIiByeD0iOCIgZmlsbD0iI2M0OTAzMCIvPgogIDxyZWN0IHg9IjI1MiIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjAiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPCEtLSBIb292ZXMgZ29sZCAtLT4KICA8cmVjdCB4PSIxNDgiIHk9IjM2NSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDxyZWN0IHg9IjE3OCIgeT0iMzY1IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSJ1cmwoI2dvbGQpIi8+CiAgPHJlY3QgeD0iMjIyIiB5PSIzNjAiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9InVybCgjZ29sZCkiLz4KICA8cmVjdCB4PSIyNTIiIHk9IjM2MCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg1IDI1NSBRMzMwIDIzMCAzNDAgMjYwIFEzNTAgMjkwIDMyMCAzMTAgUTMwMCAzMjAgMjg1IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjVjNTQyIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg1IDI1OCBRMzI1IDIzOCAzMzYgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIEFybW9yIGNoZXN0IHBsYXRlIC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjIwIFEyMDAgMjAwIDI1NSAyMjAgTDI2MCAyNzAgUTIwMCAyODUgMTQwIDI3MCBaIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZ29sZCkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC42Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSgyNDUsMTk3LDY2LDAuMikiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNzAiIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZjVjNTQyIj7wn5GRIExFR0VOREFSWTwvdGV4dD4KICA8IS0tIE51bWJlciAtLT4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDAxPC90ZXh0Pgo8L3N2Zz4K" alt="Rare Horse #1" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0001</span></div>
+            <div class="nft-tier legendary">Legendary</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">2.4 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMiIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwZDFhM2EiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUwZDIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJwdXJwbGUyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlYzQ4OTkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cyIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOGI1Y2Y2O3N0b3Atb3BhY2l0eTowLjI1Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIyIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxMCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzIpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNjAiIGZpbGw9InVybCgjZ2xvdzIpIiBmaWx0ZXI9InVybCgjYmx1cjIpIi8+CiAgPCEtLSBTdGFycyAtLT4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIyIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMCIgcj0iMS41IiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2MCIgcj0iMiIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC44Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMTgwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjgwIiByPSIyIiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIzNDAiIHI9IjEuNSIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZGFyayBibHVlIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjIiIHJ4PSI5MiIgcnk9IjY2IiBmaWxsPSIjMWUzYTZlIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzgiIGN5PSIxODMiIHJ4PSI0MiIgcnk9IjU3IiBmaWxsPSIjMWUzYTZlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc4LDE4MykiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MiIgY3k9IjEyOCIgcng9IjQwIiByeT0iMzMiIGZpbGw9IiMxZTNhNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTIsMTI4KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyNiIgY3k9IjE0NiIgcng9IjIzIiByeT0iMTciIGZpbGw9IiMxNTJkNTciIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjYsMTQ2KSIvPgogIDwhLS0gRXllIC0gZ2xvd2luZyBwdXJwbGUgLS0+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGEwYTFlIi8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPGNpcmNsZSBjeD0iMTYyIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjUiLz4KICA8IS0tIE5vc3RyaWwgLS0+CiAgPGVsbGlwc2UgY3g9IjExNiIgY3k9IjE1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjMGUyMjQ0IiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUsMTE2LDE1MCkiLz4KICA8IS0tIE1hbmUgLSBwdXJwbGUvcGluayAtLT4KICA8cGF0aCBkPSJNMTcyIDc4IFExODggNDggMTY4IDI4IFExNTMgNTMgMTYzIDc4IFExNDggNDMgMTM4IDIzIFExMzMgNTMgMTQ2IDgwIFExMjggNDggMTIzIDI4IFExMTYgNTggMTMwIDgzIiBmaWxsPSJub25lIiBzdHJva2U9IiM4YjVjZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3OCBRMTgyIDUzIDE2NSAzMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBHbG93aW5nIGhvcm4gKGVwaWMgdHJhaXQpIC0tPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSJ1cmwoI3B1cnBsZTIpIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMTg1IiBjeT0iMjgiIHI9IjUiIGZpbGw9IiNlYzQ4OTkiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTWFnaWMgcGFydGljbGVzIC0tPgogIDxjaXJjbGUgY3g9IjE3NSIgY3k9IjUwIiByPSIzIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxOTUiIGN5PSI0MCIgcj0iMiIgZmlsbD0iI2VjNDg5OSIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMzUiIHI9IjIiIGZpbGw9IiNhNzhiZmEiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTGVncyAtLT4KICA8cmVjdCB4PSIxNDYiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDxyZWN0IHg9IjE3NiIgeT0iMzEyIiB3aWR0aD0iMjMiIGhlaWdodD0iNjQiIHJ4PSI4IiBmaWxsPSIjMTUyZDU3Ii8+CiAgPHJlY3QgeD0iMjIwIiB5PSIzMTIiIHdpZHRoPSIyMyIgaGVpZ2h0PSI1OSIgcng9IjgiIGZpbGw9IiMxNTJkNTciLz4KICA8cmVjdCB4PSIyNTAiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjU5IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDwhLS0gR2xvd2luZyBob292ZXMgLS0+CiAgPHJlY3QgeD0iMTQ2IiB5PSIzNjYiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiM4YjVjZjYiLz4KICA8cmVjdCB4PSIxNzYiIHk9IjM2NiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzhiNWNmNiIvPgogIDxyZWN0IHg9IjIyMCIgeT0iMzYxIiB3aWR0aD0iMjMiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjZWM0ODk5Ii8+CiAgPHJlY3QgeD0iMjUwIiB5PSIzNjEiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiNlYzQ4OTkiLz4KICA8IS0tIFRhaWwgLS0+CiAgPHBhdGggZD0iTTI4NyAyNTcgUTMzMiAyMzIgMzQyIDI2MiBRMzUyIDI5MiAzMjIgMzEyIFEzMDIgMzIyIDI4NyAzMDIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTI4NyAyNjAgUTMyNyAyNDAgMzM4IDI2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSI5NSIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDEzOSw5MiwyNDYsMC4yKSIgc3Ryb2tlPSIjOGI1Y2Y2IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI1NyIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNhNzhiZmEiPvCflK4gRVBJQzwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDQyPC90ZXh0Pgo8L3N2Zz4K" alt="Rare Horse #2" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0042</span></div>
+            <div class="nft-tier epic">Epic</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">1.2 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxNTI1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJibHVlMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMzYjgyZjYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDZiNmQ0Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnbG93MyIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNTAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MC4yIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIzIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI5Ii8+PC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMykiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MykiIGZpbHRlcj0idXJsKCNibHVyMykiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iNTAiIHI9IjIiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEzMCIgY3k9IjI1IiByPSIxLjUiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNyIvPgogIDxjaXJjbGUgY3g9IjM0NSIgY3k9IjcwIiByPSIyIiBmaWxsPSIjM2I4MmY2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIzNzUiIGN5PSIyMDAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSIzMTAiIHI9IjIiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gQm9keSAtIHN0ZWVsIGJsdWUgLS0+CiAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjI2MSIgcng9IjkxIiByeT0iNjUiIGZpbGw9IiMyNTYzYTgiLz4KICA8IS0tIE5lY2sgLS0+CiAgPGVsbGlwc2UgY3g9IjE3OSIgY3k9IjE4MiIgcng9IjQxIiByeT0iNTYiIGZpbGw9IiMyNTYzYTgiIHRyYW5zZm9ybT0icm90YXRlKC0xMCwxNzksMTgyKSIvPgogIDwhLS0gSGVhZCAtLT4KICA8ZWxsaXBzZSBjeD0iMTUzIiBjeT0iMTI3IiByeD0iMzkiIHJ5PSIzMiIgZmlsbD0iIzI1NjNhOCIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDE1MywxMjcpIi8+CiAgPCEtLSBTbm91dCAtLT4KICA8ZWxsaXBzZSBjeD0iMTI3IiBjeT0iMTQ1IiByeD0iMjIiIHJ5PSIxNiIgZmlsbD0iIzFhNGQ4YSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDEyNywxNDUpIi8+CiAgPCEtLSBEaWFtb25kIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTAwIEwxNzIgODggTDE4MiAxMDAgTDE3MiAxMTIgWiIgZmlsbD0idXJsKCNibHVlMykiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBFeWUgLSBpY3kgYmx1ZSAtLT4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjkiIGZpbGw9IiMwYTBmMWUiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjYiIGZpbGw9IiMwNmI2ZDQiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMTciIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE3IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMxNDNkNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTcsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGJsdWUvY3lhbiAtLT4KICA8cGF0aCBkPSJNMTczIDc3IFExODkgNDcgMTY5IDI3IFExNTQgNTIgMTY0IDc3IFExNDkgNDIgMTM5IDIyIFExMzQgNTIgMTQ3IDc5IFExMjkgNDcgMTI0IDI3IFExMTcgNTcgMTMxIDgyIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NiA3NyBRMTgzIDUyIDE2NiAzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDZiNmQ0IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBJY2UgY3J5c3RhbCBzcGlrZXMgaW4gbWFuZSAtLT4KICA8cGF0aCBkPSJNMTUwIDU1IEwxNDUgMzUgTDE1NSA1MCIgZmlsbD0iIzA2YjZkNCIgb3BhY2l0eT0iMC43Ii8+CiAgPHBhdGggZD0iTTE2NSA0MCBMMTYwIDE4IEwxNzAgMzgiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDwhLS0gQXJtb3Igc2hvdWxkZXIgLS0+CiAgPHBhdGggZD0iTTIxNSAxOTAgUTI0NSAxNzUgMjYwIDE5NSBRMjUwIDIyMCAyMjAgMjI1IFoiIGZpbGw9IiMxYTRkOGEiIHN0cm9rZT0idXJsKCNibHVlMykiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNjMiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzMTEiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxYTRkOGEiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjMxMSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjU4IiByeD0iOCIgZmlsbD0iIzFhNGQ4YSIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPCEtLSBJY2UgaG9vdmVzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzY0IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMDZiNmQ0Ii8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzNjQiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNmI2ZDQiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjM1OSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNiODJmNiIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzU5IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjM2I4MmY2Ii8+CiAgPCEtLSBUYWlsIC0tPgogIDxwYXRoIGQ9Ik0yODYgMjU2IFEzMzEgMjMxIDM0MSAyNjEgUTM1MSAyOTEgMzIxIDMxMSBRMzAxIDMyMSAyODYgMzAxIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0yODYgMjU5IFEzMjYgMjM5IDMzNyAyNjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2YjZkNCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNyIvPgogIDwhLS0gQmFkZ2UgLS0+CiAgPHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iOTUiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSg1OSwxMzAsMjQ2LDAuMikiIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNTciIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjBhNWZhIj7wn5KOIFJBUkU8L3RleHQ+CiAgPHRleHQgeD0iMzkwIiB5PSIzOTAiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIj4jMDExNzwvdGV4dD4KPC9zdmc+Cg==" alt="Rare Horse #3" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0117</span></div>
+            <div class="nft-tier rare">Rare</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">0.8 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnNCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFmMGEiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxMjA1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmVlbjQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzA1OTY2OSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ2xvdzQiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjAuMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjAiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJibHVyNCI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iOCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzQpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNTUiIGZpbGw9InVybCgjZ2xvdzQpIiBmaWx0ZXI9InVybCgjYmx1cjQpIi8+CiAgPCEtLSBGaXJlZmxpZXMvc3RhcnMgLS0+CiAgPGNpcmNsZSBjeD0iNDUiIGN5PSI1NSIgcj0iMi41IiBmaWxsPSIjMTBiOTgxIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxMTUiIGN5PSIyOCIgcj0iMS41IiBmaWxsPSIjMzRkMzk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2NSIgcj0iMiIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC45Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMjIwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjIyIiBjeT0iMzAwIiByPSIyIiBmaWxsPSIjMzRkMzk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIzNTUiIHI9IjEuNSIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZm9yZXN0IGdyZWVuIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY0IiBmaWxsPSIjMWE2YjQwIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzkiIGN5PSIxODIiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjMWE2YjQwIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc5LDE4MikiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MyIgY3k9IjEyNyIgcng9IjM4IiByeT0iMzEiIGZpbGw9IiMxYTZiNDAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTMsMTI3KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyOCIgY3k9IjE0NSIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiMxMjUyMzIiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjgsMTQ1KSIvPgogIDwhLS0gTGVhZiBkZWNvcmF0aW9uIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTA1IFExNzUgOTAgMTkwIDEwMCBRMTgwIDExNSAxNjIgMTA1IFoiIGZpbGw9IiMzNGQzOTkiIG9wYWNpdHk9IjAuOSIvPgogIDxwYXRoIGQ9Ik0xNzUgOTUgTDE3NSAxMTIiIHN0cm9rZT0iIzEwYjk4MSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8IS0tIEV5ZSAtIGdyZWVuIGdsb3cgLS0+CiAgPGNpcmNsZSBjeD0iMTYxIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGExYTBhIi8+CiAgPGNpcmNsZSBjeD0iMTYxIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjMTBiOTgxIi8+CiAgPGNpcmNsZSBjeD0iMTYzIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzM0ZDM5OSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE4IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMwZTNkMjYiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTgsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGdyZWVuL3RlYWwgZmxvd2luZyAtLT4KICA8cGF0aCBkPSJNMTcyIDc2IFExODggNDYgMTY4IDI2IFExNTMgNTEgMTYzIDc2IFExNDggNDEgMTM4IDIxIFExMzMgNTEgMTQ2IDc4IFExMjggNDYgMTIzIDI2IFExMTYgNTYgMTMwIDgxIiBmaWxsPSJub25lIiBzdHJva2U9IiMxMGI5ODEiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3NiBRMTgyIDUxIDE2NSAzMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzRkMzk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBWaW5lL25hdHVyZSBtb3RpZiBvbiBib2R5IC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjMwIFExNjUgMjE1IDE4NSAyMjUgUTIwNSAyMTUgMjI1IDIzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzRkMzk5IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjIxNiIgcj0iNCIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMjA1IiBjeT0iMjE2IiByPSI0IiBmaWxsPSIjMTBiOTgxIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIExlZ3MgLS0+CiAgPHJlY3QgeD0iMTQ3IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxMjUyMzIiLz4KICA8cmVjdCB4PSIxNzciIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYzIiByeD0iOCIgZmlsbD0iIzEyNTIzMiIvPgogIDxyZWN0IHg9IjIyMSIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMTI1MjMyIi8+CiAgPHJlY3QgeD0iMjUxIiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1OCIgcng9IjgiIGZpbGw9IiMxMjUyMzIiLz4KICA8IS0tIEdyZWVuIGhvb3ZlcyAtLT4KICA8cmVjdCB4PSIxNDciIHk9IjM2MyIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzEwYjk4MSIvPgogIDxyZWN0IHg9IjE3NyIgeT0iMzYzIiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMTBiOTgxIi8+CiAgPHJlY3QgeD0iMjIxIiB5PSIzNTgiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNTk2NjkiLz4KICA8cmVjdCB4PSIyNTEiIHk9IjM1OCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzA1OTY2OSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg2IDI1NSBRMzMxIDIzMCAzNDEgMjYwIFEzNTEgMjkwIDMyMSAzMTAgUTMwMSAzMjAgMjg2IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTBiOTgxIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg2IDI1OCBRMzI2IDIzOCAzMzcgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiMzNGQzOTkiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIEJhZGdlIC0tPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjExOCIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDE2LDE4NSwxMjksMC4yKSIgc3Ryb2tlPSIjMTBiOTgxIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI2OSIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzNGQzOTkiPuKtkCBVTkNPTU1PTjwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMjUzPC90ZXh0Pgo8L3N2Zz4K" alt="Rare Horse #4" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0253</span></div>
+            <div class="nft-tier rare">Rare</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">0.75 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card">
+          <div class="nft-img-wrap">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnNSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxYTBkMDUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTAwODA1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJicm93bjUiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOTI0MDBlIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6Izc4MzUwZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ2xvdzUiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNkOTc3MDY7c3RvcC1vcGFjaXR5OjAuMTUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZDk3NzA2O3N0b3Atb3BhY2l0eTowIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjUiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjYmc1KSIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjIwMCIgcj0iMTU1IiBmaWxsPSJ1cmwoI2dsb3c1KSIgZmlsdGVyPSJ1cmwoI2JsdXI1KSIvPgogIDwhLS0gU3RhcnMgLS0+CiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iMiIgZmlsbD0iI2Q5NzcwNiIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTI1IiBjeT0iMjIiIHI9IjEuNSIgZmlsbD0iI2ZiYmYyNCIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMzQ4IiBjeT0iNjgiIHI9IjIiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjM3OCIgY3k9IjIxMCIgcj0iMS41IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjQiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjMwNSIgcj0iMS41IiBmaWxsPSIjZmJiZjI0IiBvcGFjaXR5PSIwLjUiLz4KICA8IS0tIEJvZHkgLSBjaGVzdG51dCBicm93biBob3JzZSAtLT4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMjYwIiByeD0iODkiIHJ5PSI2MyIgZmlsbD0iIzkyNDAwZSIvPgogIDwhLS0gTmVjayAtLT4KICA8ZWxsaXBzZSBjeD0iMTc5IiBjeT0iMTgyIiByeD0iNDAiIHJ5PSI1NSIgZmlsbD0iIzkyNDAwZSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEwLDE3OSwxODIpIi8+CiAgPCEtLSBIZWFkIC0tPgogIDxlbGxpcHNlIGN4PSIxNTMiIGN5PSIxMjciIHJ4PSIzOCIgcnk9IjMxIiBmaWxsPSIjOTI0MDBlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUsMTUzLDEyNykiLz4KICA8IS0tIFNub3V0IC0gbGlnaHRlciAtLT4KICA8ZWxsaXBzZSBjeD0iMTI4IiBjeT0iMTQ1IiByeD0iMjIiIHJ5PSIxNiIgZmlsbD0iI2M0NzgzYSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDEyOCwxNDUpIi8+CiAgPCEtLSBXaGl0ZSBibGF6ZSBvbiBmYWNlIC0tPgogIDxlbGxpcHNlIGN4PSIxNTUiIGN5PSIxMjgiIHJ4PSI4IiByeT0iMjAiIGZpbGw9IiNmNWYwZTgiIG9wYWNpdHk9IjAuODUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTUsMTI4KSIvPgogIDwhLS0gRXllIC0gd2FybSBicm93biAtLT4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjkiIGZpbGw9IiMxYTBhMDAiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjYiIGZpbGw9IiM1YzJkMGEiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMTYiIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE4IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiM2YjJkMDgiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTgsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGRhcmsgYnJvd24vYW1iZXIgLS0+CiAgPHBhdGggZD0iTTE3MiA3NiBRMTg4IDQ2IDE2OCAyNiBRMTUzIDUxIDE2MyA3NiBRMTQ4IDQxIDEzOCAyMSBRMTMzIDUxIDE0NiA3OCBRMTI4IDQ2IDEyMyAyNiBRMTE2IDU2IDEzMCA4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDUxYTAzIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTc1IDc2IFExODIgNTEgMTY1IDMxIiBmaWxsPSJub25lIiBzdHJva2U9IiM3ODM1MGYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjgiLz4KICA8IS0tIFNpbXBsZSBiYW5kYW5hIC0tPgogIDxwYXRoIGQ9Ik0xNDggMTY1IFExNzggMTU1IDIwOCAxNjUgTDIwNSAxODUgUTE3OCAxNzggMTUxIDE4NSBaIiBmaWxsPSIjZGMyNjI2IiBvcGFjaXR5PSIwLjg1Ii8+CiAgPHBhdGggZD0iTTE0OCAxNjUgUTE3OCAxNTUgMjA4IDE2NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmNhNWE1IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8IS0tIFdoaXRlIHNvY2tzIG9uIGxlZ3MgLS0+CiAgPHJlY3QgeD0iMTQ3IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiM3YzM0MTAiLz4KICA8cmVjdCB4PSIxNzciIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYzIiByeD0iOCIgZmlsbD0iIzdjMzQxMCIvPgogIDxyZWN0IHg9IjIyMSIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjN2MzNDEwIi8+CiAgPHJlY3QgeD0iMjUxIiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1OCIgcng9IjgiIGZpbGw9IiM3YzM0MTAiLz4KICA8IS0tIFdoaXRlIHNvY2tzIGxvd2VyIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzQ1IiB3aWR0aD0iMjIiIGhlaWdodD0iMzAiIHJ4PSIwIiBmaWxsPSIjZjVmMGU4Ii8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzNDUiIHdpZHRoPSIyMiIgaGVpZ2h0PSIzMCIgcng9IjAiIGZpbGw9IiNmNWYwZTgiLz4KICA8IS0tIEhvb3ZlcyAtLT4KICA8cmVjdCB4PSIxNDciIHk9IjM2MyIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNkMWEwNyIvPgogIDxyZWN0IHg9IjE3NyIgeT0iMzYzIiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjM2QxYTA3Ii8+CiAgPHJlY3QgeD0iMjIxIiB5PSIzNTgiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMzZDFhMDciLz4KICA8cmVjdCB4PSIyNTEiIHk9IjM1OCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNkMWEwNyIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg2IDI1NSBRMzMxIDIzMCAzNDEgMjYwIFEzNTEgMjkwIDMyMSAzMTAgUTMwMSAzMjAgMjg2IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDUxYTAzIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg2IDI1OCBRMzI2IDIzOCAzMzcgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiM3ODM1MGYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIEJhZGdlIC0tPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjEwNSIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNjIiIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNykiPvCfkLQgQ09NTU9OPC90ZXh0PgogIDx0ZXh0IHg9IjM5MCIgeT0iMzkwIiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC40KSI+IzA1MTI8L3RleHQ+Cjwvc3ZnPgo=" alt="Rare Horse #5" />
+            <div class="nft-overlay">
+              <button class="nft-view-btn">View Details</button>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Rare Horse <span>#0512</span></div>
+            <div class="nft-tier uncommon">Uncommon</div>
+            <div class="nft-price">
+              <span class="price-label">Floor</span>
+              <span class="price-value">0.4 ETH</span>
+            </div>
+          </div>
+        </div>
+        <div class="nft-card nft-card-mystery">
+          <div class="nft-img-wrap mystery-wrap">
+            <div class="mystery-inner">
+              <span class="mystery-icon">🐴</span>
+              <p>???</p>
+              <small>Unminted</small>
+            </div>
+          </div>
+          <div class="nft-info">
+            <div class="nft-name">Your Horse <span>#????</span></div>
+            <div class="nft-tier legendary">Could Be Legendary</div>
+            <div class="nft-price">
+              <span class="price-label">Mint</span>
+              <span class="price-value">0.08 ETH</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="collection-cta">
+        <a href="#" class="btn-secondary">View Full Collection on OpenSea</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RARITY ========== -->
+  <section class="rarity" id="rarity">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Rarity System</div>
+        <h2 class="section-title">How Rare is <span class="gradient-text">Your Horse?</span></h2>
+        <p class="section-subtitle">
+          5 tiers. 200+ traits. Infinite possibilities. Each horse is unique.
+        </p>
+      </div>
+      <div class="rarity-grid">
+        <div class="rarity-card legendary-card">
+          <div class="rarity-icon">👑</div>
+          <h3>Legendary</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 1%"></div>
+          </div>
+          <div class="rarity-pct">1% — 100 Horses</div>
+          <p>The rarest of all. Mythical appearances, golden traits, and god-tier attributes.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxYTBhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMGQwNTIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2Y1YzU0MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNjOTk3MmIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cxIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowLjMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8L2RlZnM+CiAgPCEtLSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMSkiLz4KICA8IS0tIEdsb3cgYXVyYSAtLT4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MSkiIGZpbHRlcj0idXJsKCNibHVyMSkiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNjAiIHI9IjIiIGZpbGw9IiNmNWM1NDIiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEyMCIgY3k9IjMwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjM0MCIgY3k9IjgwIiByPSIyIiBmaWxsPSIjZjVjNTQyIiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIxNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIyMDAiIHI9IjEiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjM4MCIgY3k9IjMwMCIgcj0iMiIgZmlsbD0iI2Y1YzU0MiIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iNjAiIGN5PSIzNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPCEtLSBCb2R5IC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY1IiBmaWxsPSIjZDRhODQzIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxODAiIGN5PSIxODUiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjZDRhODQzIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTgwLDE4NSkiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1NSIgY3k9IjEzMCIgcng9IjM4IiByeT0iMzIiIGZpbGw9IiNkNGE4NDMiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTUsMTMwKSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEzMCIgY3k9IjE0OCIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiNjNDkwMzAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMzAsMTQ4KSIvPgogIDwhLS0gRXllIC0tPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iOCIgZmlsbD0iIzFhMWEyZSIvPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iNSIgZmlsbD0iIzJkMWIwMCIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjExOCIgcj0iMiIgZmlsbD0iI2ZmZiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTIwIiBjeT0iMTUyIiByeD0iNSIgcnk9IjMiIGZpbGw9IiM4YjYwMjAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjAsMTUyKSIvPgogIDwhLS0gTWFuZSAtIEdvbGRlbiBmbG93aW5nIC0tPgogIDxwYXRoIGQ9Ik0xNzUgODAgUTE5MCA1MCAxNzAgMzAgUTE1NSA1NSAxNjUgODAgUTE1MCA0NSAxNDAgMjUgUTEzNSA1NSAxNDggODIgUTEzMCA1MCAxMjUgMzAgUTExOCA2MCAxMzIgODUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTc4IDgwIFExODUgNTUgMTY4IDM1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIENyb3duIC0tPgogIDxwYXRoIGQ9Ik0xNDggODUgTDE1NSA2MCBMMTY1IDc1IEwxNzUgNTUgTDE4NSA3MiBMMTk1IDU4IEwyMDAgODUgWiIgZmlsbD0idXJsKCNnb2xkKSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8Y2lyY2xlIGN4PSIxNjUiIGN5PSI2MCIgcj0iNSIgZmlsbD0iI2VjNDg5OSIvPgogIDxjaXJjbGUgY3g9IjE4NSIgY3k9IjYzIiByPSI0IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0OCIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjUiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPHJlY3QgeD0iMTc4IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2NSIgcng9IjgiIGZpbGw9IiNjNDkwMzAiLz4KICA8cmVjdCB4PSIyMjIiIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYwIiByeD0iOCIgZmlsbD0iI2M0OTAzMCIvPgogIDxyZWN0IHg9IjI1MiIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjAiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPCEtLSBIb292ZXMgZ29sZCAtLT4KICA8cmVjdCB4PSIxNDgiIHk9IjM2NSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDxyZWN0IHg9IjE3OCIgeT0iMzY1IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSJ1cmwoI2dvbGQpIi8+CiAgPHJlY3QgeD0iMjIyIiB5PSIzNjAiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9InVybCgjZ29sZCkiLz4KICA8cmVjdCB4PSIyNTIiIHk9IjM2MCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg1IDI1NSBRMzMwIDIzMCAzNDAgMjYwIFEzNTAgMjkwIDMyMCAzMTAgUTMwMCAzMjAgMjg1IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjVjNTQyIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg1IDI1OCBRMzI1IDIzOCAzMzYgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIEFybW9yIGNoZXN0IHBsYXRlIC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjIwIFEyMDAgMjAwIDI1NSAyMjAgTDI2MCAyNzAgUTIwMCAyODUgMTQwIDI3MCBaIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZ29sZCkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC42Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSgyNDUsMTk3LDY2LDAuMikiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNzAiIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZjVjNTQyIj7wn5GRIExFR0VOREFSWTwvdGV4dD4KICA8IS0tIE51bWJlciAtLT4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDAxPC90ZXh0Pgo8L3N2Zz4K" alt="" /></div>
+          </div>
+        </div>
+        <div class="rarity-card epic-card">
+          <div class="rarity-icon">🔮</div>
+          <h3>Epic</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 5%"></div>
+          </div>
+          <div class="rarity-pct">5% — 500 Horses</div>
+          <p>Extraordinary horses with stunning visual effects and powerful traits.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMiIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwZDFhM2EiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUwZDIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJwdXJwbGUyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlYzQ4OTkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cyIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOGI1Y2Y2O3N0b3Atb3BhY2l0eTowLjI1Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIyIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxMCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzIpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNjAiIGZpbGw9InVybCgjZ2xvdzIpIiBmaWx0ZXI9InVybCgjYmx1cjIpIi8+CiAgPCEtLSBTdGFycyAtLT4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIyIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMCIgcj0iMS41IiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2MCIgcj0iMiIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC44Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMTgwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjgwIiByPSIyIiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIzNDAiIHI9IjEuNSIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZGFyayBibHVlIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjIiIHJ4PSI5MiIgcnk9IjY2IiBmaWxsPSIjMWUzYTZlIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzgiIGN5PSIxODMiIHJ4PSI0MiIgcnk9IjU3IiBmaWxsPSIjMWUzYTZlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc4LDE4MykiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MiIgY3k9IjEyOCIgcng9IjQwIiByeT0iMzMiIGZpbGw9IiMxZTNhNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTIsMTI4KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyNiIgY3k9IjE0NiIgcng9IjIzIiByeT0iMTciIGZpbGw9IiMxNTJkNTciIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjYsMTQ2KSIvPgogIDwhLS0gRXllIC0gZ2xvd2luZyBwdXJwbGUgLS0+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGEwYTFlIi8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPGNpcmNsZSBjeD0iMTYyIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjUiLz4KICA8IS0tIE5vc3RyaWwgLS0+CiAgPGVsbGlwc2UgY3g9IjExNiIgY3k9IjE1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjMGUyMjQ0IiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUsMTE2LDE1MCkiLz4KICA8IS0tIE1hbmUgLSBwdXJwbGUvcGluayAtLT4KICA8cGF0aCBkPSJNMTcyIDc4IFExODggNDggMTY4IDI4IFExNTMgNTMgMTYzIDc4IFExNDggNDMgMTM4IDIzIFExMzMgNTMgMTQ2IDgwIFExMjggNDggMTIzIDI4IFExMTYgNTggMTMwIDgzIiBmaWxsPSJub25lIiBzdHJva2U9IiM4YjVjZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3OCBRMTgyIDUzIDE2NSAzMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBHbG93aW5nIGhvcm4gKGVwaWMgdHJhaXQpIC0tPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSJ1cmwoI3B1cnBsZTIpIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMTg1IiBjeT0iMjgiIHI9IjUiIGZpbGw9IiNlYzQ4OTkiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTWFnaWMgcGFydGljbGVzIC0tPgogIDxjaXJjbGUgY3g9IjE3NSIgY3k9IjUwIiByPSIzIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxOTUiIGN5PSI0MCIgcj0iMiIgZmlsbD0iI2VjNDg5OSIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMzUiIHI9IjIiIGZpbGw9IiNhNzhiZmEiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTGVncyAtLT4KICA8cmVjdCB4PSIxNDYiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDxyZWN0IHg9IjE3NiIgeT0iMzEyIiB3aWR0aD0iMjMiIGhlaWdodD0iNjQiIHJ4PSI4IiBmaWxsPSIjMTUyZDU3Ii8+CiAgPHJlY3QgeD0iMjIwIiB5PSIzMTIiIHdpZHRoPSIyMyIgaGVpZ2h0PSI1OSIgcng9IjgiIGZpbGw9IiMxNTJkNTciLz4KICA8cmVjdCB4PSIyNTAiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjU5IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDwhLS0gR2xvd2luZyBob292ZXMgLS0+CiAgPHJlY3QgeD0iMTQ2IiB5PSIzNjYiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiM4YjVjZjYiLz4KICA8cmVjdCB4PSIxNzYiIHk9IjM2NiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzhiNWNmNiIvPgogIDxyZWN0IHg9IjIyMCIgeT0iMzYxIiB3aWR0aD0iMjMiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjZWM0ODk5Ii8+CiAgPHJlY3QgeD0iMjUwIiB5PSIzNjEiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiNlYzQ4OTkiLz4KICA8IS0tIFRhaWwgLS0+CiAgPHBhdGggZD0iTTI4NyAyNTcgUTMzMiAyMzIgMzQyIDI2MiBRMzUyIDI5MiAzMjIgMzEyIFEzMDIgMzIyIDI4NyAzMDIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTI4NyAyNjAgUTMyNyAyNDAgMzM4IDI2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSI5NSIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDEzOSw5MiwyNDYsMC4yKSIgc3Ryb2tlPSIjOGI1Y2Y2IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI1NyIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNhNzhiZmEiPvCflK4gRVBJQzwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDQyPC90ZXh0Pgo8L3N2Zz4K" alt="" /></div>
+          </div>
+        </div>
+        <div class="rarity-card rare-card">
+          <div class="rarity-icon">💎</div>
+          <h3>Rare</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 15%"></div>
+          </div>
+          <div class="rarity-pct">15% — 1,500 Horses</div>
+          <p>Distinctive horses with unique combinations that stand out from the crowd.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxNTI1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJibHVlMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMzYjgyZjYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDZiNmQ0Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnbG93MyIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNTAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MC4yIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIzIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI5Ii8+PC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMykiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MykiIGZpbHRlcj0idXJsKCNibHVyMykiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iNTAiIHI9IjIiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEzMCIgY3k9IjI1IiByPSIxLjUiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNyIvPgogIDxjaXJjbGUgY3g9IjM0NSIgY3k9IjcwIiByPSIyIiBmaWxsPSIjM2I4MmY2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIzNzUiIGN5PSIyMDAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSIzMTAiIHI9IjIiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gQm9keSAtIHN0ZWVsIGJsdWUgLS0+CiAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjI2MSIgcng9IjkxIiByeT0iNjUiIGZpbGw9IiMyNTYzYTgiLz4KICA8IS0tIE5lY2sgLS0+CiAgPGVsbGlwc2UgY3g9IjE3OSIgY3k9IjE4MiIgcng9IjQxIiByeT0iNTYiIGZpbGw9IiMyNTYzYTgiIHRyYW5zZm9ybT0icm90YXRlKC0xMCwxNzksMTgyKSIvPgogIDwhLS0gSGVhZCAtLT4KICA8ZWxsaXBzZSBjeD0iMTUzIiBjeT0iMTI3IiByeD0iMzkiIHJ5PSIzMiIgZmlsbD0iIzI1NjNhOCIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDE1MywxMjcpIi8+CiAgPCEtLSBTbm91dCAtLT4KICA8ZWxsaXBzZSBjeD0iMTI3IiBjeT0iMTQ1IiByeD0iMjIiIHJ5PSIxNiIgZmlsbD0iIzFhNGQ4YSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDEyNywxNDUpIi8+CiAgPCEtLSBEaWFtb25kIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTAwIEwxNzIgODggTDE4MiAxMDAgTDE3MiAxMTIgWiIgZmlsbD0idXJsKCNibHVlMykiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBFeWUgLSBpY3kgYmx1ZSAtLT4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjkiIGZpbGw9IiMwYTBmMWUiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjYiIGZpbGw9IiMwNmI2ZDQiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMTciIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE3IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMxNDNkNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTcsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGJsdWUvY3lhbiAtLT4KICA8cGF0aCBkPSJNMTczIDc3IFExODkgNDcgMTY5IDI3IFExNTQgNTIgMTY0IDc3IFExNDkgNDIgMTM5IDIyIFExMzQgNTIgMTQ3IDc5IFExMjkgNDcgMTI0IDI3IFExMTcgNTcgMTMxIDgyIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NiA3NyBRMTgzIDUyIDE2NiAzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDZiNmQ0IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBJY2UgY3J5c3RhbCBzcGlrZXMgaW4gbWFuZSAtLT4KICA8cGF0aCBkPSJNMTUwIDU1IEwxNDUgMzUgTDE1NSA1MCIgZmlsbD0iIzA2YjZkNCIgb3BhY2l0eT0iMC43Ii8+CiAgPHBhdGggZD0iTTE2NSA0MCBMMTYwIDE4IEwxNzAgMzgiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDwhLS0gQXJtb3Igc2hvdWxkZXIgLS0+CiAgPHBhdGggZD0iTTIxNSAxOTAgUTI0NSAxNzUgMjYwIDE5NSBRMjUwIDIyMCAyMjAgMjI1IFoiIGZpbGw9IiMxYTRkOGEiIHN0cm9rZT0idXJsKCNibHVlMykiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNjMiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzMTEiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxYTRkOGEiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjMxMSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjU4IiByeD0iOCIgZmlsbD0iIzFhNGQ4YSIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPCEtLSBJY2UgaG9vdmVzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzY0IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMDZiNmQ0Ii8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzNjQiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNmI2ZDQiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjM1OSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNiODJmNiIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzU5IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjM2I4MmY2Ii8+CiAgPCEtLSBUYWlsIC0tPgogIDxwYXRoIGQ9Ik0yODYgMjU2IFEzMzEgMjMxIDM0MSAyNjEgUTM1MSAyOTEgMzIxIDMxMSBRMzAxIDMyMSAyODYgMzAxIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0yODYgMjU5IFEzMjYgMjM5IDMzNyAyNjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2YjZkNCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNyIvPgogIDwhLS0gQmFkZ2UgLS0+CiAgPHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iOTUiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSg1OSwxMzAsMjQ2LDAuMikiIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNTciIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjBhNWZhIj7wn5KOIFJBUkU8L3RleHQ+CiAgPHRleHQgeD0iMzkwIiB5PSIzOTAiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIj4jMDExNzwvdGV4dD4KPC9zdmc+Cg==" alt="" /></div>
+          </div>
+        </div>
+        <div class="rarity-card uncommon-card">
+          <div class="rarity-icon">⭐</div>
+          <h3>Uncommon</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 29%"></div>
+          </div>
+          <div class="rarity-pct">29% — 2,900 Horses</div>
+          <p>Noteworthy horses with interesting traits and solid collector value.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnNCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFmMGEiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxMjA1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmVlbjQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzA1OTY2OSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ2xvdzQiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjAuMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjAiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJibHVyNCI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iOCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzQpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNTUiIGZpbGw9InVybCgjZ2xvdzQpIiBmaWx0ZXI9InVybCgjYmx1cjQpIi8+CiAgPCEtLSBGaXJlZmxpZXMvc3RhcnMgLS0+CiAgPGNpcmNsZSBjeD0iNDUiIGN5PSI1NSIgcj0iMi41IiBmaWxsPSIjMTBiOTgxIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxMTUiIGN5PSIyOCIgcj0iMS41IiBmaWxsPSIjMzRkMzk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2NSIgcj0iMiIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC45Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMjIwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjIyIiBjeT0iMzAwIiByPSIyIiBmaWxsPSIjMzRkMzk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIzNTUiIHI9IjEuNSIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZm9yZXN0IGdyZWVuIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY0IiBmaWxsPSIjMWE2YjQwIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzkiIGN5PSIxODIiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjMWE2YjQwIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc5LDE4MikiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MyIgY3k9IjEyNyIgcng9IjM4IiByeT0iMzEiIGZpbGw9IiMxYTZiNDAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTMsMTI3KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyOCIgY3k9IjE0NSIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiMxMjUyMzIiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjgsMTQ1KSIvPgogIDwhLS0gTGVhZiBkZWNvcmF0aW9uIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTA1IFExNzUgOTAgMTkwIDEwMCBRMTgwIDExNSAxNjIgMTA1IFoiIGZpbGw9IiMzNGQzOTkiIG9wYWNpdHk9IjAuOSIvPgogIDxwYXRoIGQ9Ik0xNzUgOTUgTDE3NSAxMTIiIHN0cm9rZT0iIzEwYjk4MSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8IS0tIEV5ZSAtIGdyZWVuIGdsb3cgLS0+CiAgPGNpcmNsZSBjeD0iMTYxIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGExYTBhIi8+CiAgPGNpcmNsZSBjeD0iMTYxIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjMTBiOTgxIi8+CiAgPGNpcmNsZSBjeD0iMTYzIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzM0ZDM5OSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE4IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMwZTNkMjYiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTgsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGdyZWVuL3RlYWwgZmxvd2luZyAtLT4KICA8cGF0aCBkPSJNMTcyIDc2IFExODggNDYgMTY4IDI2IFExNTMgNTEgMTYzIDc2IFExNDggNDEgMTM4IDIxIFExMzMgNTEgMTQ2IDc4IFExMjggNDYgMTIzIDI2IFExMTYgNTYgMTMwIDgxIiBmaWxsPSJub25lIiBzdHJva2U9IiMxMGI5ODEiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3NiBRMTgyIDUxIDE2NSAzMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzRkMzk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBWaW5lL25hdHVyZSBtb3RpZiBvbiBib2R5IC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjMwIFExNjUgMjE1IDE4NSAyMjUgUTIwNSAyMTUgMjI1IDIzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzRkMzk5IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjIxNiIgcj0iNCIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMjA1IiBjeT0iMjE2IiByPSI0IiBmaWxsPSIjMTBiOTgxIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIExlZ3MgLS0+CiAgPHJlY3QgeD0iMTQ3IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxMjUyMzIiLz4KICA8cmVjdCB4PSIxNzciIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYzIiByeD0iOCIgZmlsbD0iIzEyNTIzMiIvPgogIDxyZWN0IHg9IjIyMSIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMTI1MjMyIi8+CiAgPHJlY3QgeD0iMjUxIiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1OCIgcng9IjgiIGZpbGw9IiMxMjUyMzIiLz4KICA8IS0tIEdyZWVuIGhvb3ZlcyAtLT4KICA8cmVjdCB4PSIxNDciIHk9IjM2MyIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzEwYjk4MSIvPgogIDxyZWN0IHg9IjE3NyIgeT0iMzYzIiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMTBiOTgxIi8+CiAgPHJlY3QgeD0iMjIxIiB5PSIzNTgiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNTk2NjkiLz4KICA8cmVjdCB4PSIyNTEiIHk9IjM1OCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzA1OTY2OSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg2IDI1NSBRMzMxIDIzMCAzNDEgMjYwIFEzNTEgMjkwIDMyMSAzMTAgUTMwMSAzMjAgMjg2IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTBiOTgxIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg2IDI1OCBRMzI2IDIzOCAzMzcgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiMzNGQzOTkiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIEJhZGdlIC0tPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjExOCIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDE2LDE4NSwxMjksMC4yKSIgc3Ryb2tlPSIjMTBiOTgxIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI2OSIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzNGQzOTkiPuKtkCBVTkNPTU1PTjwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMjUzPC90ZXh0Pgo8L3N2Zz4K" alt="" /></div>
+          </div>
+        </div>
+        <div class="rarity-card common-card">
+          <div class="rarity-icon">🐴</div>
+          <h3>Common</h3>
+          <div class="rarity-bar-wrap">
+            <div class="rarity-bar" style="--pct: 50%"></div>
+          </div>
+          <div class="rarity-pct">50% — 5,000 Horses</div>
+          <p>The backbone of the herd. Beautiful horses with their own unique personality.</p>
+          <div class="rarity-examples">
+            <div class="rarity-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnNSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxYTBkMDUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTAwODA1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJicm93bjUiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOTI0MDBlIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6Izc4MzUwZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ2xvdzUiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNkOTc3MDY7c3RvcC1vcGFjaXR5OjAuMTUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZDk3NzA2O3N0b3Atb3BhY2l0eTowIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjUiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjYmc1KSIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjIwMCIgcj0iMTU1IiBmaWxsPSJ1cmwoI2dsb3c1KSIgZmlsdGVyPSJ1cmwoI2JsdXI1KSIvPgogIDwhLS0gU3RhcnMgLS0+CiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iMiIgZmlsbD0iI2Q5NzcwNiIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTI1IiBjeT0iMjIiIHI9IjEuNSIgZmlsbD0iI2ZiYmYyNCIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMzQ4IiBjeT0iNjgiIHI9IjIiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjM3OCIgY3k9IjIxMCIgcj0iMS41IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjQiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjMwNSIgcj0iMS41IiBmaWxsPSIjZmJiZjI0IiBvcGFjaXR5PSIwLjUiLz4KICA8IS0tIEJvZHkgLSBjaGVzdG51dCBicm93biBob3JzZSAtLT4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMjYwIiByeD0iODkiIHJ5PSI2MyIgZmlsbD0iIzkyNDAwZSIvPgogIDwhLS0gTmVjayAtLT4KICA8ZWxsaXBzZSBjeD0iMTc5IiBjeT0iMTgyIiByeD0iNDAiIHJ5PSI1NSIgZmlsbD0iIzkyNDAwZSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEwLDE3OSwxODIpIi8+CiAgPCEtLSBIZWFkIC0tPgogIDxlbGxpcHNlIGN4PSIxNTMiIGN5PSIxMjciIHJ4PSIzOCIgcnk9IjMxIiBmaWxsPSIjOTI0MDBlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUsMTUzLDEyNykiLz4KICA8IS0tIFNub3V0IC0gbGlnaHRlciAtLT4KICA8ZWxsaXBzZSBjeD0iMTI4IiBjeT0iMTQ1IiByeD0iMjIiIHJ5PSIxNiIgZmlsbD0iI2M0NzgzYSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDEyOCwxNDUpIi8+CiAgPCEtLSBXaGl0ZSBibGF6ZSBvbiBmYWNlIC0tPgogIDxlbGxpcHNlIGN4PSIxNTUiIGN5PSIxMjgiIHJ4PSI4IiByeT0iMjAiIGZpbGw9IiNmNWYwZTgiIG9wYWNpdHk9IjAuODUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTUsMTI4KSIvPgogIDwhLS0gRXllIC0gd2FybSBicm93biAtLT4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjkiIGZpbGw9IiMxYTBhMDAiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjYiIGZpbGw9IiM1YzJkMGEiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMTYiIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE4IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiM2YjJkMDgiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTgsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGRhcmsgYnJvd24vYW1iZXIgLS0+CiAgPHBhdGggZD0iTTE3MiA3NiBRMTg4IDQ2IDE2OCAyNiBRMTUzIDUxIDE2MyA3NiBRMTQ4IDQxIDEzOCAyMSBRMTMzIDUxIDE0NiA3OCBRMTI4IDQ2IDEyMyAyNiBRMTE2IDU2IDEzMCA4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDUxYTAzIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTc1IDc2IFExODIgNTEgMTY1IDMxIiBmaWxsPSJub25lIiBzdHJva2U9IiM3ODM1MGYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjgiLz4KICA8IS0tIFNpbXBsZSBiYW5kYW5hIC0tPgogIDxwYXRoIGQ9Ik0xNDggMTY1IFExNzggMTU1IDIwOCAxNjUgTDIwNSAxODUgUTE3OCAxNzggMTUxIDE4NSBaIiBmaWxsPSIjZGMyNjI2IiBvcGFjaXR5PSIwLjg1Ii8+CiAgPHBhdGggZD0iTTE0OCAxNjUgUTE3OCAxNTUgMjA4IDE2NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmNhNWE1IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8IS0tIFdoaXRlIHNvY2tzIG9uIGxlZ3MgLS0+CiAgPHJlY3QgeD0iMTQ3IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiM3YzM0MTAiLz4KICA8cmVjdCB4PSIxNzciIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYzIiByeD0iOCIgZmlsbD0iIzdjMzQxMCIvPgogIDxyZWN0IHg9IjIyMSIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjN2MzNDEwIi8+CiAgPHJlY3QgeD0iMjUxIiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1OCIgcng9IjgiIGZpbGw9IiM3YzM0MTAiLz4KICA8IS0tIFdoaXRlIHNvY2tzIGxvd2VyIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzQ1IiB3aWR0aD0iMjIiIGhlaWdodD0iMzAiIHJ4PSIwIiBmaWxsPSIjZjVmMGU4Ii8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzNDUiIHdpZHRoPSIyMiIgaGVpZ2h0PSIzMCIgcng9IjAiIGZpbGw9IiNmNWYwZTgiLz4KICA8IS0tIEhvb3ZlcyAtLT4KICA8cmVjdCB4PSIxNDciIHk9IjM2MyIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNkMWEwNyIvPgogIDxyZWN0IHg9IjE3NyIgeT0iMzYzIiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjM2QxYTA3Ii8+CiAgPHJlY3QgeD0iMjIxIiB5PSIzNTgiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMzZDFhMDciLz4KICA8cmVjdCB4PSIyNTEiIHk9IjM1OCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNkMWEwNyIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg2IDI1NSBRMzMxIDIzMCAzNDEgMjYwIFEzNTEgMjkwIDMyMSAzMTAgUTMwMSAzMjAgMjg2IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDUxYTAzIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg2IDI1OCBRMzI2IDIzOCAzMzcgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiM3ODM1MGYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIEJhZGdlIC0tPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjEwNSIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNjIiIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNykiPvCfkLQgQ09NTU9OPC90ZXh0PgogIDx0ZXh0IHg9IjM5MCIgeT0iMzkwIiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC40KSI+IzA1MTI8L3RleHQ+Cjwvc3ZnPgo=" alt="" /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TRAITS ========== -->
+  <section class="traits">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Trait Categories</div>
+        <h2 class="section-title">200+ <span class="gradient-text">Unique Traits</span></h2>
+      </div>
+      <div class="traits-grid">
+        <div class="trait-chip">🎨 Background</div>
+        <div class="trait-chip">🐴 Body Color</div>
+        <div class="trait-chip">👁️ Eyes</div>
+        <div class="trait-chip">💇 Mane Style</div>
+        <div class="trait-chip">👑 Headwear</div>
+        <div class="trait-chip">🛡️ Armor</div>
+        <div class="trait-chip">✨ Special Effects</div>
+        <div class="trait-chip">🌟 Aura</div>
+        <div class="trait-chip">🔥 Elements</div>
+        <div class="trait-chip">💎 Accessories</div>
+        <div class="trait-chip">🦄 Mythical</div>
+        <div class="trait-chip">🌈 Coat Pattern</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MINT SECTION ========== -->
+  <section class="mint" id="mint">
+    <div class="container">
+      <div class="mint-card">
+        <div class="mint-info">
+          <div class="section-tag">Minting is Live</div>
+          <h2 class="section-title">
+            Claim Your <span class="gradient-text">Rare Horse</span>
+          </h2>
+          <p>
+            Each wallet can mint up to 5 horses per transaction. The rarer the horse,
+            the more exclusive the community access. Don't miss your chance.
+          </p>
+          <ul class="mint-checklist">
+            <li>✅ 10,000 total supply — First come, first served</li>
+            <li>✅ Instant reveal after minting</li>
+            <li>✅ Full commercial rights for holders</li>
+            <li>✅ Access to exclusive Rare Horses Discord</li>
+            <li>✅ Future airdrops for early holders</li>
+          </ul>
+          <div class="mint-countdown">
+            <p class="countdown-label">⏳ Public Mint Closes In</p>
+            <div class="countdown-timer" id="countdownTimer"></div>
+          </div>
+        </div>
+        <div class="mint-widget">
+          <div class="mint-widget-inner">
+            <div class="mint-progress-wrap">
+              <div class="mint-progress-header">
+                <span>Minted</span>
+                <span>6,248 / 10,000</span>
+              </div>
+              <div class="mint-progress-bar">
+                <div class="mint-progress-fill" style="width: 62.48%"></div>
+              </div>
+              <div class="mint-progress-footer">
+                <span>62.48% Minted</span>
+                <span>3,752 Remaining</span>
+              </div>
+            </div>
+            <div class="mint-quantity">
+              <button class="qty-btn" id="qtyMinus">−</button>
+              <span class="qty-value" id="qtyValue">1</span>
+              <button class="qty-btn" id="qtyPlus">+</button>
+            </div>
+            <div class="mint-price-display">
+              <span class="mp-label">Total Price</span>
+              <span class="mp-value" id="mintTotal">0.08 ETH</span>
+            </div>
+            <button class="btn-primary btn-full mint-btn" id="mintBtn">
+              Connect Wallet to Mint
+            </button>
+            <p class="mint-note">Max 5 per wallet · Gas fees apply</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ROADMAP ========== -->
+  <section class="roadmap" id="roadmap">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">The Journey</div>
+        <h2 class="section-title">Our <span class="gradient-text">Roadmap</span></h2>
+        <p class="section-subtitle">
+          A clear path forward for the Rare Horses community and ecosystem.
+        </p>
+      </div>
+      <div class="roadmap-timeline">
+        <div class="timeline-item completed">
+          <div class="timeline-marker">
+            <span class="timeline-icon">✅</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-phase">Phase 1</div>
+            <h3>Genesis</h3>
+            <ul>
+              <li>Concept and artwork creation</li>
+              <li>Smart contract development & audit</li>
+              <li>Website launch</li>
+              <li>Community building — Discord & Twitter</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item active">
+          <div class="timeline-marker">
+            <span class="timeline-icon">🔥</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-phase">Phase 2 — Current</div>
+            <h3>The Mint</h3>
+            <ul>
+              <li>Public mint opens</li>
+              <li>Rarity reveal for all holders</li>
+              <li>OpenSea listing</li>
+              <li>Holder exclusive Discord channels</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="timeline-icon">🏆</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-phase">Phase 3</div>
+            <h3>The Stable Expansion</h3>
+            <ul>
+              <li>Holder-only merch store</li>
+              <li>Real-world events for Legendary holders</li>
+              <li>Charity donation from secondary royalties</li>
+              <li>V2 collection teaser</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="timeline-icon">🌟</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-phase">Phase 4</div>
+            <h3>The Metaverse</h3>
+            <ul>
+              <li>3D model generation for all horses</li>
+              <li>Metaverse integration partnership</li>
+              <li>Rare Horses DAO governance launch</li>
+              <li>Breeding mechanics (V2)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TEAM ========== -->
+  <section class="team">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">The Riders</div>
+        <h2 class="section-title">Meet the <span class="gradient-text">Team</span></h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxYTBhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMGQwNTIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2Y1YzU0MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNjOTk3MmIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cxIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowLjMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjVjNTQyO3N0b3Atb3BhY2l0eTowIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8L2RlZnM+CiAgPCEtLSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMSkiLz4KICA8IS0tIEdsb3cgYXVyYSAtLT4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MSkiIGZpbHRlcj0idXJsKCNibHVyMSkiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNjAiIHI9IjIiIGZpbGw9IiNmNWM1NDIiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEyMCIgY3k9IjMwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjM0MCIgY3k9IjgwIiByPSIyIiBmaWxsPSIjZjVjNTQyIiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIxNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIyMDAiIHI9IjEiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjM4MCIgY3k9IjMwMCIgcj0iMiIgZmlsbD0iI2Y1YzU0MiIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iNjAiIGN5PSIzNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPCEtLSBCb2R5IC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY1IiBmaWxsPSIjZDRhODQzIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxODAiIGN5PSIxODUiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjZDRhODQzIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTgwLDE4NSkiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1NSIgY3k9IjEzMCIgcng9IjM4IiByeT0iMzIiIGZpbGw9IiNkNGE4NDMiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTUsMTMwKSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEzMCIgY3k9IjE0OCIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiNjNDkwMzAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMzAsMTQ4KSIvPgogIDwhLS0gRXllIC0tPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iOCIgZmlsbD0iIzFhMWEyZSIvPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEyMCIgcj0iNSIgZmlsbD0iIzJkMWIwMCIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjExOCIgcj0iMiIgZmlsbD0iI2ZmZiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTIwIiBjeT0iMTUyIiByeD0iNSIgcnk9IjMiIGZpbGw9IiM4YjYwMjAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjAsMTUyKSIvPgogIDwhLS0gTWFuZSAtIEdvbGRlbiBmbG93aW5nIC0tPgogIDxwYXRoIGQ9Ik0xNzUgODAgUTE5MCA1MCAxNzAgMzAgUTE1NSA1NSAxNjUgODAgUTE1MCA0NSAxNDAgMjUgUTEzNSA1NSAxNDggODIgUTEzMCA1MCAxMjUgMzAgUTExOCA2MCAxMzIgODUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTc4IDgwIFExODUgNTUgMTY4IDM1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIENyb3duIC0tPgogIDxwYXRoIGQ9Ik0xNDggODUgTDE1NSA2MCBMMTY1IDc1IEwxNzUgNTUgTDE4NSA3MiBMMTk1IDU4IEwyMDAgODUgWiIgZmlsbD0idXJsKCNnb2xkKSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8Y2lyY2xlIGN4PSIxNjUiIGN5PSI2MCIgcj0iNSIgZmlsbD0iI2VjNDg5OSIvPgogIDxjaXJjbGUgY3g9IjE4NSIgY3k9IjYzIiByPSI0IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0OCIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjUiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPHJlY3QgeD0iMTc4IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2NSIgcng9IjgiIGZpbGw9IiNjNDkwMzAiLz4KICA8cmVjdCB4PSIyMjIiIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYwIiByeD0iOCIgZmlsbD0iI2M0OTAzMCIvPgogIDxyZWN0IHg9IjI1MiIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjAiIHJ4PSI4IiBmaWxsPSIjYzQ5MDMwIi8+CiAgPCEtLSBIb292ZXMgZ29sZCAtLT4KICA8cmVjdCB4PSIxNDgiIHk9IjM2NSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDxyZWN0IHg9IjE3OCIgeT0iMzY1IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSJ1cmwoI2dvbGQpIi8+CiAgPHJlY3QgeD0iMjIyIiB5PSIzNjAiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9InVybCgjZ29sZCkiLz4KICA8cmVjdCB4PSIyNTIiIHk9IjM2MCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0idXJsKCNnb2xkKSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg1IDI1NSBRMzMwIDIzMCAzNDAgMjYwIFEzNTAgMjkwIDMyMCAzMTAgUTMwMCAzMjAgMjg1IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjVjNTQyIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg1IDI1OCBRMzI1IDIzOCAzMzYgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIEFybW9yIGNoZXN0IHBsYXRlIC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjIwIFEyMDAgMjAwIDI1NSAyMjAgTDI2MCAyNzAgUTIwMCAyODUgMTQwIDI3MCBaIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZ29sZCkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC42Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSgyNDUsMTk3LDY2LDAuMikiIHN0cm9rZT0iI2Y1YzU0MiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNzAiIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZjVjNTQyIj7wn5GRIExFR0VOREFSWTwvdGV4dD4KICA8IS0tIE51bWJlciAtLT4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDAxPC90ZXh0Pgo8L3N2Zz4K" alt="Founder" />
+          </div>
+          <div class="team-info">
+            <h3>StallionKing</h3>
+            <span class="team-role">Founder & Vision</span>
+            <p>Serial NFT builder with 3 successful collections. Horse enthusiast & blockchain native.</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMiIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwZDFhM2EiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUwZDIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJwdXJwbGUyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlYzQ4OTkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cyIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOGI1Y2Y2O3N0b3Atb3BhY2l0eTowLjI1Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIyIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxMCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzIpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNjAiIGZpbGw9InVybCgjZ2xvdzIpIiBmaWx0ZXI9InVybCgjYmx1cjIpIi8+CiAgPCEtLSBTdGFycyAtLT4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIyIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMCIgcj0iMS41IiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2MCIgcj0iMiIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC44Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMTgwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjgwIiByPSIyIiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIzNDAiIHI9IjEuNSIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZGFyayBibHVlIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjIiIHJ4PSI5MiIgcnk9IjY2IiBmaWxsPSIjMWUzYTZlIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzgiIGN5PSIxODMiIHJ4PSI0MiIgcnk9IjU3IiBmaWxsPSIjMWUzYTZlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc4LDE4MykiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MiIgY3k9IjEyOCIgcng9IjQwIiByeT0iMzMiIGZpbGw9IiMxZTNhNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTIsMTI4KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyNiIgY3k9IjE0NiIgcng9IjIzIiByeT0iMTciIGZpbGw9IiMxNTJkNTciIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjYsMTQ2KSIvPgogIDwhLS0gRXllIC0gZ2xvd2luZyBwdXJwbGUgLS0+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGEwYTFlIi8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPGNpcmNsZSBjeD0iMTYyIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjUiLz4KICA8IS0tIE5vc3RyaWwgLS0+CiAgPGVsbGlwc2UgY3g9IjExNiIgY3k9IjE1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjMGUyMjQ0IiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUsMTE2LDE1MCkiLz4KICA8IS0tIE1hbmUgLSBwdXJwbGUvcGluayAtLT4KICA8cGF0aCBkPSJNMTcyIDc4IFExODggNDggMTY4IDI4IFExNTMgNTMgMTYzIDc4IFExNDggNDMgMTM4IDIzIFExMzMgNTMgMTQ2IDgwIFExMjggNDggMTIzIDI4IFExMTYgNTggMTMwIDgzIiBmaWxsPSJub25lIiBzdHJva2U9IiM4YjVjZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3OCBRMTgyIDUzIDE2NSAzMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBHbG93aW5nIGhvcm4gKGVwaWMgdHJhaXQpIC0tPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSJ1cmwoI3B1cnBsZTIpIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMTg1IiBjeT0iMjgiIHI9IjUiIGZpbGw9IiNlYzQ4OTkiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTWFnaWMgcGFydGljbGVzIC0tPgogIDxjaXJjbGUgY3g9IjE3NSIgY3k9IjUwIiByPSIzIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxOTUiIGN5PSI0MCIgcj0iMiIgZmlsbD0iI2VjNDg5OSIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMzUiIHI9IjIiIGZpbGw9IiNhNzhiZmEiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTGVncyAtLT4KICA8cmVjdCB4PSIxNDYiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDxyZWN0IHg9IjE3NiIgeT0iMzEyIiB3aWR0aD0iMjMiIGhlaWdodD0iNjQiIHJ4PSI4IiBmaWxsPSIjMTUyZDU3Ii8+CiAgPHJlY3QgeD0iMjIwIiB5PSIzMTIiIHdpZHRoPSIyMyIgaGVpZ2h0PSI1OSIgcng9IjgiIGZpbGw9IiMxNTJkNTciLz4KICA8cmVjdCB4PSIyNTAiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjU5IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDwhLS0gR2xvd2luZyBob292ZXMgLS0+CiAgPHJlY3QgeD0iMTQ2IiB5PSIzNjYiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiM4YjVjZjYiLz4KICA8cmVjdCB4PSIxNzYiIHk9IjM2NiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzhiNWNmNiIvPgogIDxyZWN0IHg9IjIyMCIgeT0iMzYxIiB3aWR0aD0iMjMiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjZWM0ODk5Ii8+CiAgPHJlY3QgeD0iMjUwIiB5PSIzNjEiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiNlYzQ4OTkiLz4KICA8IS0tIFRhaWwgLS0+CiAgPHBhdGggZD0iTTI4NyAyNTcgUTMzMiAyMzIgMzQyIDI2MiBRMzUyIDI5MiAzMjIgMzEyIFEzMDIgMzIyIDI4NyAzMDIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTI4NyAyNjAgUTMyNyAyNDAgMzM4IDI2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSI5NSIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDEzOSw5MiwyNDYsMC4yKSIgc3Ryb2tlPSIjOGI1Y2Y2IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI1NyIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNhNzhiZmEiPvCflK4gRVBJQzwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDQyPC90ZXh0Pgo8L3N2Zz4K" alt="Artist" />
+          </div>
+          <div class="team-info">
+            <h3>MareArtist</h3>
+            <span class="team-role">Lead Artist</span>
+            <p>World-renowned digital illustrator. Formerly at top gaming studios.</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxNTI1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJibHVlMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMzYjgyZjYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDZiNmQ0Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnbG93MyIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNTAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MC4yIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIzIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI5Ii8+PC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMykiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MykiIGZpbHRlcj0idXJsKCNibHVyMykiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iNTAiIHI9IjIiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEzMCIgY3k9IjI1IiByPSIxLjUiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNyIvPgogIDxjaXJjbGUgY3g9IjM0NSIgY3k9IjcwIiByPSIyIiBmaWxsPSIjM2I4MmY2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIzNzUiIGN5PSIyMDAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSIzMTAiIHI9IjIiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gQm9keSAtIHN0ZWVsIGJsdWUgLS0+CiAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjI2MSIgcng9IjkxIiByeT0iNjUiIGZpbGw9IiMyNTYzYTgiLz4KICA8IS0tIE5lY2sgLS0+CiAgPGVsbGlwc2UgY3g9IjE3OSIgY3k9IjE4MiIgcng9IjQxIiByeT0iNTYiIGZpbGw9IiMyNTYzYTgiIHRyYW5zZm9ybT0icm90YXRlKC0xMCwxNzksMTgyKSIvPgogIDwhLS0gSGVhZCAtLT4KICA8ZWxsaXBzZSBjeD0iMTUzIiBjeT0iMTI3IiByeD0iMzkiIHJ5PSIzMiIgZmlsbD0iIzI1NjNhOCIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDE1MywxMjcpIi8+CiAgPCEtLSBTbm91dCAtLT4KICA8ZWxsaXBzZSBjeD0iMTI3IiBjeT0iMTQ1IiByeD0iMjIiIHJ5PSIxNiIgZmlsbD0iIzFhNGQ4YSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDEyNywxNDUpIi8+CiAgPCEtLSBEaWFtb25kIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTAwIEwxNzIgODggTDE4MiAxMDAgTDE3MiAxMTIgWiIgZmlsbD0idXJsKCNibHVlMykiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBFeWUgLSBpY3kgYmx1ZSAtLT4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjkiIGZpbGw9IiMwYTBmMWUiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjYiIGZpbGw9IiMwNmI2ZDQiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMTciIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE3IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMxNDNkNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTcsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGJsdWUvY3lhbiAtLT4KICA8cGF0aCBkPSJNMTczIDc3IFExODkgNDcgMTY5IDI3IFExNTQgNTIgMTY0IDc3IFExNDkgNDIgMTM5IDIyIFExMzQgNTIgMTQ3IDc5IFExMjkgNDcgMTI0IDI3IFExMTcgNTcgMTMxIDgyIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NiA3NyBRMTgzIDUyIDE2NiAzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDZiNmQ0IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBJY2UgY3J5c3RhbCBzcGlrZXMgaW4gbWFuZSAtLT4KICA8cGF0aCBkPSJNMTUwIDU1IEwxNDUgMzUgTDE1NSA1MCIgZmlsbD0iIzA2YjZkNCIgb3BhY2l0eT0iMC43Ii8+CiAgPHBhdGggZD0iTTE2NSA0MCBMMTYwIDE4IEwxNzAgMzgiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDwhLS0gQXJtb3Igc2hvdWxkZXIgLS0+CiAgPHBhdGggZD0iTTIxNSAxOTAgUTI0NSAxNzUgMjYwIDE5NSBRMjUwIDIyMCAyMjAgMjI1IFoiIGZpbGw9IiMxYTRkOGEiIHN0cm9rZT0idXJsKCNibHVlMykiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNjMiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzMTEiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxYTRkOGEiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjMxMSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjU4IiByeD0iOCIgZmlsbD0iIzFhNGQ4YSIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPCEtLSBJY2UgaG9vdmVzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzY0IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMDZiNmQ0Ii8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzNjQiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNmI2ZDQiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjM1OSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNiODJmNiIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzU5IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjM2I4MmY2Ii8+CiAgPCEtLSBUYWlsIC0tPgogIDxwYXRoIGQ9Ik0yODYgMjU2IFEzMzEgMjMxIDM0MSAyNjEgUTM1MSAyOTEgMzIxIDMxMSBRMzAxIDMyMSAyODYgMzAxIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0yODYgMjU5IFEzMjYgMjM5IDMzNyAyNjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2YjZkNCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNyIvPgogIDwhLS0gQmFkZ2UgLS0+CiAgPHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iOTUiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSg1OSwxMzAsMjQ2LDAuMikiIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNTciIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjBhNWZhIj7wn5KOIFJBUkU8L3RleHQ+CiAgPHRleHQgeD0iMzkwIiB5PSIzOTAiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIj4jMDExNzwvdGV4dD4KPC9zdmc+Cg==" alt="Dev" />
+          </div>
+          <div class="team-info">
+            <h3>ColtsCode</h3>
+            <span class="team-role">Lead Developer</span>
+            <p>Smart contract engineer with 5+ years in Web3. Security-first mindset.</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnNCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFmMGEiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxMjA1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmVlbjQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzA1OTY2OSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ2xvdzQiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjAuMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjAiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJibHVyNCI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iOCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzQpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNTUiIGZpbGw9InVybCgjZ2xvdzQpIiBmaWx0ZXI9InVybCgjYmx1cjQpIi8+CiAgPCEtLSBGaXJlZmxpZXMvc3RhcnMgLS0+CiAgPGNpcmNsZSBjeD0iNDUiIGN5PSI1NSIgcj0iMi41IiBmaWxsPSIjMTBiOTgxIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxMTUiIGN5PSIyOCIgcj0iMS41IiBmaWxsPSIjMzRkMzk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2NSIgcj0iMiIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC45Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMjIwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjIyIiBjeT0iMzAwIiByPSIyIiBmaWxsPSIjMzRkMzk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSIzNTUiIHI9IjEuNSIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZm9yZXN0IGdyZWVuIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjAiIHJ4PSI5MCIgcnk9IjY0IiBmaWxsPSIjMWE2YjQwIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzkiIGN5PSIxODIiIHJ4PSI0MCIgcnk9IjU1IiBmaWxsPSIjMWE2YjQwIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc5LDE4MikiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MyIgY3k9IjEyNyIgcng9IjM4IiByeT0iMzEiIGZpbGw9IiMxYTZiNDAiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTMsMTI3KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyOCIgY3k9IjE0NSIgcng9IjIyIiByeT0iMTYiIGZpbGw9IiMxMjUyMzIiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjgsMTQ1KSIvPgogIDwhLS0gTGVhZiBkZWNvcmF0aW9uIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTA1IFExNzUgOTAgMTkwIDEwMCBRMTgwIDExNSAxNjIgMTA1IFoiIGZpbGw9IiMzNGQzOTkiIG9wYWNpdHk9IjAuOSIvPgogIDxwYXRoIGQ9Ik0xNzUgOTUgTDE3NSAxMTIiIHN0cm9rZT0iIzEwYjk4MSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8IS0tIEV5ZSAtIGdyZWVuIGdsb3cgLS0+CiAgPGNpcmNsZSBjeD0iMTYxIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGExYTBhIi8+CiAgPGNpcmNsZSBjeD0iMTYxIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjMTBiOTgxIi8+CiAgPGNpcmNsZSBjeD0iMTYzIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzM0ZDM5OSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE4IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMwZTNkMjYiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTgsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGdyZWVuL3RlYWwgZmxvd2luZyAtLT4KICA8cGF0aCBkPSJNMTcyIDc2IFExODggNDYgMTY4IDI2IFExNTMgNTEgMTYzIDc2IFExNDggNDEgMTM4IDIxIFExMzMgNTEgMTQ2IDc4IFExMjggNDYgMTIzIDI2IFExMTYgNTYgMTMwIDgxIiBmaWxsPSJub25lIiBzdHJva2U9IiMxMGI5ODEiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3NiBRMTgyIDUxIDE2NSAzMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzRkMzk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBWaW5lL25hdHVyZSBtb3RpZiBvbiBib2R5IC0tPgogIDxwYXRoIGQ9Ik0xNDUgMjMwIFExNjUgMjE1IDE4NSAyMjUgUTIwNSAyMTUgMjI1IDIzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzRkMzk5IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjIxNiIgcj0iNCIgZmlsbD0iIzEwYjk4MSIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMjA1IiBjeT0iMjE2IiByPSI0IiBmaWxsPSIjMTBiOTgxIiBvcGFjaXR5PSIwLjYiLz4KICA8IS0tIExlZ3MgLS0+CiAgPHJlY3QgeD0iMTQ3IiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxMjUyMzIiLz4KICA8cmVjdCB4PSIxNzciIHk9IjMxMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjYzIiByeD0iOCIgZmlsbD0iIzEyNTIzMiIvPgogIDxyZWN0IHg9IjIyMSIgeT0iMzEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMTI1MjMyIi8+CiAgPHJlY3QgeD0iMjUxIiB5PSIzMTAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1OCIgcng9IjgiIGZpbGw9IiMxMjUyMzIiLz4KICA8IS0tIEdyZWVuIGhvb3ZlcyAtLT4KICA8cmVjdCB4PSIxNDciIHk9IjM2MyIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzEwYjk4MSIvPgogIDxyZWN0IHg9IjE3NyIgeT0iMzYzIiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMTBiOTgxIi8+CiAgPHJlY3QgeD0iMjIxIiB5PSIzNTgiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNTk2NjkiLz4KICA8cmVjdCB4PSIyNTEiIHk9IjM1OCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzA1OTY2OSIvPgogIDwhLS0gVGFpbCAtLT4KICA8cGF0aCBkPSJNMjg2IDI1NSBRMzMxIDIzMCAzNDEgMjYwIFEzNTEgMjkwIDMyMSAzMTAgUTMwMSAzMjAgMjg2IDMwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTBiOTgxIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg2IDI1OCBRMzI2IDIzOCAzMzcgMjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiMzNGQzOTkiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8IS0tIEJhZGdlIC0tPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjExOCIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDE2LDE4NSwxMjksMC4yKSIgc3Ryb2tlPSIjMTBiOTgxIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI2OSIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzNGQzOTkiPuKtkCBVTkNPTU1PTjwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMjUzPC90ZXh0Pgo8L3N2Zz4K" alt="Community" />
+          </div>
+          <div class="team-info">
+            <h3>GallopGuru</h3>
+            <span class="team-role">Community Lead</span>
+            <p>Built communities of 100k+ in the NFT space. Passionate about equestrian art.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FAQ ========== -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Got Questions?</div>
+        <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What are Rare Horses?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Rare Horses is a collection of 10,000 unique digital horse NFTs stored on the Ethereum blockchain. Each horse is algorithmically generated from hundreds of hand-drawn traits, making every single one completely unique.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do I mint a Rare Horse?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Connect your MetaMask or WalletConnect wallet, select the number of horses you want to mint (up to 5 per transaction), and click "Mint". The cost is 0.08 ETH per horse plus gas fees.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>When will rarity be revealed?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Rarity is revealed instantly upon minting. You'll know your horse's tier — Common, Uncommon, Rare, Epic, or Legendary — as soon as the transaction is confirmed.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What blockchain are Rare Horses on?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Rare Horses are minted on the Ethereum blockchain as ERC-721 tokens. This ensures full compatibility with all major NFT marketplaces like OpenSea, Blur, and LooksRare.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What are the holder benefits?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Holders get access to the exclusive Rare Horses Discord, future airdrops, voting rights on collection decisions, real-world events (Legendary holders), merch store access, and commercial rights to use their horse's artwork.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Is the smart contract audited?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. The Rare Horses smart contract has been fully audited by a leading blockchain security firm. The audit report is publicly available on our GitHub.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What are the secondary sale royalties?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>A 5% royalty is applied to all secondary sales. 3% goes to the team for continued development, and 2% is donated to equine charities worldwide.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== NEWSLETTER / CTA ========== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <h2>Don't Miss the <span class="gradient-text">Stampede</span></h2>
+        <p>Join 50,000+ collectors already in the Rare Horses community.</p>
+        <div class="cta-actions">
+          <a href="#" class="btn-primary btn-large">Join Discord</a>
+          <a href="#" class="btn-secondary btn-large">Follow on X</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">
+            <span class="logo-icon">🐴</span>
+            <span class="logo-text">RARE<span class="logo-accent">HORSES</span></span>
+          </a>
+          <p>10,000 unique digital horses on the Ethereum blockchain. Own a piece of digital equestrian history.</p>
+          <div class="footer-social">
+            <a href="#" class="social-link">𝕏</a>
+            <a href="#" class="social-link">💬</a>
+            <a href="#" class="social-link">📷</a>
+            <a href="#" class="social-link">🔵</a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#collection">Collection</a></li>
+            <li><a href="#rarity">Rarity</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">OpenSea</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Smart Contract</a></li>
+            <li><a href="#">Audit Report</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 Rare Horses. All rights reserved.</p>
+        <p class="footer-disclaimer">NFTs are digital collectibles. Not financial advice.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== NFT LIGHTBOX MODAL ========== -->
+  <div class="nft-lightbox" id="nftLightbox">
+    <div class="lb-backdrop"></div>
+    <div class="lb-card">
+      <button class="lb-close" id="lbClose">✕</button>
+      <div class="lb-img-wrap">
+        <img id="lbImg" src="" alt="" />
+      </div>
+      <div class="lb-details">
+        <div class="lb-name" id="lbName"></div>
+        <div id="lbTier" class="lb-tier nft-tier"></div>
+        <div class="lb-stats">
+          <div class="lb-stat">
+            <span class="lb-stat-label">Floor Price</span>
+            <span class="lb-stat-val" id="lbPrice"></span>
+          </div>
+          <div class="lb-stat">
+            <span class="lb-stat-label">Blockchain</span>
+            <span class="lb-stat-val">Ethereum</span>
+          </div>
+          <div class="lb-stat">
+            <span class="lb-stat-label">Standard</span>
+            <span class="lb-stat-val">ERC-721</span>
+          </div>
+        </div>
+        <button class="btn-primary btn-full" style="margin-top:20px">Buy on OpenSea</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+/* =============================================
+   RARE HORSES — Main JavaScript
+   ============================================= */
+
+/* ---- NAVBAR SCROLL ---- */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
+/* ---- MOBILE MENU ---- */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+// Close mobile menu on link click
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+/* ---- FAQ ACCORDION ---- */
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    // Toggle clicked
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+/* ---- MINT QUANTITY ---- */
+const qtyMinus = document.getElementById('qtyMinus');
+const qtyPlus  = document.getElementById('qtyPlus');
+const qtyValue = document.getElementById('qtyValue');
+const mintTotal = document.getElementById('mintTotal');
+const PRICE = 0.08;
+let qty = 1;
+
+function updateMint() {
+  qtyValue.textContent = qty;
+  mintTotal.textContent = (qty * PRICE).toFixed(2) + ' ETH';
+  qtyMinus.disabled = qty <= 1;
+  qtyPlus.disabled  = qty >= 5;
+}
+
+qtyMinus.addEventListener('click', () => { if (qty > 1) { qty--; updateMint(); } });
+qtyPlus.addEventListener('click',  () => { if (qty < 5) { qty++; updateMint(); } });
+
+/* ---- MINT BUTTON ---- */
+const mintBtn = document.getElementById('mintBtn');
+let walletConnected = false;
+mintBtn.addEventListener('click', () => {
+  if (!walletConnected) {
+    mintBtn.textContent = 'Connecting...';
+    setTimeout(() => {
+      walletConnected = true;
+      mintBtn.textContent = `Mint ${qty} Horse${qty > 1 ? 's' : ''} — ${(qty * PRICE).toFixed(2)} ETH`;
+      mintBtn.style.background = 'linear-gradient(135deg, #10b981, #3b82f6)';
+    }, 1200);
+  } else {
+    mintBtn.textContent = 'Processing...';
+    mintBtn.disabled = true;
+    setTimeout(() => {
+      mintBtn.textContent = '✅ Minted Successfully!';
+      mintBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    }, 2000);
+  }
+});
+
+/* ---- FLOATING PARTICLES ---- */
+const particlesContainer = document.getElementById('particles');
+const PARTICLE_COUNT = 20;
+const PARTICLE_EMOJIS = ['🐴', '✨', '💎', '⭐', '🌟', '👑', '🔥'];
+
+function createParticle() {
+  const el = document.createElement('span');
+  el.classList.add('particle');
+  const emoji = PARTICLE_EMOJIS[Math.floor(Math.random() * PARTICLE_EMOJIS.length)];
+  el.textContent = emoji;
+  el.style.cssText = `
+    font-size: ${8 + Math.random() * 14}px;
+    left: ${Math.random() * 100}%;
+    animation-duration: ${8 + Math.random() * 14}s;
+    animation-delay: ${Math.random() * 10}s;
+    opacity: 0;
+  `;
+  particlesContainer.appendChild(el);
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  createParticle();
+}
+
+/* ---- SMOOTH SCROLL FOR NAV LINKS ---- */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    const href = this.getAttribute('href');
+    if (href === '#') return;
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      const offset = 80;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
+/* ---- SCROLL REVEAL ANIMATION ---- */
+const revealEls = document.querySelectorAll(
+  '.nft-card, .rarity-card, .team-card, .timeline-item, .trait-chip, .faq-item'
+);
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+);
+
+revealEls.forEach((el, i) => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(24px)';
+  el.style.transition = `opacity 0.5s ease ${i * 0.06}s, transform 0.5s ease ${i * 0.06}s`;
+  observer.observe(el);
+});
+
+/* ---- RARITY BAR ANIMATION ---- */
+const rarityBars = document.querySelectorAll('.rarity-bar');
+const rarityObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.style.width = getComputedStyle(entry.target).getPropertyValue('--pct');
+        rarityObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.5 }
+);
+rarityBars.forEach(bar => {
+  bar.style.width = '0';
+  rarityObserver.observe(bar);
+});
+
+/* ---- COUNTDOWN TIMER ---- */
+function startCountdown() {
+  const deadline = new Date();
+  deadline.setDate(deadline.getDate() + 3);
+  deadline.setHours(deadline.getHours() + 7);
+  deadline.setMinutes(deadline.getMinutes() + 42);
+
+  const timerEl = document.getElementById('countdownTimer');
+  if (!timerEl) return;
+
+  function tick() {
+    const now = new Date();
+    const diff = deadline - now;
+    if (diff <= 0) {
+      timerEl.innerHTML = '<span class="cd-unit"><span class="cd-val">00</span><span class="cd-label">Days</span></span><span class="cd-sep">:</span><span class="cd-unit"><span class="cd-val">00</span><span class="cd-label">Hrs</span></span><span class="cd-sep">:</span><span class="cd-unit"><span class="cd-val">00</span><span class="cd-label">Min</span></span><span class="cd-sep">:</span><span class="cd-unit"><span class="cd-val">00</span><span class="cd-label">Sec</span></span>';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    timerEl.innerHTML = `
+      <span class="cd-unit"><span class="cd-val">${pad(d)}</span><span class="cd-label">Days</span></span>
+      <span class="cd-sep">:</span>
+      <span class="cd-unit"><span class="cd-val">${pad(h)}</span><span class="cd-label">Hrs</span></span>
+      <span class="cd-sep">:</span>
+      <span class="cd-unit"><span class="cd-val">${pad(m)}</span><span class="cd-label">Min</span></span>
+      <span class="cd-sep">:</span>
+      <span class="cd-unit"><span class="cd-val">${pad(s)}</span><span class="cd-label">Sec</span></span>`;
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+startCountdown();
+
+/* ---- NFT LIGHTBOX ---- */
+const lightbox = document.getElementById('nftLightbox');
+const lbImg    = document.getElementById('lbImg');
+const lbName   = document.getElementById('lbName');
+const lbTier   = document.getElementById('lbTier');
+const lbPrice  = document.getElementById('lbPrice');
+const lbClose  = document.getElementById('lbClose');
+
+document.querySelectorAll('.nft-view-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const card    = btn.closest('.nft-card');
+    const img     = card.querySelector('img');
+    const name    = card.querySelector('.nft-name').textContent;
+    const tier    = card.querySelector('.nft-tier').textContent;
+    const price   = card.querySelector('.price-value')?.textContent || '';
+    const tierCls = card.querySelector('.nft-tier').className.replace('nft-tier','').trim();
+    if (!img || !lightbox) return;
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    lbName.textContent = name;
+    lbTier.textContent = tier;
+    lbTier.className = 'lb-tier nft-tier ' + tierCls;
+    lbPrice.textContent = price;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+if (lbClose) {
+  lbClose.addEventListener('click', closeLightbox);
+}
+if (lightbox) {
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+});
+function closeLightbox() {
+  if (!lightbox) return;
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ---- MINT PROGRESS BAR ANIMATION ---- */
+const mintFill = document.querySelector('.mint-progress-fill');
+if (mintFill) {
+  const targetWidth = mintFill.style.width;
+  mintFill.style.width = '0';
+  const mintProgressObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => { mintFill.style.width = targetWidth; }, 300);
+          mintProgressObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+  mintProgressObserver.observe(mintFill);
+}
+
+</script>
+</body>
+</html>
