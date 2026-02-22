@@ -1090,6 +1090,146 @@ button { cursor: pointer; border: none; background: none; }
   gap: 8px;
 }
 
+/* ============ LIVE SALES FEED ============ */
+.live-sales-wrapper {
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  gap: 0;
+}
+.live-sales-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 0 20px;
+  border-right: 1px solid var(--border);
+  margin-right: 24px;
+  min-width: 120px;
+  justify-content: center;
+}
+.live-dot {
+  width: 8px; height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+  flex-shrink: 0;
+}
+.live-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #10b981;
+  white-space: nowrap;
+}
+.live-sales-track {
+  display: flex;
+  gap: 16px;
+  white-space: nowrap;
+  animation: salesTicker 28s linear infinite;
+  width: max-content;
+}
+.sale-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sale-pill strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+@keyframes salesTicker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ============ CTA SOCIAL PROOF ============ */
+.cta-social-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.avatar-stack {
+  display: flex;
+  align-items: center;
+}
+.avatar-bubble {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin-left: -10px;
+  flex-shrink: 0;
+}
+.avatar-bubble:first-child { margin-left: 0; }
+.social-proof-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ============ NEWSLETTER FORM ============ */
+.newsletter-form {
+  display: flex;
+  gap: 0;
+  max-width: 480px;
+  margin: 0 auto 20px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 6px 6px 20px;
+  transition: border-color 0.2s;
+}
+.newsletter-form:focus-within {
+  border-color: var(--purple);
+}
+.newsletter-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  min-width: 0;
+}
+.newsletter-input::placeholder { color: var(--text-muted); }
+.newsletter-btn {
+  flex-shrink: 0;
+  padding: 10px 24px;
+  font-size: 0.9rem;
+}
+.newsletter-success {
+  display: none;
+  color: var(--green);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.newsletter-success.visible { display: block; }
+@media (max-width: 480px) {
+  .newsletter-form { flex-direction: column; border-radius: var(--radius-md); padding: 12px; }
+  .newsletter-input { padding: 8px 4px; }
+  .newsletter-btn { width: 100%; justify-content: center; }
+}
+
 /* ============ COUNTDOWN ============ */
 .mint-countdown {
   margin-top: 32px;
@@ -1388,11 +1528,11 @@ button { cursor: pointer; border: none; background: none; }
         </div>
         <div class="showcase-card side-card left">
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMiIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwZDFhM2EiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUwZDIwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJwdXJwbGUyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlYzQ4OTkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3cyIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOGI1Y2Y2O3N0b3Atb3BhY2l0eTowLjI1Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIyIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxMCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzIpIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMjAwIiByPSIxNjAiIGZpbGw9InVybCgjZ2xvdzIpIiBmaWx0ZXI9InVybCgjYmx1cjIpIi8+CiAgPCEtLSBTdGFycyAtLT4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIyIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMCIgcj0iMS41IiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSI2MCIgcj0iMiIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC44Ii8+CiAgPGNpcmNsZSBjeD0iMzgwIiBjeT0iMTgwIiByPSIxLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjgwIiByPSIyIiBmaWxsPSIjZWM0ODk5IiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIzNDAiIHI9IjEuNSIgZmlsbD0iIzhiNWNmNiIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCb2R5IC0gZGFyayBibHVlIGhvcnNlIC0tPgogIDxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyNjIiIHJ4PSI5MiIgcnk9IjY2IiBmaWxsPSIjMWUzYTZlIi8+CiAgPCEtLSBOZWNrIC0tPgogIDxlbGxpcHNlIGN4PSIxNzgiIGN5PSIxODMiIHJ4PSI0MiIgcnk9IjU3IiBmaWxsPSIjMWUzYTZlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTAsMTc4LDE4MykiLz4KICA8IS0tIEhlYWQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MiIgY3k9IjEyOCIgcng9IjQwIiByeT0iMzMiIGZpbGw9IiMxZTNhNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxNTIsMTI4KSIvPgogIDwhLS0gU25vdXQgLS0+CiAgPGVsbGlwc2UgY3g9IjEyNiIgY3k9IjE0NiIgcng9IjIzIiByeT0iMTciIGZpbGw9IiMxNTJkNTciIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMjYsMTQ2KSIvPgogIDwhLS0gRXllIC0gZ2xvd2luZyBwdXJwbGUgLS0+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI5IiBmaWxsPSIjMGEwYTFlIi8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTE4IiByPSI2IiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPGNpcmNsZSBjeD0iMTYyIiBjeT0iMTE2IiByPSIzIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxMTgiIHI9IjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjUiLz4KICA8IS0tIE5vc3RyaWwgLS0+CiAgPGVsbGlwc2UgY3g9IjExNiIgY3k9IjE1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjMGUyMjQ0IiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUsMTE2LDE1MCkiLz4KICA8IS0tIE1hbmUgLSBwdXJwbGUvcGluayAtLT4KICA8cGF0aCBkPSJNMTcyIDc4IFExODggNDggMTY4IDI4IFExNTMgNTMgMTYzIDc4IFExNDggNDMgMTM4IDIzIFExMzMgNTMgMTQ2IDgwIFExMjggNDggMTIzIDI4IFExMTYgNTggMTMwIDgzIiBmaWxsPSJub25lIiBzdHJva2U9IiM4YjVjZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NSA3OCBRMTgyIDUzIDE2NSAzMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBHbG93aW5nIGhvcm4gKGVwaWMgdHJhaXQpIC0tPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSJ1cmwoI3B1cnBsZTIpIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xNjggNzggTDE4NSAzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMTg1IiBjeT0iMjgiIHI9IjUiIGZpbGw9IiNlYzQ4OTkiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTWFnaWMgcGFydGljbGVzIC0tPgogIDxjaXJjbGUgY3g9IjE3NSIgY3k9IjUwIiByPSIzIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxOTUiIGN5PSI0MCIgcj0iMiIgZmlsbD0iI2VjNDg5OSIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMzUiIHI9IjIiIGZpbGw9IiNhNzhiZmEiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gTGVncyAtLT4KICA8cmVjdCB4PSIxNDYiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDxyZWN0IHg9IjE3NiIgeT0iMzEyIiB3aWR0aD0iMjMiIGhlaWdodD0iNjQiIHJ4PSI4IiBmaWxsPSIjMTUyZDU3Ii8+CiAgPHJlY3QgeD0iMjIwIiB5PSIzMTIiIHdpZHRoPSIyMyIgaGVpZ2h0PSI1OSIgcng9IjgiIGZpbGw9IiMxNTJkNTciLz4KICA8cmVjdCB4PSIyNTAiIHk9IjMxMiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjU5IiByeD0iOCIgZmlsbD0iIzE1MmQ1NyIvPgogIDwhLS0gR2xvd2luZyBob292ZXMgLS0+CiAgPHJlY3QgeD0iMTQ2IiB5PSIzNjYiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiM4YjVjZjYiLz4KICA8cmVjdCB4PSIxNzYiIHk9IjM2NiIgd2lkdGg9IjIzIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzhiNWNmNiIvPgogIDxyZWN0IHg9IjIyMCIgeT0iMzYxIiB3aWR0aD0iMjMiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjZWM0ODk5Ii8+CiAgPHJlY3QgeD0iMjUwIiB5PSIzNjEiIHdpZHRoPSIyMyIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiNlYzQ4OTkiLz4KICA8IS0tIFRhaWwgLS0+CiAgPHBhdGggZD0iTTI4NyAyNTcgUTMzMiAyMzIgMzQyIDI2MiBRMzUyIDI5MiAzMjIgMzEyIFEzMDIgMzIyIDI4NyAzMDIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTI4NyAyNjAgUTMyNyAyNDAgMzM4IDI2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWM0ODk5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCYWRnZSAtLT4KICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSI5NSIgaGVpZ2h0PSIzMiIgcng9IjE2IiBmaWxsPSJyZ2JhKDEzOSw5MiwyNDYsMC4yKSIgc3Ryb2tlPSIjOGI1Y2Y2IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI1NyIgeT0iMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNhNzhiZmEiPvCflK4gRVBJQzwvdGV4dD4KICA8dGV4dCB4PSIzOTAiIHk9IjM5MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiPiMwMDQyPC90ZXh0Pgo8L3N2Zz4K" alt="Rare Horse #2" />
-          <div class="card-badge rare">RARE</div>
+          <div class="card-badge epic">EPIC</div>
         </div>
         <div class="showcase-card side-card right">
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYTFhMmUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDUxNTI1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJibHVlMyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMzYjgyZjYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDZiNmQ0Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnbG93MyIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNTAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MC4yIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9ImJsdXIzIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI5Ii8+PC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2JnMykiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE2MCIgZmlsbD0idXJsKCNnbG93MykiIGZpbHRlcj0idXJsKCNibHVyMykiLz4KICA8IS0tIFN0YXJzIC0tPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iNTAiIHI9IjIiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjEzMCIgY3k9IjI1IiByPSIxLjUiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNyIvPgogIDxjaXJjbGUgY3g9IjM0NSIgY3k9IjcwIiByPSIyIiBmaWxsPSIjM2I4MmY2IiBvcGFjaXR5PSIwLjkiLz4KICA8Y2lyY2xlIGN4PSIzNzUiIGN5PSIyMDAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSIzMTAiIHI9IjIiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gQm9keSAtIHN0ZWVsIGJsdWUgLS0+CiAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjI2MSIgcng9IjkxIiByeT0iNjUiIGZpbGw9IiMyNTYzYTgiLz4KICA8IS0tIE5lY2sgLS0+CiAgPGVsbGlwc2UgY3g9IjE3OSIgY3k9IjE4MiIgcng9IjQxIiByeT0iNTYiIGZpbGw9IiMyNTYzYTgiIHRyYW5zZm9ybT0icm90YXRlKC0xMCwxNzksMTgyKSIvPgogIDwhLS0gSGVhZCAtLT4KICA8ZWxsaXBzZSBjeD0iMTUzIiBjeT0iMTI3IiByeD0iMzkiIHJ5PSIzMiIgZmlsbD0iIzI1NjNhOCIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDE1MywxMjcpIi8+CiAgPCEtLSBTbm91dCAtLT4KICA8ZWxsaXBzZSBjeD0iMTI3IiBjeT0iMTQ1IiByeD0iMjIiIHJ5PSIxNiIgZmlsbD0iIzFhNGQ4YSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDEyNywxNDUpIi8+CiAgPCEtLSBEaWFtb25kIG9uIGZvcmVoZWFkIC0tPgogIDxwYXRoIGQ9Ik0xNjIgMTAwIEwxNzIgODggTDE4MiAxMDAgTDE3MiAxMTIgWiIgZmlsbD0idXJsKCNibHVlMykiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBFeWUgLSBpY3kgYmx1ZSAtLT4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjkiIGZpbGw9IiMwYTBmMWUiLz4KICA8Y2lyY2xlIGN4PSIxNjEiIGN5PSIxMTkiIHI9IjYiIGZpbGw9IiMwNmI2ZDQiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMTciIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTm9zdHJpbCAtLT4KICA8ZWxsaXBzZSBjeD0iMTE3IiBjeT0iMTQ5IiByeD0iNSIgcnk9IjMiIGZpbGw9IiMxNDNkNmUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSwxMTcsMTQ5KSIvPgogIDwhLS0gTWFuZSAtIGJsdWUvY3lhbiAtLT4KICA8cGF0aCBkPSJNMTczIDc3IFExODkgNDcgMTY5IDI3IFExNTQgNTIgMTY0IDc3IFExNDkgNDIgMTM5IDIyIFExMzQgNTIgMTQ3IDc5IFExMjkgNDcgMTI0IDI3IFExMTcgNTcgMTMxIDgyIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE3NiA3NyBRMTgzIDUyIDE2NiAzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDZiNmQ0IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44Ii8+CiAgPCEtLSBJY2UgY3J5c3RhbCBzcGlrZXMgaW4gbWFuZSAtLT4KICA8cGF0aCBkPSJNMTUwIDU1IEwxNDUgMzUgTDE1NSA1MCIgZmlsbD0iIzA2YjZkNCIgb3BhY2l0eT0iMC43Ii8+CiAgPHBhdGggZD0iTTE2NSA0MCBMMTYwIDE4IEwxNzAgMzgiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuOCIvPgogIDwhLS0gQXJtb3Igc2hvdWxkZXIgLS0+CiAgPHBhdGggZD0iTTIxNSAxOTAgUTI0NSAxNzUgMjYwIDE5NSBRMjUwIDIyMCAyMjAgMjI1IFoiIGZpbGw9IiMxYTRkOGEiIHN0cm9rZT0idXJsKCNibHVlMykiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPCEtLSBMZWdzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNjMiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzMTEiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MyIgcng9IjgiIGZpbGw9IiMxYTRkOGEiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjMxMSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjU4IiByeD0iOCIgZmlsbD0iIzFhNGQ4YSIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzExIiB3aWR0aD0iMjIiIGhlaWdodD0iNTgiIHJ4PSI4IiBmaWxsPSIjMWE0ZDhhIi8+CiAgPCEtLSBJY2UgaG9vdmVzIC0tPgogIDxyZWN0IHg9IjE0NyIgeT0iMzY0IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjMDZiNmQ0Ii8+CiAgPHJlY3QgeD0iMTc3IiB5PSIzNjQiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiMwNmI2ZDQiLz4KICA8cmVjdCB4PSIyMjEiIHk9IjM1OSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjEyIiByeD0iNCIgZmlsbD0iIzNiODJmNiIvPgogIDxyZWN0IHg9IjI1MSIgeT0iMzU5IiB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHJ4PSI0IiBmaWxsPSIjM2I4MmY2Ii8+CiAgPCEtLSBUYWlsIC0tPgogIDxwYXRoIGQ9Ik0yODYgMjU2IFEzMzEgMjMxIDM0MSAyNjEgUTM1MSAyOTEgMzIxIDMxMSBRMzAxIDMyMSAyODYgMzAxIiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0yODYgMjU5IFEzMjYgMjM5IDMzNyAyNjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2YjZkNCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNyIvPgogIDwhLS0gQmFkZ2UgLS0+CiAgPHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iOTUiIGhlaWdodD0iMzIiIHJ4PSIxNiIgZmlsbD0icmdiYSg1OSwxMzAsMjQ2LDAuMikiIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iNTciIHk9IjMxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjBhNWZhIj7wn5KOIFJBUkU8L3RleHQ+CiAgPHRleHQgeD0iMzkwIiB5PSIzOTAiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIj4jMDExNzwvdGV4dD4KPC9zdmc+Cg==" alt="Rare Horse #3" />
-          <div class="card-badge epic">EPIC</div>
+          <div class="card-badge rare">RARE</div>
         </div>
       </div>
     </div>
@@ -1545,7 +1685,7 @@ button { cursor: pointer; border: none; background: none; }
           </div>
           <div class="nft-info">
             <div class="nft-name">Rare Horse <span>#0253</span></div>
-            <div class="nft-tier rare">Rare</div>
+            <div class="nft-tier uncommon">Uncommon</div>
             <div class="nft-price">
               <span class="price-label">Floor</span>
               <span class="price-value">0.75 ETH</span>
@@ -1561,7 +1701,7 @@ button { cursor: pointer; border: none; background: none; }
           </div>
           <div class="nft-info">
             <div class="nft-name">Rare Horse <span>#0512</span></div>
-            <div class="nft-tier uncommon">Uncommon</div>
+            <div class="nft-tier common">Common</div>
             <div class="nft-price">
               <span class="price-label">Floor</span>
               <span class="price-value">0.4 ETH</span>
@@ -1591,6 +1731,33 @@ button { cursor: pointer; border: none; background: none; }
       </div>
     </div>
   </section>
+
+  <!-- ========== LIVE SALES FEED ========== -->
+  <div class="live-sales-wrapper">
+    <div class="live-sales-header">
+      <span class="live-dot"></span>
+      <span class="live-label">LIVE SALES</span>
+    </div>
+    <div class="live-sales-track" id="liveSalesTrack">
+      <div class="sale-pill">🐴 #7341 sold for <strong>0.12 ETH</strong> · 2m ago</div>
+      <div class="sale-pill">👑 #0047 sold for <strong>3.8 ETH</strong> · 5m ago</div>
+      <div class="sale-pill">🔮 #1892 sold for <strong>1.4 ETH</strong> · 8m ago</div>
+      <div class="sale-pill">💎 #3201 sold for <strong>0.95 ETH</strong> · 11m ago</div>
+      <div class="sale-pill">⭐ #5589 sold for <strong>0.55 ETH</strong> · 13m ago</div>
+      <div class="sale-pill">🐴 #9102 sold for <strong>0.09 ETH</strong> · 16m ago</div>
+      <div class="sale-pill">👑 #0012 sold for <strong>4.2 ETH</strong> · 20m ago</div>
+      <div class="sale-pill">🔮 #2233 sold for <strong>1.1 ETH</strong> · 24m ago</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="sale-pill">🐴 #7341 sold for <strong>0.12 ETH</strong> · 2m ago</div>
+      <div class="sale-pill">👑 #0047 sold for <strong>3.8 ETH</strong> · 5m ago</div>
+      <div class="sale-pill">🔮 #1892 sold for <strong>1.4 ETH</strong> · 8m ago</div>
+      <div class="sale-pill">💎 #3201 sold for <strong>0.95 ETH</strong> · 11m ago</div>
+      <div class="sale-pill">⭐ #5589 sold for <strong>0.55 ETH</strong> · 13m ago</div>
+      <div class="sale-pill">🐴 #9102 sold for <strong>0.09 ETH</strong> · 16m ago</div>
+      <div class="sale-pill">👑 #0012 sold for <strong>4.2 ETH</strong> · 20m ago</div>
+      <div class="sale-pill">🔮 #2233 sold for <strong>1.1 ETH</strong> · 24m ago</div>
+    </div>
+  </div>
 
   <!-- ========== RARITY ========== -->
   <section class="rarity" id="rarity">
@@ -1956,11 +2123,36 @@ button { cursor: pointer; border: none; background: none; }
   <section class="cta-section">
     <div class="container">
       <div class="cta-card">
+        <div class="cta-social-proof">
+          <div class="avatar-stack">
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#f5c542,#c9972b)">👑</div>
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#8b5cf6,#ec4899)">🔮</div>
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#3b82f6,#8b5cf6)">💎</div>
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#10b981,#059669)">⭐</div>
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#6b7280,#374151)">🐴</div>
+          </div>
+          <span class="social-proof-text">50,000+ collectors already joined</span>
+        </div>
         <h2>Don't Miss the <span class="gradient-text">Stampede</span></h2>
-        <p>Join 50,000+ collectors already in the Rare Horses community.</p>
+        <p>Get early access, whitelist spots, and exclusive drops straight to your inbox.</p>
+        <form class="newsletter-form" id="newsletterForm" onsubmit="return handleNewsletter(event)">
+          <input
+            type="email"
+            class="newsletter-input"
+            placeholder="Enter your email address"
+            required
+          />
+          <button type="submit" class="btn-primary newsletter-btn">
+            Notify Me
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+        <div class="newsletter-success" id="newsletterSuccess">
+          ✅ You're on the list! We'll be in touch soon.
+        </div>
         <div class="cta-actions">
-          <a href="#" class="btn-primary btn-large">Join Discord</a>
-          <a href="#" class="btn-secondary btn-large">Follow on X</a>
+          <a href="#" class="btn-secondary">Join Discord</a>
+          <a href="#" class="btn-secondary">Follow on X</a>
         </div>
       </div>
     </div>
@@ -2287,6 +2479,17 @@ function closeLightbox() {
   if (!lightbox) return;
   lightbox.classList.remove('open');
   document.body.style.overflow = '';
+}
+
+/* ---- NEWSLETTER FORM ---- */
+function handleNewsletter(e) {
+  e.preventDefault();
+  const form = document.getElementById('newsletterForm');
+  const success = document.getElementById('newsletterSuccess');
+  if (!form || !success) return false;
+  form.style.display = 'none';
+  success.classList.add('visible');
+  return false;
 }
 
 /* ---- MINT PROGRESS BAR ANIMATION ---- */

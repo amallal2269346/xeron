@@ -237,6 +237,17 @@ function closeLightbox() {
   document.body.style.overflow = '';
 }
 
+/* ---- NEWSLETTER FORM ---- */
+function handleNewsletter(e) {
+  e.preventDefault();
+  const form = document.getElementById('newsletterForm');
+  const success = document.getElementById('newsletterSuccess');
+  if (!form || !success) return false;
+  form.style.display = 'none';
+  success.classList.add('visible');
+  return false;
+}
+
 /* ---- MINT PROGRESS BAR ANIMATION ---- */
 const mintFill = document.querySelector('.mint-progress-fill');
 if (mintFill) {

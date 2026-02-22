@@ -98,11 +98,11 @@
         </div>
         <div class="showcase-card side-card left">
           <img src="images/horse2.svg" alt="Rare Horse #2" />
-          <div class="card-badge rare">RARE</div>
+          <div class="card-badge epic">EPIC</div>
         </div>
         <div class="showcase-card side-card right">
           <img src="images/horse3.svg" alt="Rare Horse #3" />
-          <div class="card-badge epic">EPIC</div>
+          <div class="card-badge rare">RARE</div>
         </div>
       </div>
     </div>
@@ -255,7 +255,7 @@
           </div>
           <div class="nft-info">
             <div class="nft-name">Rare Horse <span>#0253</span></div>
-            <div class="nft-tier rare">Rare</div>
+            <div class="nft-tier uncommon">Uncommon</div>
             <div class="nft-price">
               <span class="price-label">Floor</span>
               <span class="price-value">0.75 ETH</span>
@@ -271,7 +271,7 @@
           </div>
           <div class="nft-info">
             <div class="nft-name">Rare Horse <span>#0512</span></div>
-            <div class="nft-tier uncommon">Uncommon</div>
+            <div class="nft-tier common">Common</div>
             <div class="nft-price">
               <span class="price-label">Floor</span>
               <span class="price-value">0.4 ETH</span>
@@ -301,6 +301,33 @@
       </div>
     </div>
   </section>
+
+  <!-- ========== LIVE SALES FEED ========== -->
+  <div class="live-sales-wrapper">
+    <div class="live-sales-header">
+      <span class="live-dot"></span>
+      <span class="live-label">LIVE SALES</span>
+    </div>
+    <div class="live-sales-track" id="liveSalesTrack">
+      <div class="sale-pill">🐴 #7341 sold for <strong>0.12 ETH</strong> · 2m ago</div>
+      <div class="sale-pill">👑 #0047 sold for <strong>3.8 ETH</strong> · 5m ago</div>
+      <div class="sale-pill">🔮 #1892 sold for <strong>1.4 ETH</strong> · 8m ago</div>
+      <div class="sale-pill">💎 #3201 sold for <strong>0.95 ETH</strong> · 11m ago</div>
+      <div class="sale-pill">⭐ #5589 sold for <strong>0.55 ETH</strong> · 13m ago</div>
+      <div class="sale-pill">🐴 #9102 sold for <strong>0.09 ETH</strong> · 16m ago</div>
+      <div class="sale-pill">👑 #0012 sold for <strong>4.2 ETH</strong> · 20m ago</div>
+      <div class="sale-pill">🔮 #2233 sold for <strong>1.1 ETH</strong> · 24m ago</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="sale-pill">🐴 #7341 sold for <strong>0.12 ETH</strong> · 2m ago</div>
+      <div class="sale-pill">👑 #0047 sold for <strong>3.8 ETH</strong> · 5m ago</div>
+      <div class="sale-pill">🔮 #1892 sold for <strong>1.4 ETH</strong> · 8m ago</div>
+      <div class="sale-pill">💎 #3201 sold for <strong>0.95 ETH</strong> · 11m ago</div>
+      <div class="sale-pill">⭐ #5589 sold for <strong>0.55 ETH</strong> · 13m ago</div>
+      <div class="sale-pill">🐴 #9102 sold for <strong>0.09 ETH</strong> · 16m ago</div>
+      <div class="sale-pill">👑 #0012 sold for <strong>4.2 ETH</strong> · 20m ago</div>
+      <div class="sale-pill">🔮 #2233 sold for <strong>1.1 ETH</strong> · 24m ago</div>
+    </div>
+  </div>
 
   <!-- ========== RARITY ========== -->
   <section class="rarity" id="rarity">
@@ -666,11 +693,36 @@
   <section class="cta-section">
     <div class="container">
       <div class="cta-card">
+        <div class="cta-social-proof">
+          <div class="avatar-stack">
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#f5c542,#c9972b)">👑</div>
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#8b5cf6,#ec4899)">🔮</div>
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#3b82f6,#8b5cf6)">💎</div>
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#10b981,#059669)">⭐</div>
+            <div class="avatar-bubble" style="background: linear-gradient(135deg,#6b7280,#374151)">🐴</div>
+          </div>
+          <span class="social-proof-text">50,000+ collectors already joined</span>
+        </div>
         <h2>Don't Miss the <span class="gradient-text">Stampede</span></h2>
-        <p>Join 50,000+ collectors already in the Rare Horses community.</p>
+        <p>Get early access, whitelist spots, and exclusive drops straight to your inbox.</p>
+        <form class="newsletter-form" id="newsletterForm" onsubmit="return handleNewsletter(event)">
+          <input
+            type="email"
+            class="newsletter-input"
+            placeholder="Enter your email address"
+            required
+          />
+          <button type="submit" class="btn-primary newsletter-btn">
+            Notify Me
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+        <div class="newsletter-success" id="newsletterSuccess">
+          ✅ You're on the list! We'll be in touch soon.
+        </div>
         <div class="cta-actions">
-          <a href="#" class="btn-primary btn-large">Join Discord</a>
-          <a href="#" class="btn-secondary btn-large">Follow on X</a>
+          <a href="#" class="btn-secondary">Join Discord</a>
+          <a href="#" class="btn-secondary">Follow on X</a>
         </div>
       </div>
     </div>
