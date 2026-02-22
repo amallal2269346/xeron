@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0d05"/>
+      <stop offset="100%" style="stop-color:#100805"/>
+    </linearGradient>
+    <linearGradient id="brown5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#92400e"/>
+      <stop offset="100%" style="stop-color:#78350f"/>
+    </linearGradient>
+    <radialGradient id="glow5" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#d97706;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="blur5"><feGaussianBlur stdDeviation="8"/></filter>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg5)"/>
+  <circle cx="200" cy="200" r="155" fill="url(#glow5)" filter="url(#blur5)"/>
+  <!-- Stars -->
+  <circle cx="48" cy="48" r="2" fill="#d97706" opacity="0.7"/>
+  <circle cx="125" cy="22" r="1.5" fill="#fbbf24" opacity="0.6"/>
+  <circle cx="348" cy="68" r="2" fill="#d97706" opacity="0.8"/>
+  <circle cx="378" cy="210" r="1.5" fill="#fff" opacity="0.4"/>
+  <circle cx="25" cy="305" r="1.5" fill="#fbbf24" opacity="0.5"/>
+  <!-- Body - chestnut brown horse -->
+  <ellipse cx="200" cy="260" rx="89" ry="63" fill="#92400e"/>
+  <!-- Neck -->
+  <ellipse cx="179" cy="182" rx="40" ry="55" fill="#92400e" transform="rotate(-10,179,182)"/>
+  <!-- Head -->
+  <ellipse cx="153" cy="127" rx="38" ry="31" fill="#92400e" transform="rotate(-15,153,127)"/>
+  <!-- Snout - lighter -->
+  <ellipse cx="128" cy="145" rx="22" ry="16" fill="#c4783a" transform="rotate(-15,128,145)"/>
+  <!-- White blaze on face -->
+  <ellipse cx="155" cy="128" rx="8" ry="20" fill="#f5f0e8" opacity="0.85" transform="rotate(-15,155,128)"/>
+  <!-- Eye - warm brown -->
+  <circle cx="161" cy="118" r="9" fill="#1a0a00"/>
+  <circle cx="161" cy="118" r="6" fill="#5c2d0a"/>
+  <circle cx="163" cy="116" r="3" fill="#fff" opacity="0.9"/>
+  <!-- Nostril -->
+  <ellipse cx="118" cy="149" rx="5" ry="3" fill="#6b2d08" transform="rotate(-15,118,149)"/>
+  <!-- Mane - dark brown/amber -->
+  <path d="M172 76 Q188 46 168 26 Q153 51 163 76 Q148 41 138 21 Q133 51 146 78 Q128 46 123 26 Q116 56 130 81" fill="none" stroke="#451a03" stroke-width="10" stroke-linecap="round"/>
+  <path d="M175 76 Q182 51 165 31" fill="none" stroke="#78350f" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+  <!-- Simple bandana -->
+  <path d="M148 165 Q178 155 208 165 L205 185 Q178 178 151 185 Z" fill="#dc2626" opacity="0.85"/>
+  <path d="M148 165 Q178 155 208 165" fill="none" stroke="#fca5a5" stroke-width="2"/>
+  <!-- White socks on legs -->
+  <rect x="147" y="310" width="22" height="63" rx="8" fill="#7c3410"/>
+  <rect x="177" y="310" width="22" height="63" rx="8" fill="#7c3410"/>
+  <rect x="221" y="310" width="22" height="58" rx="8" fill="#7c3410"/>
+  <rect x="251" y="310" width="22" height="58" rx="8" fill="#7c3410"/>
+  <!-- White socks lower -->
+  <rect x="147" y="345" width="22" height="30" rx="0" fill="#f5f0e8"/>
+  <rect x="177" y="345" width="22" height="30" rx="0" fill="#f5f0e8"/>
+  <!-- Hooves -->
+  <rect x="147" y="363" width="22" height="12" rx="4" fill="#3d1a07"/>
+  <rect x="177" y="363" width="22" height="12" rx="4" fill="#3d1a07"/>
+  <rect x="221" y="358" width="22" height="12" rx="4" fill="#3d1a07"/>
+  <rect x="251" y="358" width="22" height="12" rx="4" fill="#3d1a07"/>
+  <!-- Tail -->
+  <path d="M286 255 Q331 230 341 260 Q351 290 321 310 Q301 320 286 300" fill="none" stroke="#451a03" stroke-width="10" stroke-linecap="round"/>
+  <path d="M286 258 Q326 238 337 265" fill="none" stroke="#78350f" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Badge -->
+  <rect x="10" y="10" width="105" height="32" rx="16" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <text x="62" y="31" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="rgba(255,255,255,0.7)">🐴 COMMON</text>
+  <text x="390" y="390" text-anchor="end" font-family="Arial" font-size="14" fill="rgba(255,255,255,0.4)">#0512</text>
+</svg>

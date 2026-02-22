@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1f0a"/>
+      <stop offset="100%" style="stop-color:#051205"/>
+    </linearGradient>
+    <linearGradient id="green4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <radialGradient id="glow4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="blur4"><feGaussianBlur stdDeviation="8"/></filter>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg4)"/>
+  <circle cx="200" cy="200" r="155" fill="url(#glow4)" filter="url(#blur4)"/>
+  <!-- Fireflies/stars -->
+  <circle cx="45" cy="55" r="2.5" fill="#10b981" opacity="0.8"/>
+  <circle cx="115" cy="28" r="1.5" fill="#34d399" opacity="0.7"/>
+  <circle cx="350" cy="65" r="2" fill="#10b981" opacity="0.9"/>
+  <circle cx="380" cy="220" r="1.5" fill="#fff" opacity="0.4"/>
+  <circle cx="22" cy="300" r="2" fill="#34d399" opacity="0.6"/>
+  <circle cx="370" cy="355" r="1.5" fill="#10b981" opacity="0.7"/>
+  <!-- Body - forest green horse -->
+  <ellipse cx="200" cy="260" rx="90" ry="64" fill="#1a6b40"/>
+  <!-- Neck -->
+  <ellipse cx="179" cy="182" rx="40" ry="55" fill="#1a6b40" transform="rotate(-10,179,182)"/>
+  <!-- Head -->
+  <ellipse cx="153" cy="127" rx="38" ry="31" fill="#1a6b40" transform="rotate(-15,153,127)"/>
+  <!-- Snout -->
+  <ellipse cx="128" cy="145" rx="22" ry="16" fill="#125232" transform="rotate(-15,128,145)"/>
+  <!-- Leaf decoration on forehead -->
+  <path d="M162 105 Q175 90 190 100 Q180 115 162 105 Z" fill="#34d399" opacity="0.9"/>
+  <path d="M175 95 L175 112" stroke="#10b981" stroke-width="1.5"/>
+  <!-- Eye - green glow -->
+  <circle cx="161" cy="118" r="9" fill="#0a1a0a"/>
+  <circle cx="161" cy="118" r="6" fill="#10b981"/>
+  <circle cx="163" cy="116" r="3" fill="#fff" opacity="0.9"/>
+  <circle cx="161" cy="118" r="9" fill="none" stroke="#34d399" stroke-width="1.5" opacity="0.6"/>
+  <!-- Nostril -->
+  <ellipse cx="118" cy="149" rx="5" ry="3" fill="#0e3d26" transform="rotate(-15,118,149)"/>
+  <!-- Mane - green/teal flowing -->
+  <path d="M172 76 Q188 46 168 26 Q153 51 163 76 Q148 41 138 21 Q133 51 146 78 Q128 46 123 26 Q116 56 130 81" fill="none" stroke="#10b981" stroke-width="9" stroke-linecap="round"/>
+  <path d="M175 76 Q182 51 165 31" fill="none" stroke="#34d399" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+  <!-- Vine/nature motif on body -->
+  <path d="M145 230 Q165 215 185 225 Q205 215 225 230" fill="none" stroke="#34d399" stroke-width="2" opacity="0.5"/>
+  <circle cx="165" cy="216" r="4" fill="#10b981" opacity="0.6"/>
+  <circle cx="205" cy="216" r="4" fill="#10b981" opacity="0.6"/>
+  <!-- Legs -->
+  <rect x="147" y="310" width="22" height="63" rx="8" fill="#125232"/>
+  <rect x="177" y="310" width="22" height="63" rx="8" fill="#125232"/>
+  <rect x="221" y="310" width="22" height="58" rx="8" fill="#125232"/>
+  <rect x="251" y="310" width="22" height="58" rx="8" fill="#125232"/>
+  <!-- Green hooves -->
+  <rect x="147" y="363" width="22" height="12" rx="4" fill="#10b981"/>
+  <rect x="177" y="363" width="22" height="12" rx="4" fill="#10b981"/>
+  <rect x="221" y="358" width="22" height="12" rx="4" fill="#059669"/>
+  <rect x="251" y="358" width="22" height="12" rx="4" fill="#059669"/>
+  <!-- Tail -->
+  <path d="M286 255 Q331 230 341 260 Q351 290 321 310 Q301 320 286 300" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
+  <path d="M286 258 Q326 238 337 265" fill="none" stroke="#34d399" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Badge -->
+  <rect x="10" y="10" width="118" height="32" rx="16" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="69" y="31" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#34d399">⭐ UNCOMMON</text>
+  <text x="390" y="390" text-anchor="end" font-family="Arial" font-size="14" fill="rgba(255,255,255,0.4)">#0253</text>
+</svg>
