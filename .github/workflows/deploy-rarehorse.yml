@@ -3,9 +3,9 @@ name: Deploy Rare Horses to GitHub Pages
 on:
   push:
     branches:
+      - main
+      - master
       - claude/general-session-duNS0
-    paths:
-      - 'rarehorse/**'
   workflow_dispatch:
 
 permissions:
