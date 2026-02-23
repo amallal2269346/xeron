@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a0533"/>
+      <stop offset="100%" stop-color="#0d0118"/>
+    </radialGradient>
+    <radialGradient id="body" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffe066"/>
+      <stop offset="60%" stop-color="#ffaa00"/>
+      <stop offset="100%" stop-color="#e65c00"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background -->
+  <rect width="400" height="400" fill="url(#bg)" rx="18"/>
+  <!-- Stars -->
+  <circle cx="40" cy="35" r="1.8" fill="#fff" opacity="0.8"/>
+  <circle cx="110" cy="60" r="1.2" fill="#fff" opacity="0.6"/>
+  <circle cx="310" cy="45" r="2" fill="#ffd700" opacity="0.9"/>
+  <circle cx="365" cy="28" r="1.5" fill="#fff" opacity="0.7"/>
+  <circle cx="70" cy="110" r="1.5" fill="#ffd700" opacity="0.8"/>
+  <circle cx="350" cy="95" r="1.8" fill="#ffd700" opacity="0.9"/>
+  <circle cx="330" cy="150" r="1" fill="#fff" opacity="0.5"/>
+  <circle cx="60" cy="180" r="1.2" fill="#fff" opacity="0.6"/>
+  <!-- Golden aura glow -->
+  <ellipse cx="200" cy="230" rx="120" ry="140" fill="#ffd700" opacity="0.06" filter="url(#glow)"/>
+  <!-- Wings -->
+  <ellipse cx="108" cy="255" rx="58" ry="28" fill="#e65c00" transform="rotate(-25 108 255)"/>
+  <ellipse cx="292" cy="255" rx="58" ry="28" fill="#e65c00" transform="rotate(25 292 255)"/>
+  <path d="M92 242 Q108 260 124 248" stroke="#ffd700" stroke-width="2.5" fill="none" opacity="0.6"/>
+  <path d="M276 248 Q292 266 308 242" stroke="#ffd700" stroke-width="2.5" fill="none" opacity="0.6"/>
+  <!-- Body -->
+  <ellipse cx="200" cy="248" rx="88" ry="98" fill="url(#body)" filter="url(#glow)"/>
+  <!-- Chest iridescent shimmer -->
+  <ellipse cx="200" cy="235" rx="42" ry="55" fill="#ff44cc" opacity="0.25" filter="url(#glow)"/>
+  <!-- Neck -->
+  <ellipse cx="200" cy="178" rx="46" ry="52" fill="#ffcc00"/>
+  <!-- Head -->
+  <circle cx="200" cy="142" r="56" fill="#ffd700" filter="url(#glow)"/>
+  <!-- Crown -->
+  <polygon points="168,96 179,68 191,92 200,58 209,92 221,68 232,96" fill="#ffd700" filter="url(#glow)"/>
+  <circle cx="200" cy="57" r="9" fill="#ff0077"/>
+  <circle cx="180" cy="68" r="6.5" fill="#00eeff"/>
+  <circle cx="220" cy="68" r="6.5" fill="#00eeff"/>
+  <!-- Eyes -->
+  <circle cx="178" cy="140" r="15" fill="#fff"/>
+  <circle cx="222" cy="140" r="15" fill="#fff"/>
+  <circle cx="180" cy="141" r="10" fill="#ff7700"/>
+  <circle cx="224" cy="141" r="10" fill="#ff7700"/>
+  <circle cx="182" cy="139" r="6" fill="#111"/>
+  <circle cx="226" cy="139" r="6" fill="#111"/>
+  <circle cx="184" cy="137" r="2.5" fill="#fff"/>
+  <circle cx="228" cy="137" r="2.5" fill="#fff"/>
+  <!-- Beak -->
+  <polygon points="193,160 207,160 200,178" fill="#ff9900"/>
+  <!-- Feet -->
+  <line x1="182" y1="340" x2="177" y2="368" stroke="#ff9900" stroke-width="4" stroke-linecap="round"/>
+  <line x1="218" y1="340" x2="223" y2="368" stroke="#ff9900" stroke-width="4" stroke-linecap="round"/>
+  <line x1="177" y1="368" x2="156" y2="378" stroke="#ff9900" stroke-width="3" stroke-linecap="round"/>
+  <line x1="177" y1="368" x2="177" y2="382" stroke="#ff9900" stroke-width="3" stroke-linecap="round"/>
+  <line x1="177" y1="368" x2="193" y2="380" stroke="#ff9900" stroke-width="3" stroke-linecap="round"/>
+  <line x1="223" y1="368" x2="202" y2="378" stroke="#ff9900" stroke-width="3" stroke-linecap="round"/>
+  <line x1="223" y1="368" x2="223" y2="382" stroke="#ff9900" stroke-width="3" stroke-linecap="round"/>
+  <line x1="223" y1="368" x2="244" y2="380" stroke="#ff9900" stroke-width="3" stroke-linecap="round"/>
+  <!-- Label -->
+  <text x="200" y="393" text-anchor="middle" fill="#ffd700" font-family="Arial,sans-serif" font-size="12" font-weight="bold" filter="url(#glow)">✦ LEGENDARY #0001 ✦</text>
+</svg>
