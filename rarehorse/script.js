@@ -156,6 +156,98 @@ rarityBars.forEach(bar => {
   rarityObserver.observe(bar);
 });
 
+/* ---- COUNTDOWN TIMER ---- */
+function startCountdown() {
+  const deadline = new Date();
+  deadline.setDate(deadline.getDate() + 3);
+  deadline.setHours(deadline.getHours() + 7);
+  deadline.setMinutes(deadline.getMinutes() + 42);
+
+  const timerEl = document.getElementById('countdownTimer');
+  if (!timerEl) return;
+
+  function tick() {
+    const now = new Date();
+    const diff = deadline - now;
+    if (diff <= 0) {
+      timerEl.innerHTML = '<span class="cd-unit"><span class="cd-val">00</span><span class="cd-label">Days</span></span><span class="cd-sep">:</span><span class="cd-unit"><span class="cd-val">00</span><span class="cd-label">Hrs</span></span><span class="cd-sep">:</span><span class="cd-unit"><span class="cd-val">00</span><span class="cd-label">Min</span></span><span class="cd-sep">:</span><span class="cd-unit"><span class="cd-val">00</span><span class="cd-label">Sec</span></span>';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    timerEl.innerHTML = `
+      <span class="cd-unit"><span class="cd-val">${pad(d)}</span><span class="cd-label">Days</span></span>
+      <span class="cd-sep">:</span>
+      <span class="cd-unit"><span class="cd-val">${pad(h)}</span><span class="cd-label">Hrs</span></span>
+      <span class="cd-sep">:</span>
+      <span class="cd-unit"><span class="cd-val">${pad(m)}</span><span class="cd-label">Min</span></span>
+      <span class="cd-sep">:</span>
+      <span class="cd-unit"><span class="cd-val">${pad(s)}</span><span class="cd-label">Sec</span></span>`;
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+startCountdown();
+
+/* ---- NFT LIGHTBOX ---- */
+const lightbox = document.getElementById('nftLightbox');
+const lbImg    = document.getElementById('lbImg');
+const lbName   = document.getElementById('lbName');
+const lbTier   = document.getElementById('lbTier');
+const lbPrice  = document.getElementById('lbPrice');
+const lbClose  = document.getElementById('lbClose');
+
+document.querySelectorAll('.nft-view-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const card    = btn.closest('.nft-card');
+    const img     = card.querySelector('img');
+    const name    = card.querySelector('.nft-name').textContent;
+    const tier    = card.querySelector('.nft-tier').textContent;
+    const price   = card.querySelector('.price-value')?.textContent || '';
+    const tierCls = card.querySelector('.nft-tier').className.replace('nft-tier','').trim();
+    if (!img || !lightbox) return;
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    lbName.textContent = name;
+    lbTier.textContent = tier;
+    lbTier.className = 'lb-tier nft-tier ' + tierCls;
+    lbPrice.textContent = price;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+if (lbClose) {
+  lbClose.addEventListener('click', closeLightbox);
+}
+if (lightbox) {
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+});
+function closeLightbox() {
+  if (!lightbox) return;
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ---- NEWSLETTER FORM ---- */
+function handleNewsletter(e) {
+  e.preventDefault();
+  const form = document.getElementById('newsletterForm');
+  const success = document.getElementById('newsletterSuccess');
+  if (!form || !success) return false;
+  form.style.display = 'none';
+  success.classList.add('visible');
+  return false;
+}
+
 /* ---- MINT PROGRESS BAR ANIMATION ---- */
 const mintFill = document.querySelector('.mint-progress-fill');
 if (mintFill) {

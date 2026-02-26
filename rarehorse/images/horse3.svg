@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1a2e"/>
+      <stop offset="100%" style="stop-color:#051525"/>
+    </linearGradient>
+    <linearGradient id="blue3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+    <radialGradient id="glow3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="blur3"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg3)"/>
+  <circle cx="200" cy="200" r="160" fill="url(#glow3)" filter="url(#blur3)"/>
+  <!-- Stars -->
+  <circle cx="55" cy="50" r="2" fill="#3b82f6" opacity="0.8"/>
+  <circle cx="130" cy="25" r="1.5" fill="#06b6d4" opacity="0.7"/>
+  <circle cx="345" cy="70" r="2" fill="#3b82f6" opacity="0.9"/>
+  <circle cx="375" cy="200" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="25" cy="310" r="2" fill="#06b6d4" opacity="0.6"/>
+  <!-- Body - steel blue -->
+  <ellipse cx="200" cy="261" rx="91" ry="65" fill="#2563a8"/>
+  <!-- Neck -->
+  <ellipse cx="179" cy="182" rx="41" ry="56" fill="#2563a8" transform="rotate(-10,179,182)"/>
+  <!-- Head -->
+  <ellipse cx="153" cy="127" rx="39" ry="32" fill="#2563a8" transform="rotate(-15,153,127)"/>
+  <!-- Snout -->
+  <ellipse cx="127" cy="145" rx="22" ry="16" fill="#1a4d8a" transform="rotate(-15,127,145)"/>
+  <!-- Diamond on forehead -->
+  <path d="M162 100 L172 88 L182 100 L172 112 Z" fill="url(#blue3)" stroke="#fff" stroke-width="1"/>
+  <!-- Eye - icy blue -->
+  <circle cx="161" cy="119" r="9" fill="#0a0f1e"/>
+  <circle cx="161" cy="119" r="6" fill="#06b6d4"/>
+  <circle cx="163" cy="117" r="3" fill="#fff" opacity="0.9"/>
+  <!-- Nostril -->
+  <ellipse cx="117" cy="149" rx="5" ry="3" fill="#143d6e" transform="rotate(-15,117,149)"/>
+  <!-- Mane - blue/cyan -->
+  <path d="M173 77 Q189 47 169 27 Q154 52 164 77 Q149 42 139 22 Q134 52 147 79 Q129 47 124 27 Q117 57 131 82" fill="none" stroke="#3b82f6" stroke-width="9" stroke-linecap="round"/>
+  <path d="M176 77 Q183 52 166 32" fill="none" stroke="#06b6d4" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+  <!-- Ice crystal spikes in mane -->
+  <path d="M150 55 L145 35 L155 50" fill="#06b6d4" opacity="0.7"/>
+  <path d="M165 40 L160 18 L170 38" fill="#3b82f6" opacity="0.8"/>
+  <!-- Armor shoulder -->
+  <path d="M215 190 Q245 175 260 195 Q250 220 220 225 Z" fill="#1a4d8a" stroke="url(#blue3)" stroke-width="1.5"/>
+  <!-- Legs -->
+  <rect x="147" y="311" width="22" height="63" rx="8" fill="#1a4d8a"/>
+  <rect x="177" y="311" width="22" height="63" rx="8" fill="#1a4d8a"/>
+  <rect x="221" y="311" width="22" height="58" rx="8" fill="#1a4d8a"/>
+  <rect x="251" y="311" width="22" height="58" rx="8" fill="#1a4d8a"/>
+  <!-- Ice hooves -->
+  <rect x="147" y="364" width="22" height="12" rx="4" fill="#06b6d4"/>
+  <rect x="177" y="364" width="22" height="12" rx="4" fill="#06b6d4"/>
+  <rect x="221" y="359" width="22" height="12" rx="4" fill="#3b82f6"/>
+  <rect x="251" y="359" width="22" height="12" rx="4" fill="#3b82f6"/>
+  <!-- Tail -->
+  <path d="M286 256 Q331 231 341 261 Q351 291 321 311 Q301 321 286 301" fill="none" stroke="#3b82f6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M286 259 Q326 239 337 266" fill="none" stroke="#06b6d4" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Badge -->
+  <rect x="10" y="10" width="95" height="32" rx="16" fill="rgba(59,130,246,0.2)" stroke="#3b82f6" stroke-width="1"/>
+  <text x="57" y="31" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#60a5fa">💎 RARE</text>
+  <text x="390" y="390" text-anchor="end" font-family="Arial" font-size="14" fill="rgba(255,255,255,0.4)">#0117</text>
+</svg>
