@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RugRadar — Solana Token Rug Pull Detector</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <div class="logo-shield">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" fill="url(#shieldGrad)"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="shieldGrad" x1="3" y1="2" x2="21" y2="23" gradientUnits="userSpaceOnUse"><stop stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs></svg>
+        </div>
+        <span class="logo-text">RUG<span class="logo-accent">RADAR</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#scanner">Scanner</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#risk-factors">Risk Factors</a></li>
+        <li><a href="#recent-scans">Recent Scans</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-actions">
+        <div class="network-badge">
+          <span class="net-dot"></span>
+          Solana Mainnet
+        </div>
+        <a href="#scanner" class="btn-primary">Scan Token</a>
+        <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#scanner">Scanner</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#risk-factors">Risk Factors</a>
+      <a href="#recent-scans">Recent Scans</a>
+      <a href="#faq">FAQ</a>
+      <a href="#scanner" class="btn-primary">Scan Token</a>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <div class="hero-grid-overlay"></div>
+      <div class="hero-glow-1"></div>
+      <div class="hero-glow-2"></div>
+      <canvas id="particleCanvas"></canvas>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Real-time Solana Token Security Analysis
+      </div>
+      <h1 class="hero-title">
+        Detect Rug Pulls<br />
+        <span class="gradient-text">Before They Happen</span>
+      </h1>
+      <p class="hero-subtitle">
+        RugRadar scans Solana tokens in seconds — analyzing liquidity locks,
+        developer wallets, holder concentration, mint authority, and trading patterns
+        to give you a comprehensive safety score before you invest.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-value" data-count="2847193">0</span>
+          <span class="stat-label">Tokens Scanned</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" data-count="14382">0</span>
+          <span class="stat-label">Rugs Detected</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" data-percent="98.7">0</span>
+          <span class="stat-label">Detection Rate</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" data-count="247">0</span>
+          <span class="stat-label">Active Monitors</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SCANNER ========== -->
+  <section class="scanner-section" id="scanner">
+    <div class="container">
+      <div class="scanner-card">
+        <div class="scanner-header">
+          <div class="scanner-title-wrap">
+            <div class="scanner-icon-wrap">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="url(#sGrad)" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="url(#sGrad)" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="sGrad" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse"><stop stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs></svg>
+            </div>
+            <div>
+              <h2 class="scanner-title">Token Security Scanner</h2>
+              <p class="scanner-sub">Enter any Solana token contract address or ticker</p>
+            </div>
+          </div>
+          <div class="scanner-status" id="scannerStatus">
+            <span class="status-dot ready"></span>
+            <span id="statusText">Ready</span>
+          </div>
+        </div>
+
+        <div class="search-wrap">
+          <div class="search-box" id="searchBox">
+            <div class="search-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" stroke="#9945FF" stroke-width="2"/></svg>
+            </div>
+            <input
+              type="text"
+              id="tokenInput"
+              class="search-input"
+              placeholder="Token address or ticker (e.g. EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v)"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button class="search-clear" id="searchClear" style="display:none">✕</button>
+          </div>
+          <button class="btn-scan" id="scanBtn">
+            <svg class="scan-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" fill="white" fill-opacity="0.9"/><path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="scanBtnText">Scan Token</span>
+          </button>
+        </div>
+
+        <div class="quick-tokens">
+          <span class="quick-label">Try:</span>
+          <button class="quick-token" data-addr="EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v">USDC</button>
+          <button class="quick-token" data-addr="So11111111111111111111111111111111111111112">SOL</button>
+          <button class="quick-token" data-addr="DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263">BONK</button>
+          <button class="quick-token" data-addr="7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr">POPCAT</button>
+          <button class="quick-token" data-addr="4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R">RAY</button>
+        </div>
+
+        <!-- Scanning Progress -->
+        <div class="scan-progress" id="scanProgress" style="display:none">
+          <div class="progress-steps">
+            <div class="prog-step" id="step1">
+              <div class="step-indicator">
+                <div class="step-spinner"></div>
+              </div>
+              <span>Fetching on-chain data</span>
+            </div>
+            <div class="prog-step pending" id="step2">
+              <div class="step-indicator"><div class="step-dot"></div></div>
+              <span>Analyzing token authority</span>
+            </div>
+            <div class="prog-step pending" id="step3">
+              <div class="step-indicator"><div class="step-dot"></div></div>
+              <span>Checking liquidity pools</span>
+            </div>
+            <div class="prog-step pending" id="step4">
+              <div class="step-indicator"><div class="step-dot"></div></div>
+              <span>Inspecting holder distribution</span>
+            </div>
+            <div class="prog-step pending" id="step5">
+              <div class="step-indicator"><div class="step-dot"></div></div>
+              <span>Scanning trading patterns</span>
+            </div>
+            <div class="prog-step pending" id="step6">
+              <div class="step-indicator"><div class="step-dot"></div></div>
+              <span>Generating risk report</span>
+            </div>
+          </div>
+          <div class="prog-bar-wrap">
+            <div class="prog-bar-fill" id="progBarFill"></div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="scan-results" id="scanResults" style="display:none">
+
+          <div class="results-header">
+            <div class="results-token-info">
+              <div class="token-avatar" id="tokenAvatar"></div>
+              <div>
+                <div class="token-name" id="tokenName">—</div>
+                <div class="token-addr" id="tokenAddr">—</div>
+              </div>
+            </div>
+            <div class="results-meta">
+              <div class="meta-item">
+                <span class="meta-label">Market Cap</span>
+                <span class="meta-value" id="tokenMcap">—</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">24h Volume</span>
+                <span class="meta-value" id="tokenVolume">—</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Holders</span>
+                <span class="meta-value" id="tokenHolders">—</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Age</span>
+                <span class="meta-value" id="tokenAge">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Score -->
+          <div class="risk-score-section">
+            <div class="risk-gauge-wrap">
+              <div class="risk-gauge">
+                <svg class="gauge-svg" viewBox="0 0 200 120">
+                  <!-- Background arc -->
+                  <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1e1e2e" stroke-width="16" stroke-linecap="round"/>
+                  <!-- Colored arc segments -->
+                  <path class="gauge-safe" d="M 20 100 A 80 80 0 0 1 80 28" fill="none" stroke="#14F195" stroke-width="16" stroke-linecap="round" opacity="0.25"/>
+                  <path class="gauge-caution" d="M 80 28 A 80 80 0 0 1 140 28" fill="none" stroke="#F5C542" stroke-width="16" stroke-linecap="round" opacity="0.25"/>
+                  <path class="gauge-danger" d="M 140 28 A 80 80 0 0 1 180 100" fill="none" stroke="#FF4444" stroke-width="16" stroke-linecap="round" opacity="0.25"/>
+                  <!-- Active fill -->
+                  <path class="gauge-fill" id="gaugeFill" d="M 20 100 A 80 80 0 0 1 20 100" fill="none" stroke="#14F195" stroke-width="16" stroke-linecap="round"/>
+                  <!-- Needle -->
+                  <line class="gauge-needle" id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                  <circle cx="100" cy="100" r="5" fill="white"/>
+                  <!-- Score -->
+                  <text class="gauge-score" id="gaugeScore" x="100" y="85" text-anchor="middle" font-size="28" font-weight="800" fill="white">—</text>
+                  <text x="100" y="102" text-anchor="middle" font-size="11" fill="#606080">RISK SCORE</text>
+                </svg>
+                <div class="gauge-labels">
+                  <span class="gauge-label-safe">SAFE</span>
+                  <span class="gauge-label-danger">RUG</span>
+                </div>
+              </div>
+              <div class="risk-verdict" id="riskVerdict">
+                <div class="verdict-badge" id="verdictBadge">—</div>
+                <p class="verdict-desc" id="verdictDesc">—</p>
+              </div>
+            </div>
+
+            <!-- Risk Factor Grid -->
+            <div class="risk-factors-grid" id="riskFactorsGrid">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Flags -->
+          <div class="flags-section" id="flagsSection">
+            <h3 class="flags-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" stroke="#F5C542" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="4" y1="22" x2="4" y2="15" stroke="#F5C542" stroke-width="2" stroke-linecap="round"/></svg>
+              Risk Flags
+            </h3>
+            <div class="flags-list" id="flagsList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Holder Distribution -->
+          <div class="holder-section">
+            <h3 class="holder-title">Top Holder Distribution</h3>
+            <div class="holder-bars" id="holderBars">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="results-actions">
+            <button class="btn-secondary" id="shareScanBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2"/></svg>
+              Share Report
+            </button>
+            <button class="btn-secondary" id="newScanBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 16H3v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              New Scan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TICKER ========== -->
+  <div class="ticker-wrapper">
+    <div class="ticker" id="tickerInner">
+      <span class="tick-safe">✅ USDC — Safe (Score: 8)</span>
+      <span class="tick-danger">🚨 SCAMTOKEN — HIGH RISK (Score: 94)</span>
+      <span class="tick-safe">✅ SOL — Safe (Score: 5)</span>
+      <span class="tick-warn">⚠️ NEWMEME — Moderate Risk (Score: 55)</span>
+      <span class="tick-safe">✅ BONK — Safe (Score: 18)</span>
+      <span class="tick-danger">🚨 RUGNOW — HIGH RISK (Score: 97)</span>
+      <span class="tick-safe">✅ RAY — Safe (Score: 12)</span>
+      <span class="tick-warn">⚠️ MOONSHOT — Moderate Risk (Score: 48)</span>
+      <span class="tick-danger">🚨 FAKEDROP — HIGH RISK (Score: 89)</span>
+      <span class="tick-safe">✅ USDC — Safe (Score: 8)</span>
+      <span class="tick-danger">🚨 SCAMTOKEN — HIGH RISK (Score: 94)</span>
+      <span class="tick-safe">✅ SOL — Safe (Score: 5)</span>
+      <span class="tick-warn">⚠️ NEWMEME — Moderate Risk (Score: 55)</span>
+      <span class="tick-safe">✅ BONK — Safe (Score: 18)</span>
+      <span class="tick-danger">🚨 RUGNOW — HIGH RISK (Score: 97)</span>
+      <span class="tick-safe">✅ RAY — Safe (Score: 12)</span>
+      <span class="tick-warn">⚠️ MOONSHOT — Moderate Risk (Score: 48)</span>
+      <span class="tick-danger">🚨 FAKEDROP — HIGH RISK (Score: 89)</span>
+    </div>
+  </div>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">The Process</div>
+        <h2 class="section-title">How <span class="gradient-text">RugRadar</span> Works</h2>
+        <p class="section-subtitle">
+          Our multi-layer analysis engine scans every critical vector used in Solana rug pulls.
+        </p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="url(#g1)" stroke-width="2"/><path d="M9 9h6M9 12h6M9 15h4" stroke="url(#g1)" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="g1" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse"><stop stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs></svg>
+          </div>
+          <h3>Submit Address</h3>
+          <p>Paste any Solana SPL token contract address or search by ticker symbol.</p>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="url(#g2)" stroke-width="2"/><defs><linearGradient id="g2" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse"><stop stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs></svg>
+          </div>
+          <h3>On-Chain Fetch</h3>
+          <p>We query Solana RPC nodes and indexers for real-time token metadata, accounts, and transactions.</p>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" stroke="url(#g3)" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="url(#g3)" stroke-width="2"/><defs><linearGradient id="g3" x1="2" y1="5" x2="22" y2="19" gradientUnits="userSpaceOnUse"><stop stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs></svg>
+          </div>
+          <h3>Deep Analysis</h3>
+          <p>6-layer engine checks mint authority, freeze authority, liquidity locks, holder patterns, and trading behavior.</p>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-card">
+          <div class="step-number">04</div>
+          <div class="step-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" stroke="url(#g4)" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="url(#g4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g4" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs></svg>
+          </div>
+          <h3>Risk Report</h3>
+          <p>Get a 0–100 risk score with itemized flags, holder charts, and an actionable safety verdict.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RISK FACTORS ========== -->
+  <section class="risk-factors-section" id="risk-factors">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">What We Check</div>
+        <h2 class="section-title"><span class="gradient-text">6 Critical</span> Risk Vectors</h2>
+        <p class="section-subtitle">
+          Every factor we analyze is a known vector used in real Solana rug pulls.
+        </p>
+      </div>
+      <div class="rf-grid">
+        <div class="rf-card">
+          <div class="rf-icon danger-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" stroke="#FF4444" stroke-width="2"/><path d="M12 8v4M12 16h.01" stroke="#FF4444" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="rf-content">
+            <h3>Mint Authority</h3>
+            <p>If the developer retains mint authority, they can create unlimited new tokens at any time, diluting your position to zero instantly.</p>
+            <div class="rf-tags">
+              <span class="rf-tag danger">Critical Risk</span>
+              <span class="rf-tag">SPL Token</span>
+            </div>
+          </div>
+        </div>
+        <div class="rf-card">
+          <div class="rf-icon danger-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="#FF4444" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#FF4444" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="rf-content">
+            <h3>Freeze Authority</h3>
+            <p>Freeze authority allows the developer to freeze all token transfers, preventing you from selling your tokens — a honeypot mechanism.</p>
+            <div class="rf-tags">
+              <span class="rf-tag danger">Critical Risk</span>
+              <span class="rf-tag">Honeypot</span>
+            </div>
+          </div>
+        </div>
+        <div class="rf-card">
+          <div class="rf-icon warn-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2v10M12 17h.01" stroke="#F5C542" stroke-width="2" stroke-linecap="round"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="#F5C542" stroke-width="2"/></svg>
+          </div>
+          <div class="rf-content">
+            <h3>Liquidity Lock</h3>
+            <p>Unlocked liquidity pools can be drained by the developer in seconds. We check if LP tokens are burned or locked in a time-lock contract.</p>
+            <div class="rf-tags">
+              <span class="rf-tag warn">High Risk</span>
+              <span class="rf-tag">Raydium / Orca</span>
+            </div>
+          </div>
+        </div>
+        <div class="rf-card">
+          <div class="rf-icon warn-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#F5C542" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="#F5C542" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#F5C542" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="rf-content">
+            <h3>Holder Concentration</h3>
+            <p>When a small number of wallets hold most of the supply, coordinated sell-offs can crash the price in seconds — a classic "whale dump."</p>
+            <div class="rf-tags">
+              <span class="rf-tag warn">High Risk</span>
+              <span class="rf-tag">Distribution</span>
+            </div>
+          </div>
+        </div>
+        <div class="rf-card">
+          <div class="rf-icon safe-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="#14F195" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="rf-content">
+            <h3>Trading Patterns</h3>
+            <p>Wash trading, coordinated pump activity, and single-wallet volume manipulation are red flags that signal an artificial price creation scheme.</p>
+            <div class="rf-tags">
+              <span class="rf-tag safe">Moderate Risk</span>
+              <span class="rf-tag">On-Chain Data</span>
+            </div>
+          </div>
+        </div>
+        <div class="rf-card">
+          <div class="rf-icon safe-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#14F195" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="#14F195" stroke-width="2"/><line x1="16" y1="13" x2="8" y2="13" stroke="#14F195" stroke-width="2"/><line x1="16" y1="17" x2="8" y2="17" stroke="#14F195" stroke-width="2"/><polyline points="10 9 9 9 8 9" stroke="#14F195" stroke-width="2"/></svg>
+          </div>
+          <div class="rf-content">
+            <h3>Contract Metadata</h3>
+            <p>Verified metadata, active social links, public team wallets, and transparent contract code are strong signals of a legitimate project.</p>
+            <div class="rf-tags">
+              <span class="rf-tag safe">Low Risk</span>
+              <span class="rf-tag">Metadata</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RECENT SCANS ========== -->
+  <section class="recent-scans" id="recent-scans">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Live Feed</div>
+        <h2 class="section-title">Recent <span class="gradient-text">Scans</span></h2>
+        <p class="section-subtitle">Real-time security analysis from the RugRadar community.</p>
+      </div>
+      <div class="scans-table-wrap">
+        <table class="scans-table">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Address</th>
+              <th>Risk Score</th>
+              <th>Verdict</th>
+              <th>Mint Auth</th>
+              <th>Liquidity</th>
+              <th>Scanned</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="scansTableBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STATS SECTION ========== -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="big-stat-card">
+          <div class="big-stat-icon">🛡️</div>
+          <div class="big-stat-value">$2.4B+</div>
+          <div class="big-stat-label">Value Protected</div>
+          <p class="big-stat-desc">Estimated value of funds protected by RugRadar alerts since launch</p>
+        </div>
+        <div class="big-stat-card">
+          <div class="big-stat-icon">⚡</div>
+          <div class="big-stat-value">&lt;3s</div>
+          <div class="big-stat-label">Average Scan Time</div>
+          <p class="big-stat-desc">Full 6-layer security analysis completed in under 3 seconds</p>
+        </div>
+        <div class="big-stat-card">
+          <div class="big-stat-icon">🔍</div>
+          <div class="big-stat-value">28+</div>
+          <div class="big-stat-label">Data Points Checked</div>
+          <p class="big-stat-desc">Every scan covers 28 individual on-chain and off-chain risk indicators</p>
+        </div>
+        <div class="big-stat-card">
+          <div class="big-stat-icon">🎯</div>
+          <div class="big-stat-value">98.7%</div>
+          <div class="big-stat-label">Detection Accuracy</div>
+          <p class="big-stat-desc">Verified against historical rug pull events on Solana mainnet</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FAQ ========== -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Got Questions?</div>
+        <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question"><span>What is a rug pull on Solana?</span><span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>A rug pull is a type of crypto scam where developers abandon a project and run away with investor funds. On Solana, this typically involves removing liquidity from a DEX pool, using mint authority to print new tokens and dump them, or enabling freeze authority to prevent investors from selling — all of which collapse the token price to zero.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question"><span>Is RugRadar free to use?</span><span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Yes — basic token scanning is completely free. Every user gets unlimited scans with full access to our 6-factor security report. Advanced features like real-time wallet monitoring, custom alerts, and portfolio tracking are available in our Pro plan.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question"><span>How accurate is the risk score?</span><span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Our risk score has a 98.7% accuracy rate when backtested against confirmed Solana rug pulls. The score is based on 28 on-chain data points weighted by their historical correlation with rug pull events. That said, no automated tool is 100% accurate — always do your own research and never invest more than you can afford to lose.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question"><span>What does "Mint Authority" mean?</span><span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Mint authority is a Solana SPL token permission that allows the wallet holding it to create (mint) additional tokens at any time. If a developer retains mint authority, they can inflate the supply infinitely, crashing the price. Legitimate projects either renounce mint authority or burn it to a null address.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question"><span>What is a honeypot token?</span><span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>A honeypot is a token you can buy but cannot sell. On Solana, this is typically achieved via freeze authority (which can block all transfers) or custom transfer instructions that revert on sell transactions. RugRadar checks for both patterns and flags them as critical risks.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question"><span>Does a high score mean I should sell?</span><span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>A high risk score is a serious warning, but it's not financial advice. Some legitimate new projects may score moderately due to early-stage setup (e.g., liquidity not yet locked). Always verify flags manually, check the project's official channels, and use the score as one input among many in your research process.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question"><span>Which DEXes and protocols does RugRadar cover?</span><span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>RugRadar analyzes liquidity across all major Solana DEXes including Raydium, Orca, Meteora, Jupiter aggregator routes, and OpenBook. We also check LP token burns and time-locks on platforms like Streamflow and Vesting programs.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA ========== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-bg-glow"></div>
+        <div class="cta-shield">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" fill="url(#ctaGrad)" fill-opacity="0.2" stroke="url(#ctaGrad)" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke="url(#ctaGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="ctaGrad" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs></svg>
+        </div>
+        <h2>Protect Your <span class="gradient-text">Portfolio</span> Today</h2>
+        <p>Don't let the next rug pull catch you off guard. Scan before you invest.</p>
+        <div class="cta-actions">
+          <a href="#scanner" class="btn-primary btn-large">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="white" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+            Scan a Token
+          </a>
+          <a href="#how-it-works" class="btn-secondary btn-large">Learn More</a>
+        </div>
+        <div class="cta-trust-badges">
+          <span>🔒 Non-custodial</span>
+          <span>⚡ No wallet connection required</span>
+          <span>✅ 100% on-chain data</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">
+            <div class="logo-shield">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" fill="url(#footShield)"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="footShield" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs></svg>
+            </div>
+            <span class="logo-text">RUG<span class="logo-accent">RADAR</span></span>
+          </a>
+          <p>The most trusted Solana token security scanner. Protecting investors from rug pulls since 2023.</p>
+          <div class="footer-social">
+            <a href="#" class="social-link" title="Twitter">𝕏</a>
+            <a href="#" class="social-link" title="Telegram">✈️</a>
+            <a href="#" class="social-link" title="Discord">💬</a>
+            <a href="#" class="social-link" title="GitHub">⬡</a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Tools</h4>
+          <ul>
+            <li><a href="#scanner">Token Scanner</a></li>
+            <li><a href="#">Wallet Monitor</a></li>
+            <li><a href="#">Alert System</a></li>
+            <li><a href="#">API Access</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Learn</h4>
+          <ul>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#risk-factors">Risk Factors</a></li>
+            <li><a href="#">Rug Pull Guide</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 RugRadar. All rights reserved.</p>
+        <p class="footer-disclaimer">⚠️ For informational purposes only. Not financial advice. Always DYOR.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
