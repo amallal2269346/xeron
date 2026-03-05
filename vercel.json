@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "rare-pigeons",
+  "builds": [
+    { "src": "rarepigeons/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/rarepigeons/$1" }
+  ]
+}
