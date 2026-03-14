@@ -881,13 +881,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── PumpFun Live Tracker (DexScreener) ─────────────────────────────────────
 (function pumpTracker() {
-  const FEED        = document.getElementById('pfFeed');
-  const STATUS      = document.getElementById('pfStatus');
-  const PLACEHOLDER = document.getElementById('pfPlaceholder');
-  const API         = 'https://api.dexscreener.com/latest/dex/search?q=pump.fun';
+  const FEED         = document.getElementById('pfFeed');
+  const STATUS       = document.getElementById('pfStatus');
+  const PLACEHOLDER  = document.getElementById('pfPlaceholder');
+  const API          = 'https://api.dexscreener.com/latest/dex/search?q=pump.fun';
   const MC_THRESHOLD = 100_000;
-  const MAX_CARDS    = 50;
-  const seen = new Set();
 
   function setStatus(text, state) {
     STATUS.innerHTML = `<span class="pf-dot pf-dot--${state}"></span><span class="pf-status-text">${text}</span>`;
@@ -899,44 +897,40 @@ document.addEventListener('DOMContentLoaded', () => {
     return `$${Math.round(usd).toLocaleString()}`;
   }
 
-  function changeColor(pct) {
-    if (pct == null) return 'var(--text-2)';
-    return pct >= 0 ? 'var(--success)' : 'var(--danger)';
-  }
+  function buildCard(pair) {
+    const mc     = pair.fdv || pair.marketCap || 0;
+    const name   = (pair.baseToken?.name   || 'Unknown').replace(/</g, '&lt;');
+    const symbol = (pair.baseToken?.symbol || '').replace(/</g, '&lt;');
+    const mint   = pair.baseToken?.address || '';
+    const price  = pair.priceUsd ? `$${parseFloat(pair.priceUsd).toFixed(6)}` : '';
+    const chg    = pair.priceChange?.h24;
+    const chgTxt = chg != null ? `${chg >= 0 ? '+' : ''}${chg.toFixed(1)}%` : '';
+    const chgClr = chg != null ? (chg >= 0 ? 'var(--success)' : 'var(--danger)') : 'var(--text-2)';
+    const img    = pair.info?.imageUrl || '';
+    const link   = pair.url || `https://pump.fun/${mint}`;
 
-  function addCard(pair) {
-    const mint = pair.baseToken?.address;
-    if (!mint || seen.has(mint)) return;
-    seen.add(mint);
-    if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
-
-    const mc      = pair.fdv || pair.marketCap || 0;
-    const name    = (pair.baseToken?.name    || 'Unknown').replace(/</g, '&lt;');
-    const symbol  = (pair.baseToken?.symbol  || '').replace(/</g, '&lt;');
-    const price   = pair.priceUsd ? `$${parseFloat(pair.priceUsd).toFixed(6)}` : '';
-    const chg     = pair.priceChange?.h24;
-    const chgText = chg != null ? `${chg >= 0 ? '+' : ''}${chg.toFixed(1)}%` : '';
-    const img     = pair.info?.imageUrl || '';
-    const link    = pair.url || `https://pump.fun/${mint}`;
+    // Age label
+    let age = '';
+    if (pair.pairCreatedAt) {
+      const mins = Math.floor((Date.now() - pair.pairCreatedAt) / 60_000);
+      age = mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`;
+    }
 
     const card = document.createElement('div');
-    card.className = 'pf-card';
+    card.className = 'pf-card pf-card--visible';
     card.innerHTML = `
       <div class="pf-card-icon">${img ? `<img src="${img}" onerror="this.parentNode.innerHTML='🪙'">` : '🪙'}</div>
       <div class="pf-card-info">
         <div class="pf-card-name">${name}<span class="pf-card-sym">${symbol ? ' ' + symbol : ''}</span></div>
         <div class="pf-card-row">
           <span class="pf-card-mc">${mcFormat(mc)}</span>
-          ${price   ? `<span class="pf-card-price">${price}</span>` : ''}
-          ${chgText ? `<span class="pf-card-chg" style="color:${changeColor(chg)}">${chgText}</span>` : ''}
+          ${price  ? `<span class="pf-card-price">${price}</span>` : ''}
+          ${chgTxt ? `<span class="pf-card-chg" style="color:${chgClr}">${chgTxt}</span>` : ''}
+          ${age    ? `<span class="pf-card-age">${age}</span>` : ''}
         </div>
       </div>
       <a class="pf-card-link" href="${link}" target="_blank" rel="noopener">↗</a>`;
-
-    FEED.insertBefore(card, FEED.firstChild);
-    requestAnimationFrame(() => card.classList.add('pf-card--visible'));
-    const cards = FEED.querySelectorAll('.pf-card');
-    if (cards.length > MAX_CARDS) cards[cards.length - 1].remove();
+    return card;
   }
 
   async function poll() {
@@ -945,12 +939,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = await fetch(API);
       if (!r.ok) throw new Error(r.status);
       const data = await r.json();
+
+      // Filter: must be Solana + pump.fun token (address ends with 'pump') + above MC threshold
       const pairs = (data.pairs || [])
-        .filter(p => p.chainId === 'solana' && (p.fdv || p.marketCap || 0) >= MC_THRESHOLD)
-        .sort((a, b) => (b.fdv || b.marketCap || 0) - (a.fdv || a.marketCap || 0));
-      pairs.forEach(addCard);
+        .filter(p =>
+          p.chainId === 'solana' &&
+          (p.baseToken?.address || '').endsWith('pump') &&
+          (p.fdv || p.marketCap || 0) >= MC_THRESHOLD
+        )
+        // Sort newest first
+        .sort((a, b) => (b.pairCreatedAt || 0) - (a.pairCreatedAt || 0));
+
+      if (pairs.length === 0) {
+        setStatus('No results', 'error');
+        return;
+      }
+
+      // Replace feed content with fresh results
+      FEED.innerHTML = '';
+      if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
+      pairs.forEach(p => FEED.appendChild(buildCard(p)));
       setStatus(`Live · ${pairs.length} tokens`, 'live');
-    } catch (e) {
+    } catch (_) {
       setStatus('Retrying…', 'error');
     }
   }
