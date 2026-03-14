@@ -878,3 +878,99 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%c⬡ Shrug Tool loaded', 'color:#9d5cf7;font-size:18px;font-weight:bold');
   console.log('%cSolana Tools Suite — Educational & Development Use', 'color:#8b98b8');
 });
+
+// ── PumpFun Live Tracker ────────────────────────────────────────────────────
+(function pumpTracker() {
+  const FEED        = document.getElementById('pfFeed');
+  const STATUS      = document.getElementById('pfStatus');
+  const PLACEHOLDER = document.getElementById('pfPlaceholder');
+  const MC_THRESHOLD = 100_000;
+  const MAX_CARDS    = 30;
+  const seen = new Set();
+  let solPrice = 150;
+  let ws = null;
+
+  function setStatus(text, state) {
+    STATUS.innerHTML = `<span class="pf-dot pf-dot--${state}"></span><span class="pf-status-text">${text}</span>`;
+  }
+
+  async function fetchSolPrice() {
+    try {
+      const r = await fetch('https://price.jup.ag/v6/price?ids=SOL');
+      const d = await r.json();
+      solPrice = d.data?.SOL?.price || solPrice;
+    } catch (_) {}
+  }
+
+  function mcFormat(usd) {
+    if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
+    if (usd >= 1_000)     return `$${(usd / 1_000).toFixed(1)}K`;
+    return `$${Math.round(usd).toLocaleString()}`;
+  }
+
+  function addCard(token) {
+    if (!token.mint || seen.has(token.mint)) return;
+    seen.add(token.mint);
+    if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
+
+    const card = document.createElement('div');
+    card.className = 'pf-card';
+    const imgSrc = token.image_uri || token.uri || '';
+    card.innerHTML = `
+      <div class="pf-card-icon">${imgSrc ? `<img src="${imgSrc}" onerror="this.parentNode.textContent='🪙'">` : '🪙'}</div>
+      <div class="pf-card-info">
+        <div class="pf-card-name">${token.name || 'Unknown'}<span class="pf-card-sym">${token.symbol ? ' ' + token.symbol : ''}</span></div>
+        <div class="pf-card-mc">${mcFormat(token.usd_market_cap)} market cap</div>
+      </div>
+      <a class="pf-card-link" href="https://pump.fun/${token.mint}" target="_blank" rel="noopener" title="View on pump.fun">↗</a>`;
+
+    FEED.insertBefore(card, FEED.firstChild);
+    requestAnimationFrame(() => card.classList.add('pf-card--visible'));
+
+    const cards = FEED.querySelectorAll('.pf-card');
+    if (cards.length > MAX_CARDS) cards[cards.length - 1].remove();
+  }
+
+  async function pollRest() {
+    try {
+      const r = await fetch('https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=market_cap&order=DESC&includeNsfw=false');
+      const data = await r.json();
+      if (Array.isArray(data)) {
+        data.filter(t => (t.usd_market_cap || 0) >= MC_THRESHOLD).forEach(addCard);
+      }
+    } catch (_) {}
+  }
+
+  function connectWS() {
+    setStatus('Connecting…', 'connecting');
+    ws = new WebSocket('wss://pumpportal.fun/api/data');
+
+    ws.onopen = () => {
+      setStatus('Live', 'live');
+      ws.send(JSON.stringify({ method: 'subscribeNewToken' }));
+    };
+
+    ws.onmessage = (ev) => {
+      try {
+        const d = JSON.parse(ev.data);
+        const usdMc = d.usd_market_cap || (d.marketCapSol * solPrice);
+        if (usdMc >= MC_THRESHOLD) {
+          addCard({ mint: d.mint, name: d.name, symbol: d.symbol, usd_market_cap: usdMc, image_uri: d.image_uri || d.uri });
+        }
+      } catch (_) {}
+    };
+
+    ws.onerror = () => setStatus('Reconnecting…', 'error');
+    ws.onclose = () => { setStatus('Reconnecting…', 'error'); setTimeout(connectWS, 5000); };
+  }
+
+  async function init() {
+    await fetchSolPrice();
+    setInterval(fetchSolPrice, 60_000);
+    await pollRest();
+    setInterval(pollRest, 30_000);
+    connectWS();
+  }
+
+  init();
+})();
