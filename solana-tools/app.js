@@ -413,7 +413,7 @@ function generateBundleWallets(count = 5) {
   container.innerHTML = '';
   for (let i = 0; i < count; i++) {
     const kp  = Keypair.generate();
-    const key = Buffer.from(kp.secretKey).toString('hex');
+    const key = toHex(kp.secretKey);
     const row = document.createElement('div');
     row.className = 'bundle-wallet-row';
     row.innerHTML = `
@@ -571,6 +571,10 @@ function stopBot() {
 }
 
 // ── Wallet Generator ───────────────────────────────────────────────────────────
+function toHex(uint8arr) {
+  return Array.from(uint8arr).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 function generateWallets() {
   const count  = Math.min(parseInt(document.getElementById('genCount').value) || 10, 100);
   const format = document.getElementById('keyFormat').value;
@@ -580,23 +584,41 @@ function generateWallets() {
   tbody.innerHTML = '';
 
   for (let i = 0; i < count; i++) {
-    const kp       = Keypair.generate();
-    const pubkey   = kp.publicKey.toString();
-    const privkey  = Buffer.from(kp.secretKey).toString('hex');
-    const mnemonic = format === 'mnemonic' || format === 'both' ? '[mnemonic hidden]' : null;
-    state.genWallets.push({ pubkey, privkey, mnemonic });
+    const kp      = Keypair.generate();
+    const pubkey  = kp.publicKey.toString();
+    const privHex = toHex(kp.secretKey); // 64-byte secret key as hex (importable)
+    state.genWallets.push({ pubkey, privkey: privHex });
 
-    const tr  = document.createElement('tr');
-    const key = format === 'base58' || format === 'both' ? privkey : mnemonic;
+    const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${i + 1}</td>
-      <td class="mono">${shortKey(pubkey)} <button class="btn-copy" onclick="copyVal('${pubkey}')">Copy</button></td>
-      <td class="mono">${format === 'both' ? '[base58+mnemonic]' : key?.slice(0, 20) + '…'} <button class="btn-copy" onclick="copyVal('${key}')">Copy</button></td>
-      <td class="wallet-bal-${i}">—</td>
-      <td><button class="btn-copy" onclick="refreshSingleBal('${pubkey}', ${i})">↻</button></td>
+      <td class="mono" style="font-size:11px">${shortKey(pubkey)}
+        <button class="btn-copy" data-copy-pub="${i}">Copy</button>
+      </td>
+      <td class="mono" style="font-size:11px">${privHex.slice(0, 16)}…
+        <button class="btn-copy" data-copy-priv="${i}">Copy</button>
+      </td>
+      <td class="wallet-bal-${i}">—
+        <button class="btn-copy" data-refresh-bal="${i}" data-pubkey="${pubkey}" style="margin-left:4px">↻</button>
+      </td>
+      <td>
+        <button class="btn-copy" data-copy-pub="${i}">Pub</button>
+        <button class="btn-copy" data-copy-priv="${i}" style="margin-left:4px">Priv</button>
+      </td>
     `;
     tbody.appendChild(tr);
   }
+
+  // Event delegation for copy & refresh
+  tbody.addEventListener('click', function handler(e) {
+    const pubIdx   = e.target.dataset.copyPub;
+    const privIdx  = e.target.dataset.copyPriv;
+    const refIdx   = e.target.dataset.refreshBal;
+    if (pubIdx  !== undefined) copyVal(state.genWallets[+pubIdx].pubkey);
+    if (privIdx !== undefined) copyVal(state.genWallets[+privIdx].privkey);
+    if (refIdx  !== undefined) refreshSingleBal(e.target.dataset.pubkey, +refIdx);
+  });
+
   toast(`Generated ${count} wallets.`, 'success');
 }
 
