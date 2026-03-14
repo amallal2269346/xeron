@@ -879,42 +879,43 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%cSolana Tools Suite — Educational & Development Use', 'color:#8b98b8');
 });
 
-// ── PumpFun Live Tracker (pump.fun API) ─────────────────────────────────────
+// ── PumpFun Live Tracker ─────────────────────────────────────────────────────
 (function pumpTracker() {
-  const FEED         = document.getElementById('pfFeed');
-  const STATUS       = document.getElementById('pfStatus');
-  const PLACEHOLDER  = document.getElementById('pfPlaceholder');
-  const API          = 'https://frontend-api.pump.fun/coins?offset=0&limit=200&sort=created_timestamp&order=DESC';
-  const MC_THRESHOLD = 100_000;      // $100 K USD
-  const MAX_AGE_MS   = 30 * 60_000;  // 30 minutes
-  const POLL_MS      = 5_000;        // 5 seconds
+  const FEED        = document.getElementById('pfFeed');
+  const STATUS      = document.getElementById('pfStatus');
+  const PLACEHOLDER = document.getElementById('pfPlaceholder');
+  const REST_API    = 'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=created_timestamp&order=DESC';
+  const WS_URL      = 'wss://frontend-api.pump.fun/';
+  const MAX_CARDS   = 50;
+  const POLL_MS     = 8_000;
+
+  let tokenCount = 0;
+  let wsAlive    = false;
+  let ws         = null;
 
   function setStatus(text, state) {
     STATUS.innerHTML = `<span class="pf-dot pf-dot--${state}"></span><span class="pf-status-text">${text}</span>`;
   }
 
   function fmt(usd) {
+    if (!usd || usd <= 0) return '';
     if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
     if (usd >= 1_000)     return `$${(usd / 1_000).toFixed(1)}K`;
     return `$${Math.round(usd).toLocaleString()}`;
   }
 
-  function fmtVol(v) {
-    if (!v || v <= 0) return '';
-    if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
-    if (v >= 1_000)     return `$${(v / 1_000).toFixed(0)}K`;
-    return `$${Math.round(v)}`;
-  }
-
   function ageLabel(ts) {
-    const mins = Math.floor((Date.now() - ts) / 60_000);
-    if (mins < 1)  return 'just now';
-    if (mins < 60) return `${mins}m ago`;
-    return `${Math.floor(mins / 60)}h ago`;
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 5)   return 'just now';
+    if (s < 60)  return `${s}s ago`;
+    const m = Math.floor(s / 60);
+    if (m < 60)  return `${m}m ago`;
+    return `${Math.floor(m / 60)}h ago`;
   }
 
   function safe(str) {
-    return (str || '').replace(/[<>"'&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]));
+    return (str || '').replace(/[<>"'&]/g, c =>
+      ({ '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '&': '&amp;' }[c]));
   }
 
   function buildCard(coin) {
@@ -923,23 +924,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const symbol = safe(coin.symbol || '');
     const mint   = coin.mint || '';
     const sol    = coin.price_in_sol != null
-                     ? `◎${parseFloat(coin.price_in_sol).toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`
-                     : '';
-    const vol    = fmtVol(coin.volume_24h);
-    const img    = coin.image_uri || '';
-    const age    = ageLabel(coin.created_timestamp);
+      ? `◎${parseFloat(coin.price_in_sol).toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`
+      : '';
+    const img = coin.image_uri || '';
+    const age = ageLabel(coin.created_timestamp || Date.now());
+    const mcStr = fmt(mc);
 
     const card = document.createElement('div');
     card.className = 'pf-card';
     card.dataset.mint = mint;
+    card.dataset.ts   = coin.created_timestamp || Date.now();
     card.innerHTML = `
-      <div class="pf-card-icon">${img ? `<img src="${safe(img)}" alt="" onerror="this.parentNode.innerHTML='🪙'">` : '🪙'}</div>
+      <div class="pf-card-icon">${img
+        ? `<img src="${safe(img)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='🪙'">`
+        : '🪙'}</div>
       <div class="pf-card-info">
         <div class="pf-card-name">${name}${symbol ? `<span class="pf-card-sym"> $${symbol}</span>` : ''}</div>
         <div class="pf-card-row">
-          <span class="pf-card-mc">${fmt(mc)}</span>
-          ${sol ? `<span class="pf-card-price">${sol}</span>` : ''}
-          ${vol ? `<span class="pf-card-vol">Vol ${vol}</span>` : ''}
+          ${mcStr ? `<span class="pf-card-mc">${mcStr}</span>` : ''}
+          ${sol   ? `<span class="pf-card-price">${sol}</span>` : ''}
           <span class="pf-card-age">${age}</span>
         </div>
       </div>
@@ -961,71 +964,132 @@ document.addEventListener('DOMContentLoaded', () => {
     return card;
   }
 
+  function prependCard(coin) {
+    if (!coin.mint) return;
+    if (FEED.querySelector(`.pf-card[data-mint="${coin.mint}"]`)) return;
+
+    if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
+
+    const card = buildCard(coin);
+    FEED.insertBefore(card, FEED.firstChild);
+    requestAnimationFrame(() => card.classList.add('pf-card--visible'));
+
+    tokenCount++;
+    setStatus(`Live · ${tokenCount} new`, 'live');
+
+    // Trim old cards beyond max
+    const all = FEED.querySelectorAll('.pf-card');
+    if (all.length > MAX_CARDS) {
+      for (let i = MAX_CARDS; i < all.length; i++) all[i].remove();
+    }
+
+    // Update ages periodically
+    card._ageInterval = setInterval(() => {
+      const el = card.querySelector('.pf-card-age');
+      if (el) el.textContent = ageLabel(+card.dataset.ts);
+    }, 10_000);
+  }
+
+  // ── WebSocket (primary) ──────────────────────────────────────────────────
+  function connectWS() {
+    try {
+      ws = new WebSocket(WS_URL);
+    } catch (_) {
+      startPollFallback();
+      return;
+    }
+
+    let pingTimer;
+
+    ws.onopen = () => {
+      wsAlive = true;
+      setStatus('Connecting…', 'connecting');
+      // Subscribe to new token events
+      ws.send(JSON.stringify({ method: 'subscribeNewToken' }));
+      // Keep-alive ping every 20s
+      pingTimer = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ method: 'ping' }));
+      }, 20_000);
+    };
+
+    ws.onmessage = evt => {
+      let msg;
+      try { msg = JSON.parse(evt.data); } catch (_) { return; }
+
+      // pump.fun sends the coin object directly for newCoinCreated events
+      if (msg.mint) {
+        prependCard(msg);
+      }
+    };
+
+    ws.onerror = () => {};
+
+    ws.onclose = () => {
+      wsAlive = false;
+      clearInterval(pingTimer);
+      setStatus('Reconnecting…', 'error');
+      // Reconnect after 3s, fallback to polling if WS keeps failing
+      setTimeout(() => {
+        if (!wsAlive) connectWS();
+      }, 3_000);
+    };
+  }
+
+  // ── REST poll fallback ───────────────────────────────────────────────────
+  let pollTimer = null;
+  let seenMints = new Set();
+
   async function poll() {
     try {
-      const r = await fetch(API);
+      const r = await fetch(REST_API);
       if (!r.ok) throw new Error(r.status);
-      const raw = await r.json();
-      const coins = Array.isArray(raw) ? raw : (raw.coins || []);
-      const now   = Date.now();
+      const raw   = await r.json();
+      const coins = (Array.isArray(raw) ? raw : (raw.coins || []))
+        .sort((a, b) => (b.created_timestamp || 0) - (a.created_timestamp || 0));
 
-      // Filter: MC >= $100 K and created within last 30 min
-      const filtered = coins
-        .filter(c => {
-          const mc  = c.usd_market_cap || c.market_cap || 0;
-          const age = now - (c.created_timestamp || 0);
-          return mc >= MC_THRESHOLD && age <= MAX_AGE_MS;
-        })
-        .sort((a, b) =>
-          (b.usd_market_cap || b.market_cap || 0) -
-          (a.usd_market_cap || a.market_cap || 0)
-        );
-
-      if (filtered.length === 0) {
-        FEED.innerHTML = '';
-        if (PLACEHOLDER) {
-          PLACEHOLDER.style.display = '';
-          PLACEHOLDER.textContent = 'Scanning for tokens pumping above $100K market cap…';
+      let added = false;
+      for (const coin of coins) {
+        if (!seenMints.has(coin.mint)) {
+          seenMints.add(coin.mint);
+          if (added || seenMints.size > 50) {
+            // After first load, only prepend truly new ones
+            if (seenMints.size > 50) prependCard(coin);
+          }
+          added = true;
         }
-        setStatus('Scanning…', 'connecting');
-        return;
       }
 
-      if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
+      // On first load seed the feed with existing tokens
+      if (seenMints.size <= 50) {
+        coins.forEach(c => { seenMints.add(c.mint); prependCard(c); });
+        seenMints = new Set(coins.map(c => c.mint));
+      }
 
-      // Remove cards that no longer qualify
-      const liveMints = new Set(filtered.map(c => c.mint));
-      FEED.querySelectorAll('.pf-card').forEach(el => {
-        if (!liveMints.has(el.dataset.mint)) el.remove();
-      });
-
-      // Insert new cards and update existing ones
-      filtered.forEach((coin, idx) => {
-        const existing = FEED.querySelector(`.pf-card[data-mint="${coin.mint}"]`);
-        if (existing) {
-          // Refresh live values without re-rendering
-          const mc = coin.usd_market_cap || coin.market_cap || 0;
-          const mcEl  = existing.querySelector('.pf-card-mc');
-          const ageEl = existing.querySelector('.pf-card-age');
-          if (mcEl)  mcEl.textContent  = fmt(mc);
-          if (ageEl) ageEl.textContent = ageLabel(coin.created_timestamp);
-          // Re-order if position changed
-          const cards = FEED.querySelectorAll('.pf-card');
-          if (cards[idx] !== existing) FEED.insertBefore(existing, cards[idx] || null);
-        } else {
-          const card  = buildCard(coin);
-          const cards = FEED.querySelectorAll('.pf-card');
-          FEED.insertBefore(card, cards[idx] || null);
-          requestAnimationFrame(() => card.classList.add('pf-card--visible'));
-        }
-      });
-
-      setStatus(`Live · ${filtered.length} token${filtered.length !== 1 ? 's' : ''}`, 'live');
+      if (!wsAlive) setStatus('Polling · live', 'live');
     } catch (_) {
-      setStatus('Retrying…', 'error');
+      if (!wsAlive) setStatus('Retrying…', 'error');
     }
   }
 
-  poll();
-  setInterval(poll, POLL_MS);
+  function startPollFallback() {
+    if (pollTimer) return;
+    poll();
+    pollTimer = setInterval(poll, POLL_MS);
+  }
+
+  // Boot: try WS first, always do an initial REST fetch for immediate data
+  connectWS();
+  // Seed with recent tokens from REST while WS connects
+  setTimeout(async () => {
+    try {
+      const r = await fetch(REST_API);
+      if (!r.ok) return;
+      const raw   = await r.json();
+      const coins = (Array.isArray(raw) ? raw : (raw.coins || []))
+        .sort((a, b) => (a.created_timestamp || 0) - (b.created_timestamp || 0)); // oldest first so newest ends up on top
+      coins.forEach(c => { seenMints.add(c.mint); prependCard(c); });
+    } catch (_) {}
+    // If WS never connected, start polling
+    setTimeout(() => { if (!wsAlive) startPollFallback(); }, 5_000);
+  }, 500);
 })();
