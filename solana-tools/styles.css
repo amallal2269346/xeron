@@ -65,6 +65,8 @@ a:hover { color: var(--accent); }
   text-decoration: none; flex-shrink: 0;
 }
 .logo-icon { font-size: 20px; color: var(--primary-l); }
+.logo-svg { display: block; filter: drop-shadow(0 0 6px rgba(157,92,247,.45)); transition: filter .2s; }
+.logo:hover .logo-svg { filter: drop-shadow(0 0 10px rgba(157,92,247,.7)); }
 .logo-text { font-family: var(--font-2); font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -.5px; }
 .logo-badge {
   font-size: 9px; font-weight: 700; letter-spacing: 1px;

@@ -14,7 +14,36 @@
 <header class="header">
   <div class="header-inner">
     <a class="logo" href="#" id="homeLogoBtn">
-      <span class="logo-icon">⬡</span>
+      <svg class="logo-svg" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#9d5cf7"/>
+            <stop offset="1" stop-color="#06c9e0"/>
+          </linearGradient>
+          <linearGradient id="lg2" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#b47dff"/>
+            <stop offset="1" stop-color="#22e0f4"/>
+          </linearGradient>
+          <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Hexagon background -->
+        <path d="M17 2.5L30 9.75V24.25L17 31.5L4 24.25V9.75L17 2.5Z" fill="url(#lg1)" fill-opacity="0.14" stroke="url(#lg1)" stroke-width="1.4"/>
+        <!-- Inner glow hex -->
+        <path d="M17 7L26 12V22L17 27L8 22V12L17 7Z" fill="url(#lg1)" fill-opacity="0.08"/>
+        <!-- Head -->
+        <circle cx="17" cy="13" r="2.6" fill="url(#lg2)" filter="url(#glow)"/>
+        <!-- Shoulder bar -->
+        <path d="M10.5 20.5 Q12 18.5 17 18.5 Q22 18.5 23.5 20.5" stroke="url(#lg2)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <!-- Left arm raised -->
+        <path d="M10.5 20.5 L7.5 16" stroke="url(#lg2)" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="7.5" cy="15.2" r="1.4" fill="url(#lg2)" opacity="0.9"/>
+        <!-- Right arm raised -->
+        <path d="M23.5 20.5 L26.5 16" stroke="url(#lg2)" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="26.5" cy="15.2" r="1.4" fill="url(#lg2)" opacity="0.9"/>
+      </svg>
       <span class="logo-text">Shrug Tool</span>
       <span class="logo-badge">SOLANA</span>
     </a>
@@ -875,7 +904,17 @@
 <!-- ─── FOOTER ─────────────────────────────────────────────────────────────── -->
 <footer class="footer">
   <div class="footer-inner">
-    <span class="footer-logo">⬡ Shrug Tool</span>
+    <span class="footer-logo">
+      <svg width="18" height="18" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-right:5px">
+        <path d="M17 2.5L30 9.75V24.25L17 31.5L4 24.25V9.75L17 2.5Z" fill="#9d5cf7" fill-opacity="0.2" stroke="#9d5cf7" stroke-width="1.4"/>
+        <circle cx="17" cy="13" r="2.6" fill="#9d5cf7"/>
+        <path d="M10.5 20.5 Q12 18.5 17 18.5 Q22 18.5 23.5 20.5" stroke="#9d5cf7" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <path d="M10.5 20.5 L7.5 16" stroke="#9d5cf7" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="7.5" cy="15.2" r="1.4" fill="#9d5cf7"/>
+        <path d="M23.5 20.5 L26.5 16" stroke="#9d5cf7" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="26.5" cy="15.2" r="1.4" fill="#9d5cf7"/>
+      </svg>Shrug Tool
+    </span>
     <p class="footer-disclaimer">This tool is for educational and development purposes. Always verify transactions before signing. Private keys never leave your browser.</p>
     <div class="footer-links">
       <a href="#" class="footer-link">Docs</a>
