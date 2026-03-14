@@ -713,3 +713,18 @@ select.input option { background: var(--bg-card); }
   transition: color .15s, background .15s;
 }
 .pf-card-link:hover { color: var(--accent); background: rgba(6,214,160,.1); }
+/* Progress bar toward pump.fun graduation */
+.pf-progress-wrap {
+  display: flex; align-items: center; gap: .4rem; margin-top: .3rem;
+}
+.pf-progress-bar {
+  flex: 1; height: 4px; background: rgba(255,255,255,.08); border-radius: 4px; overflow: hidden;
+}
+.pf-progress-fill {
+  height: 100%; border-radius: 4px; min-width: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, #9d5cf7 100%);
+  transition: width .6s ease;
+}
+.pf-progress-label {
+  font-size: 10px; color: var(--text-3); white-space: nowrap; flex-shrink: 0;
+}

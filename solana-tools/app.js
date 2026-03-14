@@ -879,19 +879,22 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%cSolana Tools Suite — Educational & Development Use', 'color:#8b98b8');
 });
 
-// ── PumpFun Live Tracker ─────────────────────────────────────────────────────
+// ── PumpFun Live Tracker (~$100K Market Cap) ─────────────────────────────────
 (function pumpTracker() {
   const FEED        = document.getElementById('pfFeed');
   const STATUS      = document.getElementById('pfStatus');
   const PLACEHOLDER = document.getElementById('pfPlaceholder');
-  const REST_API    = 'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=created_timestamp&order=DESC';
-  const WS_URL      = 'wss://frontend-api.pump.fun/';
-  const MAX_CARDS   = 50;
-  const POLL_MS     = 8_000;
 
-  let tokenCount = 0;
-  let wsAlive    = false;
-  let ws         = null;
+  // Market cap filter: tokens in the ~$100K range
+  const MC_MIN    = 30_000;    // $30K floor
+  const MC_MAX    = 500_000;   // $500K ceiling
+  const GRAD_MC   = 69_000;    // pump.fun bonding curve graduation target
+  const MAX_CARDS = 50;
+  const POLL_MS   = 5_000;     // refresh every 5 seconds
+
+  let seenMints   = new Set();
+  let isFirstLoad = true;
+  let useDS       = false;     // flips to true if pump.fun API fails
 
   function setStatus(text, state) {
     STATUS.innerHTML = `<span class="pf-dot pf-dot--${state}"></span><span class="pf-status-text">${text}</span>`;
@@ -919,177 +922,171 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function buildCard(coin) {
-    const mc     = coin.usd_market_cap || coin.market_cap || 0;
+    const mc     = coin.usd_market_cap || 0;
     const name   = safe(coin.name   || 'Unknown');
     const symbol = safe(coin.symbol || '');
     const mint   = coin.mint || '';
     const sol    = coin.price_in_sol != null
-      ? `◎${parseFloat(coin.price_in_sol).toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`
+      ? `\u25ce${parseFloat(coin.price_in_sol).toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`
       : '';
-    const img = coin.image_uri || '';
-    const age = ageLabel(coin.created_timestamp || Date.now());
-    const mcStr = fmt(mc);
+    const img  = coin.image_uri || '';
+    const age  = ageLabel(coin.created_timestamp || Date.now());
+    const pct  = mc > 0 ? Math.min(100, (mc / GRAD_MC) * 100) : 0;
 
     const card = document.createElement('div');
-    card.className = 'pf-card';
+    card.className    = 'pf-card';
     card.dataset.mint = mint;
     card.dataset.ts   = coin.created_timestamp || Date.now();
     card.innerHTML = `
       <div class="pf-card-icon">${img
-        ? `<img src="${safe(img)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='🪙'">`
-        : '🪙'}</div>
+        ? `<img src="${safe(img)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='\ud83e\ude99'">`
+        : '\ud83e\ude99'}</div>
       <div class="pf-card-info">
         <div class="pf-card-name">${name}${symbol ? `<span class="pf-card-sym"> $${symbol}</span>` : ''}</div>
         <div class="pf-card-row">
-          ${mcStr ? `<span class="pf-card-mc">${mcStr}</span>` : ''}
-          ${sol   ? `<span class="pf-card-price">${sol}</span>` : ''}
+          <span class="pf-card-mc">${fmt(mc) || '\u2014'}</span>
+          ${sol ? `<span class="pf-card-price">${sol}</span>` : ''}
           <span class="pf-card-age">${age}</span>
+        </div>
+        <div class="pf-progress-wrap">
+          <div class="pf-progress-bar"><div class="pf-progress-fill" style="width:${pct.toFixed(1)}%"></div></div>
+          <span class="pf-progress-label">${pct.toFixed(0)}% to grad</span>
         </div>
       </div>
       <div class="pf-card-actions">
-        <button class="pf-copy-btn" data-mint="${safe(mint)}" title="Copy mint address">⎘</button>
-        <a class="pf-card-link" href="https://pump.fun/${safe(mint)}" target="_blank" rel="noopener" title="View on Pump.fun">↗</a>
+        <button class="pf-copy-btn" data-mint="${safe(mint)}" title="Copy mint">\u2398</button>
+        <a class="pf-card-link" href="https://pump.fun/${safe(mint)}" target="_blank" rel="noopener" title="View on Pump.fun">\u2197</a>
       </div>`;
 
     card.querySelector('.pf-copy-btn').addEventListener('click', e => {
       e.stopPropagation();
       const btn = e.currentTarget;
       navigator.clipboard.writeText(mint).then(() => {
-        btn.textContent = '✓';
+        btn.textContent = '\u2713';
         btn.classList.add('pf-copy-btn--ok');
-        setTimeout(() => { btn.textContent = '⎘'; btn.classList.remove('pf-copy-btn--ok'); }, 1500);
+        setTimeout(() => { btn.textContent = '\u2398'; btn.classList.remove('pf-copy-btn--ok'); }, 1500);
       }).catch(() => {});
     });
 
     return card;
   }
 
-  function prependCard(coin) {
+  function updateCard(coin) {
+    const el = FEED.querySelector(`.pf-card[data-mint="${coin.mint}"]`);
+    if (!el) return;
+    const mc  = coin.usd_market_cap || 0;
+    const pct = mc > 0 ? Math.min(100, (mc / GRAD_MC) * 100) : 0;
+    const mcEl   = el.querySelector('.pf-card-mc');
+    const fillEl = el.querySelector('.pf-progress-fill');
+    const lblEl  = el.querySelector('.pf-progress-label');
+    if (mcEl)   mcEl.textContent   = fmt(mc) || '\u2014';
+    if (fillEl) fillEl.style.width = pct.toFixed(1) + '%';
+    if (lblEl)  lblEl.textContent  = pct.toFixed(0) + '% to grad';
+  }
+
+  function showCard(coin, prepend = true) {
     if (!coin.mint) return;
-    if (FEED.querySelector(`.pf-card[data-mint="${coin.mint}"]`)) return;
-
+    if (FEED.querySelector(`.pf-card[data-mint="${coin.mint}"]`)) { updateCard(coin); return; }
     if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
-
     const card = buildCard(coin);
-    FEED.insertBefore(card, FEED.firstChild);
+    prepend ? FEED.insertBefore(card, FEED.firstChild) : FEED.appendChild(card);
     requestAnimationFrame(() => card.classList.add('pf-card--visible'));
-
-    tokenCount++;
-    setStatus(`Live · ${tokenCount} new`, 'live');
-
-    // Trim old cards beyond max
     const all = FEED.querySelectorAll('.pf-card');
     if (all.length > MAX_CARDS) {
       for (let i = MAX_CARDS; i < all.length; i++) all[i].remove();
     }
-
-    // Update ages periodically
     card._ageInterval = setInterval(() => {
-      const el = card.querySelector('.pf-card-age');
-      if (el) el.textContent = ageLabel(+card.dataset.ts);
-    }, 10_000);
+      const ageEl = card.querySelector('.pf-card-age');
+      if (ageEl) ageEl.textContent = ageLabel(+card.dataset.ts);
+    }, 15_000);
   }
 
-  // ── WebSocket (primary) ──────────────────────────────────────────────────
-  function connectWS() {
-    try {
-      ws = new WebSocket(WS_URL);
-    } catch (_) {
-      startPollFallback();
-      return;
-    }
-
-    let pingTimer;
-
-    ws.onopen = () => {
-      wsAlive = true;
-      setStatus('Connecting…', 'connecting');
-      // Subscribe to new token events
-      ws.send(JSON.stringify({ method: 'subscribeNewToken' }));
-      // Keep-alive ping every 20s
-      pingTimer = setInterval(() => {
-        if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ method: 'ping' }));
-      }, 20_000);
-    };
-
-    ws.onmessage = evt => {
-      let msg;
-      try { msg = JSON.parse(evt.data); } catch (_) { return; }
-
-      // pump.fun sends the coin object directly for newCoinCreated events
-      if (msg.mint) {
-        prependCard(msg);
-      }
-    };
-
-    ws.onerror = () => {};
-
-    ws.onclose = () => {
-      wsAlive = false;
-      clearInterval(pingTimer);
-      setStatus('Reconnecting…', 'error');
-      // Reconnect after 3s, fallback to polling if WS keeps failing
-      setTimeout(() => {
-        if (!wsAlive) connectWS();
-      }, 3_000);
-    };
+  // ── Pump.fun REST API ─────────────────────────────────────────────────────
+  async function fetchPumpFun() {
+    const url = 'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=last_trade_timestamp&order=DESC&includeNsfw=false';
+    const r = await fetch(url, { signal: AbortSignal.timeout(4500) });
+    if (!r.ok) throw new Error(`pf:${r.status}`);
+    const raw   = await r.json();
+    const coins = Array.isArray(raw) ? raw : (raw.coins || raw.data || []);
+    return coins
+      .map(c => ({ ...c, usd_market_cap: c.usd_market_cap || c.market_cap || 0 }))
+      .filter(c => c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX);
   }
 
-  // ── REST poll fallback ───────────────────────────────────────────────────
-  let pollTimer = null;
-  let seenMints = new Set();
+  // ── DexScreener fallback ──────────────────────────────────────────────────
+  async function fetchDexScreener() {
+    const r1 = await fetch('https://api.dexscreener.com/token-profiles/latest/v1', {
+      signal: AbortSignal.timeout(4500)
+    });
+    if (!r1.ok) throw new Error(`ds1:${r1.status}`);
+    const profiles = await r1.json();
 
+    const addrs = (Array.isArray(profiles) ? profiles : [])
+      .filter(p => p.chainId === 'solana' && p.tokenAddress)
+      .map(p => p.tokenAddress)
+      .slice(0, 30)
+      .join(',');
+
+    if (!addrs) return [];
+
+    const r2 = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${addrs}`, {
+      signal: AbortSignal.timeout(4500)
+    });
+    if (!r2.ok) throw new Error(`ds2:${r2.status}`);
+    const data  = await r2.json();
+    const pairs = data.pairs || [];
+
+    return pairs
+      .filter(p => p.dexId === 'pump.fun' && p.chainId === 'solana')
+      .map(p => ({
+        mint:              p.baseToken?.address || '',
+        name:              p.baseToken?.name    || 'Unknown',
+        symbol:            p.baseToken?.symbol  || '',
+        usd_market_cap:    p.fdv || p.marketCap || 0,
+        price_in_sol:      null,
+        image_uri:         p.info?.imageUrl || '',
+        created_timestamp: p.pairCreatedAt  || Date.now(),
+      }))
+      .filter(c => c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX);
+  }
+
+  // ── Poll loop ─────────────────────────────────────────────────────────────
   async function poll() {
+    let coins = [];
     try {
-      const r = await fetch(REST_API);
-      if (!r.ok) throw new Error(r.status);
-      const raw   = await r.json();
-      const coins = (Array.isArray(raw) ? raw : (raw.coins || []))
-        .sort((a, b) => (b.created_timestamp || 0) - (a.created_timestamp || 0));
-
-      let added = false;
-      for (const coin of coins) {
-        if (!seenMints.has(coin.mint)) {
-          seenMints.add(coin.mint);
-          if (added || seenMints.size > 50) {
-            // After first load, only prepend truly new ones
-            if (seenMints.size > 50) prependCard(coin);
-          }
-          added = true;
-        }
-      }
-
-      // On first load seed the feed with existing tokens
-      if (seenMints.size <= 50) {
-        coins.forEach(c => { seenMints.add(c.mint); prependCard(c); });
-        seenMints = new Set(coins.map(c => c.mint));
-      }
-
-      if (!wsAlive) setStatus('Polling · live', 'live');
+      coins = useDS ? await fetchDexScreener() : await fetchPumpFun();
+      setStatus(useDS ? 'DexScreener \u00b7 live' : 'Pump.fun \u00b7 live', 'live');
     } catch (_) {
-      if (!wsAlive) setStatus('Retrying…', 'error');
+      useDS = !useDS;
+      setStatus('Retrying\u2026', 'error');
+      try {
+        coins = useDS ? await fetchDexScreener() : await fetchPumpFun();
+        setStatus(useDS ? 'DexScreener \u00b7 live' : 'Pump.fun \u00b7 live', 'live');
+      } catch (__) {
+        setStatus('No data \u2014 retrying', 'error');
+        return;
+      }
+    }
+
+    if (!coins.length) return;
+
+    if (isFirstLoad) {
+      [...coins]
+        .sort((a, b) => (a.created_timestamp || 0) - (b.created_timestamp || 0))
+        .forEach(c => { seenMints.add(c.mint); showCard(c); });
+      isFirstLoad = false;
+    } else {
+      [...coins]
+        .sort((a, b) => (a.created_timestamp || 0) - (b.created_timestamp || 0))
+        .forEach(c => {
+          if (!seenMints.has(c.mint)) { seenMints.add(c.mint); showCard(c, true); }
+          else updateCard(c);
+        });
     }
   }
 
-  function startPollFallback() {
-    if (pollTimer) return;
-    poll();
-    pollTimer = setInterval(poll, POLL_MS);
-  }
-
-  // Boot: try WS first, always do an initial REST fetch for immediate data
-  connectWS();
-  // Seed with recent tokens from REST while WS connects
-  setTimeout(async () => {
-    try {
-      const r = await fetch(REST_API);
-      if (!r.ok) return;
-      const raw   = await r.json();
-      const coins = (Array.isArray(raw) ? raw : (raw.coins || []))
-        .sort((a, b) => (a.created_timestamp || 0) - (b.created_timestamp || 0)); // oldest first so newest ends up on top
-      coins.forEach(c => { seenMints.add(c.mint); prependCard(c); });
-    } catch (_) {}
-    // If WS never connected, start polling
-    setTimeout(() => { if (!wsAlive) startPollFallback(); }, 5_000);
-  }, 500);
+  setStatus('Connecting\u2026', 'connecting');
+  poll();
+  setInterval(poll, POLL_MS);
 })();
+
