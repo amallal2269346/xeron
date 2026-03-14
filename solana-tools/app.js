@@ -879,213 +879,271 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%cSolana Tools Suite — Educational & Development Use', 'color:#8b98b8');
 });
 
-// ── PumpFun Live Tracker (~$100K Market Cap) ─────────────────────────────────
+// ── PumpFun Live Tracker (~100K Market Cap) ─────────────────────────────────
 (function pumpTracker() {
   const FEED        = document.getElementById('pfFeed');
   const STATUS      = document.getElementById('pfStatus');
   const PLACEHOLDER = document.getElementById('pfPlaceholder');
 
-  // Market cap filter: tokens in the ~$100K range
-  const MC_MIN    = 30_000;    // $30K floor
-  const MC_MAX    = 500_000;   // $500K ceiling
-  const GRAD_MC   = 69_000;    // pump.fun bonding curve graduation target
+  const GRAD_MC   = 69000;   // pump.fun graduation cap
   const MAX_CARDS = 50;
-  const POLL_MS   = 5_000;     // refresh every 5 seconds
+  const POLL_MS   = 5000;    // 5-second refresh
 
   let seenMints   = new Set();
   let isFirstLoad = true;
-  let useDS       = false;     // flips to true if pump.fun API fails
+  let srcIdx      = 0;       // current working source index
 
   function setStatus(text, state) {
-    STATUS.innerHTML = `<span class="pf-dot pf-dot--${state}"></span><span class="pf-status-text">${text}</span>`;
+    STATUS.innerHTML =
+      '<span class="pf-dot pf-dot--' + state + '"></span>' +
+      '<span class="pf-status-text">' + text + '</span>';
   }
 
   function fmt(usd) {
-    if (!usd || usd <= 0) return '';
-    if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
-    if (usd >= 1_000)     return `$${(usd / 1_000).toFixed(1)}K`;
-    return `$${Math.round(usd).toLocaleString()}`;
+    if (!usd || usd <= 0) return '$0';
+    if (usd >= 1e6) return '$' + (usd / 1e6).toFixed(2) + 'M';
+    if (usd >= 1e3) return '$' + (usd / 1e3).toFixed(1) + 'K';
+    return '$' + Math.round(usd).toLocaleString();
   }
 
   function ageLabel(ts) {
-    const s = Math.floor((Date.now() - ts) / 1000);
-    if (s < 5)   return 'just now';
-    if (s < 60)  return `${s}s ago`;
-    const m = Math.floor(s / 60);
-    if (m < 60)  return `${m}m ago`;
-    return `${Math.floor(m / 60)}h ago`;
+    var s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 5)  return 'just now';
+    if (s < 60) return s + 's ago';
+    var m = Math.floor(s / 60);
+    if (m < 60) return m + 'm ago';
+    return Math.floor(m / 60) + 'h ago';
   }
 
-  function safe(str) {
-    return (str || '').replace(/[<>"'&]/g, c =>
-      ({ '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '&': '&amp;' }[c]));
+  function esc(str) {
+    return (str || '').replace(/[<>"'&]/g, function(c) {
+      return ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'})[c];
+    });
   }
 
   function buildCard(coin) {
-    const mc     = coin.usd_market_cap || 0;
-    const name   = safe(coin.name   || 'Unknown');
-    const symbol = safe(coin.symbol || '');
-    const mint   = coin.mint || '';
-    const sol    = coin.price_in_sol != null
-      ? `\u25ce${parseFloat(coin.price_in_sol).toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`
-      : '';
-    const img  = coin.image_uri || '';
-    const age  = ageLabel(coin.created_timestamp || Date.now());
-    const pct  = mc > 0 ? Math.min(100, (mc / GRAD_MC) * 100) : 0;
-
-    const card = document.createElement('div');
-    card.className    = 'pf-card';
-    card.dataset.mint = mint;
+    var mc   = Number(coin.usd_market_cap) || 0;
+    var pct  = mc > 0 ? Math.min(100, (mc / GRAD_MC) * 100) : 0;
+    var name = esc(coin.name   || 'Unknown');
+    var sym  = esc(coin.symbol || '');
+    var mint = esc(coin.mint   || '');
+    var img  = esc(coin.image_uri || '');
+    var age  = ageLabel(Number(coin.created_timestamp) || Date.now());
+    var hot  = mc >= 50000 && mc <= 200000;
+    var solPrice = '';
+    if (coin.price_in_sol != null) {
+      solPrice = '<span class="pf-card-price">◎' +
+        parseFloat(coin.price_in_sol).toFixed(9).replace(/0+$/, '').replace(/\.$/, '') +
+        '</span>';
+    }
+    var card = document.createElement('div');
+    card.className    = 'pf-card' + (hot ? ' pf-card--hot' : '');
+    card.dataset.mint = coin.mint || '';
     card.dataset.ts   = coin.created_timestamp || Date.now();
-    card.innerHTML = `
-      <div class="pf-card-icon">${img
-        ? `<img src="${safe(img)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='\ud83e\ude99'">`
-        : '\ud83e\ude99'}</div>
-      <div class="pf-card-info">
-        <div class="pf-card-name">${name}${symbol ? `<span class="pf-card-sym"> $${symbol}</span>` : ''}</div>
-        <div class="pf-card-row">
-          <span class="pf-card-mc">${fmt(mc) || '\u2014'}</span>
-          ${sol ? `<span class="pf-card-price">${sol}</span>` : ''}
-          <span class="pf-card-age">${age}</span>
-        </div>
-        <div class="pf-progress-wrap">
-          <div class="pf-progress-bar"><div class="pf-progress-fill" style="width:${pct.toFixed(1)}%"></div></div>
-          <span class="pf-progress-label">${pct.toFixed(0)}% to grad</span>
-        </div>
-      </div>
-      <div class="pf-card-actions">
-        <button class="pf-copy-btn" data-mint="${safe(mint)}" title="Copy mint">\u2398</button>
-        <a class="pf-card-link" href="https://pump.fun/${safe(mint)}" target="_blank" rel="noopener" title="View on Pump.fun">\u2197</a>
-      </div>`;
+    card.innerHTML =
+      '<div class="pf-card-icon">' +
+        (img ? '<img src="' + img + '" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'&#129689;\'">'
+              : '🪙') +
+      '</div>' +
+      '<div class="pf-card-info">' +
+        '<div class="pf-card-name">' + name +
+          (sym ? '<span class="pf-card-sym"> $' + sym + '</span>' : '') +
+          (hot ? '<span class="pf-near-grad">~100K</span>' : '') +
+        '</div>' +
+        '<div class="pf-card-row">' +
+          '<span class="pf-card-mc">' + fmt(mc) + '</span>' +
+          solPrice +
+          '<span class="pf-card-age">' + age + '</span>' +
+        '</div>' +
+        '<div class="pf-progress-wrap">' +
+          '<div class="pf-progress-bar"><div class="pf-progress-fill" style="width:' + pct.toFixed(1) + '%"></div></div>' +
+          '<span class="pf-progress-label">' + pct.toFixed(0) + '% to grad</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pf-card-actions">' +
+        '<button class="pf-copy-btn" title="Copy mint">⎘</button>' +
+        '<a class="pf-card-link" href="https://pump.fun/' + mint + '" target="_blank" rel="noopener">↗</a>' +
+      '</div>';
 
-    card.querySelector('.pf-copy-btn').addEventListener('click', e => {
+    card.querySelector('.pf-copy-btn').addEventListener('click', function(e) {
       e.stopPropagation();
-      const btn = e.currentTarget;
-      navigator.clipboard.writeText(mint).then(() => {
-        btn.textContent = '\u2713';
+      var btn = e.currentTarget;
+      navigator.clipboard.writeText(coin.mint || '').then(function() {
+        btn.textContent = '✓';
         btn.classList.add('pf-copy-btn--ok');
-        setTimeout(() => { btn.textContent = '\u2398'; btn.classList.remove('pf-copy-btn--ok'); }, 1500);
-      }).catch(() => {});
+        setTimeout(function() { btn.textContent = '⎘'; btn.classList.remove('pf-copy-btn--ok'); }, 1500);
+      }).catch(function(){});
     });
-
     return card;
   }
 
   function updateCard(coin) {
-    const el = FEED.querySelector(`.pf-card[data-mint="${coin.mint}"]`);
+    var el = FEED.querySelector('.pf-card[data-mint="' + (coin.mint || '') + '"]');
     if (!el) return;
-    const mc  = coin.usd_market_cap || 0;
-    const pct = mc > 0 ? Math.min(100, (mc / GRAD_MC) * 100) : 0;
-    const mcEl   = el.querySelector('.pf-card-mc');
-    const fillEl = el.querySelector('.pf-progress-fill');
-    const lblEl  = el.querySelector('.pf-progress-label');
-    if (mcEl)   mcEl.textContent   = fmt(mc) || '\u2014';
+    var mc  = Number(coin.usd_market_cap) || 0;
+    var pct = mc > 0 ? Math.min(100, (mc / GRAD_MC) * 100) : 0;
+    var mcEl   = el.querySelector('.pf-card-mc');
+    var fillEl = el.querySelector('.pf-progress-fill');
+    var lblEl  = el.querySelector('.pf-progress-label');
+    if (mcEl)   mcEl.textContent   = fmt(mc);
     if (fillEl) fillEl.style.width = pct.toFixed(1) + '%';
     if (lblEl)  lblEl.textContent  = pct.toFixed(0) + '% to grad';
   }
 
-  function showCard(coin, prepend = true) {
+  function showCard(coin, prepend) {
     if (!coin.mint) return;
-    if (FEED.querySelector(`.pf-card[data-mint="${coin.mint}"]`)) { updateCard(coin); return; }
-    if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
-    const card = buildCard(coin);
-    prepend ? FEED.insertBefore(card, FEED.firstChild) : FEED.appendChild(card);
-    requestAnimationFrame(() => card.classList.add('pf-card--visible'));
-    const all = FEED.querySelectorAll('.pf-card');
-    if (all.length > MAX_CARDS) {
-      for (let i = MAX_CARDS; i < all.length; i++) all[i].remove();
+    if (FEED.querySelector('.pf-card[data-mint="' + coin.mint + '"]')) {
+      updateCard(coin); return;
     }
-    card._ageInterval = setInterval(() => {
-      const ageEl = card.querySelector('.pf-card-age');
-      if (ageEl) ageEl.textContent = ageLabel(+card.dataset.ts);
-    }, 15_000);
+    if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
+    var card = buildCard(coin);
+    if (prepend) FEED.insertBefore(card, FEED.firstChild);
+    else         FEED.appendChild(card);
+    requestAnimationFrame(function() { card.classList.add('pf-card--visible'); });
+    var all = FEED.querySelectorAll('.pf-card');
+    if (all.length > MAX_CARDS) {
+      for (var i = MAX_CARDS; i < all.length; i++) all[i].remove();
+    }
+    card._ageTimer = setInterval(function() {
+      var el = card.querySelector('.pf-card-age');
+      if (el) el.textContent = ageLabel(Number(card.dataset.ts));
+    }, 15000);
   }
 
-  // ── Pump.fun REST API ─────────────────────────────────────────────────────
-  async function fetchPumpFun() {
-    const url = 'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=last_trade_timestamp&order=DESC&includeNsfw=false';
-    const r = await fetch(url, { signal: AbortSignal.timeout(4500) });
-    if (!r.ok) throw new Error(`pf:${r.status}`);
-    const raw   = await r.json();
-    const coins = Array.isArray(raw) ? raw : (raw.coins || raw.data || []);
-    return coins
-      .map(c => ({ ...c, usd_market_cap: c.usd_market_cap || c.market_cap || 0 }))
-      .filter(c => c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX);
-  }
+  // ── Pump.fun REST API ────────────────────────────────────────────────
+  // Sort by market_cap DESC to surface near-100K tokens near the top
+  var PF_URLS = [
+    'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=market_cap&order=DESC&includeNsfw=false',
+    'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=last_reply&order=DESC&includeNsfw=false',
+    'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false'
+  ];
 
-  // ── DexScreener fallback ──────────────────────────────────────────────────
-  async function fetchDexScreener() {
-    const r1 = await fetch('https://api.dexscreener.com/token-profiles/latest/v1', {
-      signal: AbortSignal.timeout(4500)
+  function fetchPumpFun(urlIndex) {
+    var url = PF_URLS[urlIndex || 0];
+    return new Promise(function(resolve, reject) {
+      var ctl = new AbortController();
+      var t   = setTimeout(function() { ctl.abort(); }, 6000);
+      fetch(url, { signal: ctl.signal })
+        .then(function(r) {
+          clearTimeout(t);
+          if (!r.ok) throw new Error(r.status);
+          return r.json();
+        })
+        .then(function(raw) {
+          var coins = Array.isArray(raw) ? raw : (raw.coins || raw.data || []);
+          coins = coins
+            .filter(function(c) { return c && c.mint; })
+            .map(function(c) {
+              return Object.assign({}, c, {
+                usd_market_cap: Number(c.usd_market_cap || c.market_cap) || 0
+              });
+            });
+          resolve({ coins: coins, label: 'Pump.fun' });
+        })
+        .catch(function(err) { clearTimeout(t); reject(err); });
     });
-    if (!r1.ok) throw new Error(`ds1:${r1.status}`);
-    const profiles = await r1.json();
-
-    const addrs = (Array.isArray(profiles) ? profiles : [])
-      .filter(p => p.chainId === 'solana' && p.tokenAddress)
-      .map(p => p.tokenAddress)
-      .slice(0, 30)
-      .join(',');
-
-    if (!addrs) return [];
-
-    const r2 = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${addrs}`, {
-      signal: AbortSignal.timeout(4500)
-    });
-    if (!r2.ok) throw new Error(`ds2:${r2.status}`);
-    const data  = await r2.json();
-    const pairs = data.pairs || [];
-
-    return pairs
-      .filter(p => p.dexId === 'pump.fun' && p.chainId === 'solana')
-      .map(p => ({
-        mint:              p.baseToken?.address || '',
-        name:              p.baseToken?.name    || 'Unknown',
-        symbol:            p.baseToken?.symbol  || '',
-        usd_market_cap:    p.fdv || p.marketCap || 0,
-        price_in_sol:      null,
-        image_uri:         p.info?.imageUrl || '',
-        created_timestamp: p.pairCreatedAt  || Date.now(),
-      }))
-      .filter(c => c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX);
   }
 
-  // ── Poll loop ─────────────────────────────────────────────────────────────
-  async function poll() {
-    let coins = [];
-    try {
-      coins = useDS ? await fetchDexScreener() : await fetchPumpFun();
-      setStatus(useDS ? 'DexScreener \u00b7 live' : 'Pump.fun \u00b7 live', 'live');
-    } catch (_) {
-      useDS = !useDS;
-      setStatus('Retrying\u2026', 'error');
-      try {
-        coins = useDS ? await fetchDexScreener() : await fetchPumpFun();
-        setStatus(useDS ? 'DexScreener \u00b7 live' : 'Pump.fun \u00b7 live', 'live');
-      } catch (__) {
-        setStatus('No data \u2014 retrying', 'error');
+  // ── DexScreener fallback ──────────────────────────────────────────────
+  function fetchDexScreener() {
+    var ctl1 = new AbortController();
+    var t1   = setTimeout(function() { ctl1.abort(); }, 6000);
+    return fetch('https://api.dexscreener.com/token-profiles/latest/v1', { signal: ctl1.signal })
+      .then(function(r) {
+        clearTimeout(t1);
+        if (!r.ok) throw new Error('ds1:' + r.status);
+        return r.json();
+      })
+      .then(function(profiles) {
+        var addrs = (Array.isArray(profiles) ? profiles : [])
+          .filter(function(p) { return p.chainId === 'solana' && p.tokenAddress; })
+          .map(function(p) { return p.tokenAddress; })
+          .slice(0, 30)
+          .join(',');
+        if (!addrs) return { coins: [], label: 'DexScreener' };
+        var ctl2 = new AbortController();
+        var t2   = setTimeout(function() { ctl2.abort(); }, 6000);
+        return fetch('https://api.dexscreener.com/latest/dex/tokens/' + addrs, { signal: ctl2.signal })
+          .then(function(r2) {
+            clearTimeout(t2);
+            if (!r2.ok) throw new Error('ds2:' + r2.status);
+            return r2.json();
+          })
+          .then(function(data) {
+            var seen  = new Set();
+            var coins = (data.pairs || [])
+              .filter(function(p) { return p.chainId === 'solana'; })
+              .reduce(function(acc, p) {
+                var addr = p.baseToken && p.baseToken.address;
+                if (!addr || seen.has(addr)) return acc;
+                seen.add(addr);
+                acc.push({
+                  mint:              addr,
+                  name:              (p.baseToken && p.baseToken.name)   || 'Unknown',
+                  symbol:            (p.baseToken && p.baseToken.symbol) || '',
+                  usd_market_cap:    Number(p.fdv || p.marketCap) || 0,
+                  price_in_sol:      null,
+                  image_uri:         (p.info && p.info.imageUrl) || '',
+                  created_timestamp: p.pairCreatedAt || Date.now()
+                });
+                return acc;
+              }, []);
+            return { coins: coins, label: 'DexScreener' };
+          });
+      });
+  }
+
+  // ── Poll ──────────────────────────────────────────────────────────────
+  var pfUrlIdx = 0;
+  var sources  = [
+    function() { return fetchPumpFun(pfUrlIdx); },
+    function() { return fetchDexScreener(); }
+  ];
+
+  function poll() {
+    var startSrc = srcIdx;
+    function tryNext(i) {
+      if (i >= sources.length) {
+        setStatus('No data — retrying', 'error');
         return;
       }
-    }
-
-    if (!coins.length) return;
-
-    if (isFirstLoad) {
-      [...coins]
-        .sort((a, b) => (a.created_timestamp || 0) - (b.created_timestamp || 0))
-        .forEach(c => { seenMints.add(c.mint); showCard(c); });
-      isFirstLoad = false;
-    } else {
-      [...coins]
-        .sort((a, b) => (a.created_timestamp || 0) - (b.created_timestamp || 0))
-        .forEach(c => {
-          if (!seenMints.has(c.mint)) { seenMints.add(c.mint); showCard(c, true); }
-          else updateCard(c);
+      var idx = (startSrc + i) % sources.length;
+      sources[idx]()
+        .then(function(result) {
+          if (!result || !result.coins || !result.coins.length) {
+            // If pump.fun returned empty, try next URL variant
+            if (idx === 0 && pfUrlIdx < PF_URLS.length - 1) {
+              pfUrlIdx++;
+              setStatus('Trying …', 'connecting');
+              poll(); return;
+            }
+            tryNext(i + 1); return;
+          }
+          srcIdx = idx;
+          var coins = result.coins;
+          // Sort oldest-first so newest lands on top after prepend
+          coins.sort(function(a, b) { return (a.created_timestamp || 0) - (b.created_timestamp || 0); });
+          if (isFirstLoad) {
+            coins.forEach(function(c) { seenMints.add(c.mint); showCard(c, false); });
+            isFirstLoad = false;
+          } else {
+            coins.forEach(function(c) {
+              if (!seenMints.has(c.mint)) { seenMints.add(c.mint); showCard(c, true); }
+              else updateCard(c);
+            });
+          }
+          var hot = FEED.querySelectorAll('.pf-card--hot').length;
+          setStatus(result.label + ' · live' + (hot ? ' · ' + hot + ' near 100K' : ''), 'live');
+        })
+        .catch(function(err) {
+          console.warn('[PFTracker] source', idx, 'failed:', err.message || err);
+          tryNext(i + 1);
         });
     }
+    tryNext(0);
   }
 
-  setStatus('Connecting\u2026', 'connecting');
+  setStatus('Connecting…', 'connecting');
   poll();
   setInterval(poll, POLL_MS);
 })();

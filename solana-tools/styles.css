@@ -728,3 +728,15 @@ select.input option { background: var(--bg-card); }
 .pf-progress-label {
   font-size: 10px; color: var(--text-3); white-space: nowrap; flex-shrink: 0;
 }
+/* Near-100K hot cards */
+.pf-card--hot {
+  border-color: rgba(157,92,247,.35);
+  background: linear-gradient(135deg, rgba(157,92,247,.06) 0%, rgba(6,214,160,.04) 100%);
+}
+.pf-near-grad {
+  display: inline-block; margin-left: .35rem;
+  font-size: 9px; font-weight: 700; letter-spacing: .04em;
+  background: linear-gradient(90deg, #9d5cf7, #06d6a0);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
