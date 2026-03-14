@@ -886,10 +886,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const PLACEHOLDER = document.getElementById('pfPlaceholder');
 
   const GRAD_MC   = 69000;   // pump.fun graduation cap
-  const MAX_CARDS = 20;
+  const MAX_CARDS = 30;
   const POLL_MS   = 60000;   // 1-minute refresh
-  const MC_MIN    = 80000;   // $80K – strictly near 100K
-  const MC_MAX    = 120000;  // $120K – strictly near 100K
+  const MC_MIN    = 50000;   // $50K target floor
+  const MC_MAX    = 100000;  // $100K target ceiling
 
   let seenMints    = new Set();
   let isFirstLoad  = true;
@@ -1013,100 +1013,122 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 15000);
   }
 
-  // ── Pump.fun REST API ────────────────────────────────────────────────
-  // last_trade_timestamp → coins actively being bought RIGHT NOW
-  // limit=100 → wider net to catch those sitting near $100K
-  var PF_URLS = [
-    'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=last_trade_timestamp&order=DESC&includeNsfw=false',
-    'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=market_cap&order=DESC&includeNsfw=false',
-    'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=last_reply&order=DESC&includeNsfw=false'
-  ];
-
-  function fetchPumpFun(urlIndex) {
-    var url = PF_URLS[urlIndex || 0];
-    return new Promise(function(resolve, reject) {
-      var ctl = new AbortController();
-      var t   = setTimeout(function() { ctl.abort(); }, 6000);
-      fetch(url, { signal: ctl.signal })
-        .then(function(r) {
-          clearTimeout(t);
-          if (!r.ok) throw new Error(r.status);
-          return r.json();
-        })
-        .then(function(raw) {
-          var coins = Array.isArray(raw) ? raw : (raw.coins || raw.data || []);
-          coins = coins
-            .filter(function(c) { return c && c.mint; })
-            .map(function(c) {
-              return Object.assign({}, c, {
-                usd_market_cap: Number(c.usd_market_cap || c.market_cap) || 0
-              });
-            })
-            .filter(function(c) { return c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX; })
-            .sort(function(a, b) { return b.usd_market_cap - a.usd_market_cap; });
-          resolve({ coins: coins, label: 'Pump.fun' });
-        })
-        .catch(function(err) { clearTimeout(t); reject(err); });
-    });
+  // ── helpers ───────────────────────────────────────────────────────────
+  function abortFetch(url, ms) {
+    var ctl = new AbortController();
+    var t   = setTimeout(function() { ctl.abort(); }, ms);
+    return fetch(url, { signal: ctl.signal }).then(function(r) {
+      clearTimeout(t);
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }).catch(function(e) { clearTimeout(t); throw e; });
   }
 
-  // ── DexScreener fallback ──────────────────────────────────────────────
+  function normalizePairs(pairs) {
+    var seen = new Set();
+    return (pairs || []).reduce(function(acc, p) {
+      if (!p || p.chainId !== 'solana') return acc;
+      var addr = p.baseToken && p.baseToken.address;
+      if (!addr || seen.has(addr)) return acc;
+      seen.add(addr);
+      acc.push({
+        mint:              addr,
+        name:              (p.baseToken && p.baseToken.name)   || 'Unknown',
+        symbol:            (p.baseToken && p.baseToken.symbol) || '',
+        usd_market_cap:    Number(p.fdv || p.marketCap) || 0,
+        price_in_sol:      null,
+        image_uri:         (p.info && p.info.imageUrl) || '',
+        created_timestamp: p.pairCreatedAt || Date.now(),
+        dex:               p.dexId || ''
+      });
+      return acc;
+    }, []);
+  }
+
+  // ── Source 1: Pump.fun REST (3 sort strategies fired in parallel) ─────
+  function fetchPumpFun() {
+    var urls = [
+      'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=last_trade_timestamp&order=DESC&includeNsfw=false',
+      'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=market_cap&order=DESC&includeNsfw=false',
+      'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=last_reply&order=DESC&includeNsfw=false'
+    ];
+    return Promise.allSettled(urls.map(function(u) { return abortFetch(u, 7000); }))
+      .then(function(results) {
+        var all = [];
+        results.forEach(function(r) {
+          if (r.status !== 'fulfilled') return;
+          var raw = r.value;
+          var list = Array.isArray(raw) ? raw : (raw.coins || raw.data || []);
+          list.forEach(function(c) {
+            if (c && c.mint) all.push(Object.assign({}, c, {
+              usd_market_cap:    Number(c.usd_market_cap || c.market_cap) || 0,
+              image_uri:         c.image_uri || c.imageUri || '',
+              created_timestamp: c.created_timestamp || Date.now(),
+              dex:               'pump.fun'
+            }));
+          });
+        });
+        return all;
+      });
+  }
+
+  // ── Source 2: DexScreener token-profiles → pairs ──────────────────────
   function fetchDexScreener() {
-    var ctl1 = new AbortController();
-    var t1   = setTimeout(function() { ctl1.abort(); }, 6000);
-    return fetch('https://api.dexscreener.com/token-profiles/latest/v1', { signal: ctl1.signal })
-      .then(function(r) {
-        clearTimeout(t1);
-        if (!r.ok) throw new Error('ds1:' + r.status);
-        return r.json();
-      })
+    return abortFetch('https://api.dexscreener.com/token-profiles/latest/v1', 7000)
       .then(function(profiles) {
         var addrs = (Array.isArray(profiles) ? profiles : [])
           .filter(function(p) { return p.chainId === 'solana' && p.tokenAddress; })
           .map(function(p) { return p.tokenAddress; })
-          .slice(0, 30)
-          .join(',');
-        if (!addrs) return { coins: [], label: 'DexScreener' };
-        var ctl2 = new AbortController();
-        var t2   = setTimeout(function() { ctl2.abort(); }, 6000);
-        return fetch('https://api.dexscreener.com/latest/dex/tokens/' + addrs, { signal: ctl2.signal })
-          .then(function(r2) {
-            clearTimeout(t2);
-            if (!r2.ok) throw new Error('ds2:' + r2.status);
-            return r2.json();
-          })
-          .then(function(data) {
-            var seen  = new Set();
-            var coins = (data.pairs || [])
-              .filter(function(p) { return p.chainId === 'solana'; })
-              .reduce(function(acc, p) {
-                var addr = p.baseToken && p.baseToken.address;
-                if (!addr || seen.has(addr)) return acc;
-                seen.add(addr);
-                acc.push({
-                  mint:              addr,
-                  name:              (p.baseToken && p.baseToken.name)   || 'Unknown',
-                  symbol:            (p.baseToken && p.baseToken.symbol) || '',
-                  usd_market_cap:    Number(p.fdv || p.marketCap) || 0,
-                  price_in_sol:      null,
-                  image_uri:         (p.info && p.info.imageUrl) || '',
-                  created_timestamp: p.pairCreatedAt || Date.now()
-                });
-                return acc;
-              }, [])
-              .filter(function(c) { return c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX; })
-              .sort(function(a, b) { return b.usd_market_cap - a.usd_market_cap; });
-            return { coins: coins, label: 'DexScreener' };
-          });
+          .slice(0, 30).join(',');
+        if (!addrs) return [];
+        return abortFetch('https://api.dexscreener.com/latest/dex/tokens/' + addrs, 7000)
+          .then(function(data) { return normalizePairs(data.pairs); });
       });
   }
 
+  // ── Source 3: DexScreener search (pump-related tokens) ────────────────
+  function fetchDexSearch() {
+    var queries = ['pump', 'sol', 'pepe'];
+    return Promise.allSettled(queries.map(function(q) {
+      return abortFetch('https://api.dexscreener.com/latest/dex/search?q=' + q, 7000)
+        .then(function(d) { return normalizePairs(d.pairs); });
+    })).then(function(results) {
+      var all = [];
+      results.forEach(function(r) {
+        if (r.status === 'fulfilled') all = all.concat(r.value);
+      });
+      return all;
+    });
+  }
+
+  // ── Merge + filter ────────────────────────────────────────────────────
+  function mergeCoins(arrays) {
+    var seen = new Set();
+    var all  = [];
+    [].concat.apply([], arrays).forEach(function(c) {
+      if (!c.mint || seen.has(c.mint)) return;
+      seen.add(c.mint);
+      all.push(c);
+    });
+
+    // Primary: strict $50K–$100K
+    var primary = all.filter(function(c) {
+      return c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX;
+    });
+    if (primary.length) {
+      return { coins: primary.sort(function(a,b){ return b.usd_market_cap - a.usd_market_cap; }), fallback: false };
+    }
+
+    // Fallback: widened to $20K–$300K, sorted by proximity to $75K midpoint
+    var wide = all.filter(function(c) {
+      return c.usd_market_cap >= 20000 && c.usd_market_cap <= 300000;
+    }).sort(function(a, b) {
+      return Math.abs(a.usd_market_cap - 75000) - Math.abs(b.usd_market_cap - 75000);
+    }).slice(0, 20);
+    return { coins: wide, fallback: true };
+  }
+
   // ── Poll ──────────────────────────────────────────────────────────────
-  var pfUrlIdx = 0;
-  var sources  = [
-    function() { return fetchPumpFun(pfUrlIdx); },
-    function() { return fetchDexScreener(); }
-  ];
 
   function startCountdown() {
     if (countdownInt) clearInterval(countdownInt);
@@ -1131,40 +1153,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function poll() {
     setStatus('Fetching…', 'connecting');
-    pfUrlIdx = 0;
-    var startSrc = srcIdx;
-    function tryNext(i) {
-      if (i >= sources.length) {
-        setStatus('No data — retrying in 5 min', 'error');
-        startCountdown();
-        return;
-      }
-      var idx = (startSrc + i) % sources.length;
-      sources[idx]()
-        .then(function(result) {
-          if (!result || !result.coins || !result.coins.length) {
-            if (idx === 0 && pfUrlIdx < PF_URLS.length - 1) {
-              pfUrlIdx++;
-              tryNext(i); return;
-            }
-            tryNext(i + 1); return;
-          }
-          srcIdx = idx;
-          clearFeed();
-          var coins = result.coins;
-          // Highest MC first
-          coins.forEach(function(c) { seenMints.add(c.mint); showCard(c, false); });
-          isFirstLoad = false;
-          var hot = FEED.querySelectorAll('.pf-card--hot').length;
-          setStatus(result.label + ' · ' + coins.length + ' coins' + (hot ? ' · ' + hot + ' ~100K' : ''), 'live');
-          startCountdown();
-        })
-        .catch(function(err) {
-          console.warn('[PFTracker] source', idx, 'failed:', err.message || err);
-          tryNext(i + 1);
+    // Fire all 3 sources in parallel
+    Promise.allSettled([fetchPumpFun(), fetchDexScreener(), fetchDexSearch()])
+      .then(function(results) {
+        var arrays = results.map(function(r) {
+          if (r.status === 'fulfilled') return r.value || [];
+          console.warn('[PFTracker]', r.reason && r.reason.message);
+          return [];
         });
-    }
-    tryNext(0);
+        var merged = mergeCoins(arrays);
+        if (!merged.coins.length) {
+          setStatus('No coins found — retrying', 'error');
+          startCountdown();
+          return;
+        }
+        clearFeed();
+        merged.coins.forEach(function(c) { seenMints.add(c.mint); showCard(c, false); });
+        isFirstLoad = false;
+        var label = merged.fallback
+          ? 'Nearest to $50K–100K · ' + merged.coins.length + ' coins'
+          : '$50K–100K · ' + merged.coins.length + ' coins pumping';
+        setStatus(label, 'live');
+        startCountdown();
+      });
   }
 
   setStatus('Connecting…', 'connecting');
