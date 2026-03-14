@@ -22,7 +22,7 @@ const state = {
   wallet:       null,
   provider:     null,
   connection:   null,
-  network:      'devnet',
+  network:      'mainnet-beta',
   genWallets:   [],
   bundleWallets: [],
   botRunning:   false,
@@ -671,7 +671,7 @@ function setMax(inputId) {
 document.addEventListener('DOMContentLoaded', () => {
 
   // Initial network dot
-  handleNetworkChange('devnet');
+  handleNetworkChange('mainnet-beta');
 
   // Logo → home
   document.getElementById('homeLogoBtn').addEventListener('click', e => {
