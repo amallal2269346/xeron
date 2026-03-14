@@ -1,9 +1,9 @@
 {
   "public": true,
   "rewrites": [
-    { "source": "/",                  "destination": "/solana-tools/index.html" },
-    { "source": "/styles.css",        "destination": "/solana-tools/styles.css" },
-    { "source": "/app.js",            "destination": "/solana-tools/app.js" },
-    { "source": "/solana-web3.min.js","destination": "/solana-tools/solana-web3.min.js" }
+    { "source": "/",                   "destination": "/launchpad/index.html" },
+    { "source": "/styles.css",         "destination": "/launchpad/styles.css" },
+    { "source": "/app.js",             "destination": "/launchpad/app.js" },
+    { "source": "/solana-web3.min.js", "destination": "/launchpad/solana-web3.min.js" }
   ]
 }

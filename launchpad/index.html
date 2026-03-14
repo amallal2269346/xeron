@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shrug — Solana Token Tools</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="14" fill="#7c3aed"/><path d="M8 14h12M14 8v12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <span class="brand-name">Shrug</span>
+      <span class="brand-tag">Solana Tools</span>
+    </div>
+    <div class="header-right">
+      <span id="networkBadge" class="network-badge">● Mainnet</span>
+      <button id="connectBtn" class="btn btn-primary" onclick="connectWallet()">Connect Wallet</button>
+      <div id="walletInfo" class="wallet-info hidden">
+        <span id="walletAddr"></span>
+        <span id="walletBal"></span>
+        <button class="btn btn-ghost btn-sm" onclick="disconnectWallet()">Disconnect</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="create">🪙 Token Creator</button>
+    <button class="tab" data-tab="airdrop">🪂 Airdrop</button>
+    <button class="tab" data-tab="manager">⚙️ Token Manager</button>
+    <button class="tab" data-tab="wallets">🔑 Wallets</button>
+  </nav>
+
+  <main>
+
+    <!-- ── Token Creator ── -->
+    <section id="tab-create" class="tab-panel active">
+      <div class="card">
+        <h2>Create Token</h2>
+        <p class="subtitle">Deploy a new SPL token on Solana. Tokens are minted directly to your wallet.</p>
+        <div class="form-grid">
+          <div class="field">
+            <label>Token Name *</label>
+            <input id="tokName" type="text" placeholder="e.g. My Token" maxlength="32" />
+          </div>
+          <div class="field">
+            <label>Symbol *</label>
+            <input id="tokSymbol" type="text" placeholder="e.g. MTK" maxlength="10" />
+          </div>
+          <div class="field">
+            <label>Decimals</label>
+            <input id="tokDecimals" type="number" value="9" min="0" max="18" />
+          </div>
+          <div class="field">
+            <label>Total Supply *</label>
+            <input id="tokSupply" type="text" placeholder="e.g. 1000000000" />
+          </div>
+          <div class="field full">
+            <label>Metadata URI <span class="hint">(optional — JSON url with image/description)</span></label>
+            <input id="tokUri" type="text" placeholder="https://arweave.net/..." />
+          </div>
+        </div>
+        <div class="toggles">
+          <label class="toggle-row">
+            <span>
+              <strong>Revoke Mint Authority</strong>
+              <small>No more tokens can ever be minted</small>
+            </span>
+            <input type="checkbox" id="tokRevokeMint" class="toggle" />
+          </label>
+          <label class="toggle-row">
+            <span>
+              <strong>Revoke Freeze Authority</strong>
+              <small>No accounts can be frozen</small>
+            </span>
+            <input type="checkbox" id="tokRevokeFreeze" class="toggle" />
+          </label>
+          <label class="toggle-row">
+            <span>
+              <strong>Use Token-2022</strong>
+              <small>New token standard with extensions</small>
+            </span>
+            <input type="checkbox" id="tokToken2022" class="toggle" />
+          </label>
+        </div>
+        <div class="fee-box">
+          <div class="fee-row"><span>Mint account rent</span><span>~0.0015 SOL</span></div>
+          <div class="fee-row"><span>Metadata account rent</span><span>~0.012 SOL</span></div>
+          <div class="fee-row"><span>ATA creation</span><span>~0.002 SOL</span></div>
+          <div class="fee-row fee-platform"><span>Platform service fee</span><span id="createPlatformFee">0.05 SOL</span></div>
+          <div class="fee-row fee-total"><span>Estimated total</span><span id="createTotal">~0.065 SOL</span></div>
+        </div>
+        <button class="btn btn-primary btn-lg" id="createTokenBtn" onclick="handleCreateToken()">🚀 Create Token</button>
+        <div id="createResult" class="result hidden"></div>
+      </div>
+    </section>
+
+    <!-- ── Airdrop ── -->
+    <section id="tab-airdrop" class="tab-panel hidden">
+      <div class="card">
+        <h2>Token Airdrop</h2>
+        <p class="subtitle">Send tokens to multiple wallets in batches.</p>
+        <div class="field">
+          <label>Token Mint Address *</label>
+          <input id="airMint" type="text" placeholder="Mint address of token to airdrop" />
+        </div>
+        <div class="field">
+          <label>Recipients <span class="hint">one per line: address,amount</span></label>
+          <textarea id="airRecipients" rows="8" placeholder="7xKX...abc,1000&#10;9mRY...def,500&#10;3pQZ...ghi,250"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Batch size</label>
+            <input id="airBatch" type="number" value="5" min="1" max="10" />
+          </div>
+          <div class="field">
+            <label>Recipients found</label>
+            <input id="airCount" readonly value="—" />
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="parseAirdrop()">Parse Recipients</button>
+        <div id="airSummary" class="fee-box hidden">
+          <div class="fee-row"><span>Recipients</span><span id="airSumCount">—</span></div>
+          <div class="fee-row"><span>Total tokens</span><span id="airSumTokens">—</span></div>
+          <div class="fee-row"><span>ATA creation (new wallets)</span><span id="airSumATA">~0.002 SOL each</span></div>
+          <div class="fee-row fee-platform"><span>Platform fee</span><span id="airSumFee">—</span></div>
+        </div>
+        <button class="btn btn-primary btn-lg hidden" id="startAirdropBtn" onclick="startAirdrop()">🪂 Start Airdrop</button>
+        <div id="airProgress" class="progress-wrap hidden">
+          <div class="progress-bar"><div id="airBar" style="width:0%"></div></div>
+          <div id="airStatus" class="progress-text">0 / 0 batches</div>
+        </div>
+        <div id="airLog" class="tx-log hidden"></div>
+      </div>
+    </section>
+
+    <!-- ── Token Manager ── -->
+    <section id="tab-manager" class="tab-panel hidden">
+      <div class="card">
+        <h2>Token Manager</h2>
+        <p class="subtitle">Manage your existing tokens — revoke authorities, burn, mint, update metadata.</p>
+        <div class="field">
+          <label>Token Mint Address *</label>
+          <div class="input-row">
+            <input id="mgMint" type="text" placeholder="Enter mint address to load token" />
+            <button class="btn btn-secondary" onclick="lookupToken()">Look Up</button>
+          </div>
+        </div>
+        <div id="mgTokenInfo" class="token-preview hidden">
+          <div class="token-meta">
+            <div><strong id="mgName">—</strong> <span id="mgSymbol" class="badge">—</span></div>
+            <div class="meta-row"><span>Supply</span><span id="mgSupply">—</span></div>
+            <div class="meta-row"><span>Decimals</span><span id="mgDecimals">—</span></div>
+            <div class="meta-row"><span>Mint Authority</span><span id="mgMintAuth">—</span></div>
+            <div class="meta-row"><span>Freeze Authority</span><span id="mgFreezeAuth">—</span></div>
+          </div>
+        </div>
+
+        <div id="mgActions" class="mg-actions hidden">
+          <!-- Revoke -->
+          <div class="action-group">
+            <h3>Revoke Authorities</h3>
+            <div class="checkbox-row">
+              <label><input type="checkbox" id="revokeMintCb" /> Revoke Mint Authority</label>
+              <label><input type="checkbox" id="revokeFreezeCb" /> Revoke Freeze Authority</label>
+            </div>
+            <div class="fee-box compact">
+              <div class="fee-row fee-platform"><span>Fee</span><span>0.01 SOL</span></div>
+            </div>
+            <button class="btn btn-primary" onclick="revokeAuthorities()">Revoke Selected</button>
+          </div>
+
+          <!-- Burn -->
+          <div class="action-group">
+            <h3>Burn Tokens</h3>
+            <div class="field">
+              <label>Amount to burn</label>
+              <input id="burnAmt" type="text" placeholder="e.g. 1000000" />
+            </div>
+            <div class="fee-box compact">
+              <div class="fee-row fee-platform"><span>Fee</span><span>0.01 SOL</span></div>
+            </div>
+            <button class="btn btn-danger" onclick="burnTokens()">🔥 Burn</button>
+          </div>
+
+          <!-- Mint More -->
+          <div class="action-group">
+            <h3>Mint More Tokens</h3>
+            <div class="field">
+              <label>Amount to mint</label>
+              <input id="mintAmt" type="text" placeholder="e.g. 1000000" />
+            </div>
+            <div class="fee-box compact">
+              <div class="fee-row fee-platform"><span>Fee</span><span>0.01 SOL</span></div>
+            </div>
+            <button class="btn btn-primary" onclick="mintMore()">➕ Mint</button>
+          </div>
+
+          <!-- Update Metadata -->
+          <div class="action-group">
+            <h3>Update Metadata</h3>
+            <div class="form-grid">
+              <div class="field"><label>Name</label><input id="updName" type="text" /></div>
+              <div class="field"><label>Symbol</label><input id="updSymbol" type="text" /></div>
+              <div class="field full"><label>URI</label><input id="updUri" type="text" placeholder="https://..." /></div>
+            </div>
+            <div class="fee-box compact">
+              <div class="fee-row fee-platform"><span>Fee</span><span>0.01 SOL</span></div>
+            </div>
+            <button class="btn btn-secondary" onclick="updateMetadata()">✏️ Update</button>
+          </div>
+        </div>
+        <div id="mgResult" class="result hidden"></div>
+      </div>
+    </section>
+
+    <!-- ── Wallet Generator ── -->
+    <section id="tab-wallets" class="tab-panel hidden">
+      <div class="card">
+        <h2>Wallet Generator</h2>
+        <p class="subtitle">Generate Solana keypairs locally. Keys never leave your browser.</p>
+        <div class="form-row">
+          <div class="field">
+            <label>Count (max 50)</label>
+            <input id="genCount" type="number" value="5" min="1" max="50" />
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn btn-primary" onclick="generateWallets()">Generate</button>
+          </div>
+        </div>
+        <div id="genActions" class="hidden" style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="exportWallets('csv')">Export CSV</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportWallets('json')">Export JSON</button>
+        </div>
+        <div id="walletTable" class="wallet-table hidden">
+          <table>
+            <thead><tr><th>#</th><th>Public Key</th><th>Private Key</th><th>Balance</th></tr></thead>
+            <tbody id="walletTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="solana-web3.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
