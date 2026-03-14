@@ -1037,7 +1037,9 @@ document.addEventListener('DOMContentLoaded', () => {
               return Object.assign({}, c, {
                 usd_market_cap: Number(c.usd_market_cap || c.market_cap) || 0
               });
-            });
+            })
+            .filter(function(c) { return c.usd_market_cap >= 20000 && c.usd_market_cap <= 5000000; })
+            .sort(function(a, b) { return b.usd_market_cap - a.usd_market_cap; });
           resolve({ coins: coins, label: 'Pump.fun' });
         })
         .catch(function(err) { clearTimeout(t); reject(err); });
@@ -1087,7 +1089,9 @@ document.addEventListener('DOMContentLoaded', () => {
                   created_timestamp: p.pairCreatedAt || Date.now()
                 });
                 return acc;
-              }, []);
+              }, [])
+              .filter(function(c) { return c.usd_market_cap >= 20000 && c.usd_market_cap <= 5000000; })
+              .sort(function(a, b) { return b.usd_market_cap - a.usd_market_cap; });
             return { coins: coins, label: 'DexScreener' };
           });
       });
