@@ -1,4 +1,5 @@
 {
+  "public": true,
   "rewrites": [
     { "source": "/",                  "destination": "/solana-tools/index.html" },
     { "source": "/styles.css",        "destination": "/solana-tools/styles.css" },
