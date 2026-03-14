@@ -71,6 +71,12 @@ function closeModal() {
 }
 
 // ── Navigation ─────────────────────────────────────────────────────────────────
+function goHome() {
+  document.getElementById('heroSection').style.display = '';
+  document.getElementById('mainContent').classList.remove('visible');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+}
+
 function switchTab(tabId) {
   // Hide hero, show main content
   document.getElementById('heroSection').style.display = 'none';
@@ -662,6 +668,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial network dot
   handleNetworkChange('devnet');
+
+  // Logo → home
+  document.getElementById('homeLogoBtn').addEventListener('click', e => {
+    e.preventDefault();
+    goHome();
+  });
 
   // Nav links
   document.querySelectorAll('[data-tab]').forEach(el => {
