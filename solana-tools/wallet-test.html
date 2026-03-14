@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wallet Receive Test</title>
+  <style>
+    body { font-family: monospace; background: #111; color: #eee; padding: 40px; max-width: 600px; margin: auto; }
+    button { background: #512da8; color: #fff; border: none; padding: 12px 24px; cursor: pointer; font-size: 15px; border-radius: 6px; margin-top: 16px; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .box { background: #1e1e1e; padding: 16px; border-radius: 8px; margin-top: 16px; word-break: break-all; }
+    .ok  { color: #4caf50; }
+    .err { color: #f44336; }
+    label { display: block; margin-top: 12px; font-size: 13px; color: #aaa; }
+    select, input { width: 100%; padding: 8px; background: #222; color: #eee; border: 1px solid #444; border-radius: 4px; margin-top: 4px; font-size: 14px; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <h2>SOL Receive Test</h2>
+  <p style="color:#aaa;font-size:13px">Uses your Phantom wallet on <strong>Devnet</strong> to send a tiny amount of SOL to the target wallet. Safe — no real money involved.</p>
+
+  <label>Network</label>
+  <select id="network">
+    <option value="devnet" selected>Devnet (recommended for testing)</option>
+    <option value="mainnet-beta">Mainnet (real SOL)</option>
+  </select>
+
+  <label>Target wallet (receives SOL)</label>
+  <input id="target" value="21r2FRqdnjDM6NwmXN4MBynRaY4ygSUNigVFS3ny347G" />
+
+  <label>Amount (SOL)</label>
+  <input id="amount" type="number" value="0.001" step="0.001" min="0.001" />
+
+  <button id="btn" onclick="runTest()">Connect Phantom &amp; Send Test</button>
+
+  <div id="log"></div>
+
+  <script src="solana-web3.min.js"></script>
+  <script>
+    const { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } = solanaWeb3;
+
+    const RPC = {
+      'devnet':       'https://api.devnet.solana.com',
+      'mainnet-beta': 'https://api.mainnet-beta.solana.com',
+    };
+
+    function log(msg, cls = '') {
+      const div = document.getElementById('log');
+      div.innerHTML += `<div class="box ${cls}">${msg}</div>`;
+    }
+
+    async function runTest() {
+      const btn = document.getElementById('btn');
+      btn.disabled = true;
+      document.getElementById('log').innerHTML = '';
+
+      const network = document.getElementById('network').value;
+      const targetAddr = document.getElementById('target').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+
+      try {
+        // 1. Connect Phantom
+        if (!window.solana?.isPhantom) throw new Error('Phantom wallet not found. Install it first.');
+        await window.solana.connect();
+        const sender = window.solana.publicKey;
+        log(`Sender: ${sender.toString()}`);
+
+        // 2. Validate target
+        let targetPk;
+        try { targetPk = new PublicKey(targetAddr); }
+        catch { throw new Error('Invalid target wallet address.'); }
+        log(`Target: ${targetPk.toString()}`);
+
+        // 3. Build transfer
+        const conn = new Connection(RPC[network], 'confirmed');
+        const lamports = Math.round(amount * LAMPORTS_PER_SOL);
+        log(`Sending ${amount} SOL (${lamports} lamports) on ${network}…`);
+
+        if (network === 'devnet') {
+          log('Airdropping 0.01 SOL to your devnet wallet for gas…');
+          try {
+            const sig = await conn.requestAirdrop(sender, 0.01 * LAMPORTS_PER_SOL);
+            await conn.confirmTransaction(sig);
+          } catch (e) {
+            log('Airdrop skipped (may already have balance): ' + e.message);
+          }
+        }
+
+        const tx = new Transaction().add(
+          SystemProgram.transfer({
+            fromPubkey: sender,
+            toPubkey: targetPk,
+            lamports,
+          })
+        );
+        const { blockhash } = await conn.getLatestBlockhash();
+        tx.recentBlockhash = blockhash;
+        tx.feePayer = sender;
+
+        // 4. Sign & send
+        const signed = await window.solana.signTransaction(tx);
+        const txId = await conn.sendRawTransaction(signed.serialize());
+        await conn.confirmTransaction(txId);
+
+        log(`✓ Transaction confirmed!<br>Signature: <a href="https://explorer.solana.com/tx/${txId}?cluster=${network}" target="_blank" style="color:#90caf9">${txId}</a>`, 'ok');
+        log(`Check your target wallet on <a href="https://explorer.solana.com/address/${targetAddr}?cluster=${network}" target="_blank" style="color:#90caf9">Solana Explorer</a>`, 'ok');
+
+      } catch (e) {
+        log('Error: ' + e.message, 'err');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
