@@ -887,11 +887,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const GRAD_MC   = 69000;   // pump.fun graduation cap
   const MAX_CARDS = 50;
-  const POLL_MS   = 5000;    // 5-second refresh
+  const POLL_MS   = 300000;  // 5-minute refresh
+  const MC_MIN    = 60000;   // $60K – near/above graduation
+  const MC_MAX    = 500000;  // $500K – still in "pumping" territory
 
-  let seenMints   = new Set();
-  let isFirstLoad = true;
-  let srcIdx      = 0;       // current working source index
+  let seenMints    = new Set();
+  let isFirstLoad  = true;
+  let srcIdx       = 0;
+  let countdownInt = null;
 
   function setStatus(text, state) {
     STATUS.innerHTML =
@@ -1011,11 +1014,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── Pump.fun REST API ────────────────────────────────────────────────
-  // Sort by market_cap DESC to surface near-100K tokens near the top
+  // last_trade_timestamp → coins actively being bought RIGHT NOW
+  // limit=100 → wider net to catch those sitting near $100K
   var PF_URLS = [
-    'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=market_cap&order=DESC&includeNsfw=false',
-    'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=last_reply&order=DESC&includeNsfw=false',
-    'https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false'
+    'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=last_trade_timestamp&order=DESC&includeNsfw=false',
+    'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=market_cap&order=DESC&includeNsfw=false',
+    'https://frontend-api.pump.fun/coins?offset=0&limit=100&sort=last_reply&order=DESC&includeNsfw=false'
   ];
 
   function fetchPumpFun(urlIndex) {
@@ -1038,7 +1042,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 usd_market_cap: Number(c.usd_market_cap || c.market_cap) || 0
               });
             })
-            .filter(function(c) { return c.usd_market_cap >= 20000 && c.usd_market_cap <= 5000000; })
+            .filter(function(c) { return c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX; })
             .sort(function(a, b) { return b.usd_market_cap - a.usd_market_cap; });
           resolve({ coins: coins, label: 'Pump.fun' });
         })
@@ -1090,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 return acc;
               }, [])
-              .filter(function(c) { return c.usd_market_cap >= 20000 && c.usd_market_cap <= 5000000; })
+              .filter(function(c) { return c.usd_market_cap >= MC_MIN && c.usd_market_cap <= MC_MAX; })
               .sort(function(a, b) { return b.usd_market_cap - a.usd_market_cap; });
             return { coins: coins, label: 'DexScreener' };
           });
@@ -1104,40 +1108,56 @@ document.addEventListener('DOMContentLoaded', () => {
     function() { return fetchDexScreener(); }
   ];
 
+  function startCountdown() {
+    if (countdownInt) clearInterval(countdownInt);
+    var end = Date.now() + POLL_MS;
+    countdownInt = setInterval(function() {
+      var rem = Math.max(0, Math.round((end - Date.now()) / 1000));
+      var m = Math.floor(rem / 60), s = rem % 60;
+      var dot = STATUS.querySelector('.pf-dot');
+      var lbl = STATUS.querySelector('.pf-status-text');
+      if (lbl) lbl.textContent = 'Refreshes in ' + m + ':' + (s < 10 ? '0' : '') + s;
+      if (rem === 0) clearInterval(countdownInt);
+    }, 1000);
+  }
+
+  function clearFeed() {
+    // Remove all cards and reset seen set for a fresh snapshot
+    var cards = FEED.querySelectorAll('.pf-card');
+    cards.forEach(function(c) { if (c._ageTimer) clearInterval(c._ageTimer); c.remove(); });
+    seenMints.clear();
+    if (PLACEHOLDER) PLACEHOLDER.style.display = '';
+  }
+
   function poll() {
+    setStatus('Fetching…', 'connecting');
+    pfUrlIdx = 0;
     var startSrc = srcIdx;
     function tryNext(i) {
       if (i >= sources.length) {
-        setStatus('No data — retrying', 'error');
+        setStatus('No data — retrying in 5 min', 'error');
+        startCountdown();
         return;
       }
       var idx = (startSrc + i) % sources.length;
       sources[idx]()
         .then(function(result) {
           if (!result || !result.coins || !result.coins.length) {
-            // If pump.fun returned empty, try next URL variant
             if (idx === 0 && pfUrlIdx < PF_URLS.length - 1) {
               pfUrlIdx++;
-              setStatus('Trying …', 'connecting');
-              poll(); return;
+              tryNext(i); return;
             }
             tryNext(i + 1); return;
           }
           srcIdx = idx;
+          clearFeed();
           var coins = result.coins;
-          // Sort oldest-first so newest lands on top after prepend
-          coins.sort(function(a, b) { return (a.created_timestamp || 0) - (b.created_timestamp || 0); });
-          if (isFirstLoad) {
-            coins.forEach(function(c) { seenMints.add(c.mint); showCard(c, false); });
-            isFirstLoad = false;
-          } else {
-            coins.forEach(function(c) {
-              if (!seenMints.has(c.mint)) { seenMints.add(c.mint); showCard(c, true); }
-              else updateCard(c);
-            });
-          }
+          // Highest MC first
+          coins.forEach(function(c) { seenMints.add(c.mint); showCard(c, false); });
+          isFirstLoad = false;
           var hot = FEED.querySelectorAll('.pf-card--hot').length;
-          setStatus(result.label + ' · live' + (hot ? ' · ' + hot + ' near 100K' : ''), 'live');
+          setStatus(result.label + ' · ' + coins.length + ' coins' + (hot ? ' · ' + hot + ' ~100K' : ''), 'live');
+          startCountdown();
         })
         .catch(function(err) {
           console.warn('[PFTracker] source', idx, 'failed:', err.message || err);
