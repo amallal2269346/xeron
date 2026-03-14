@@ -886,9 +886,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const PLACEHOLDER = document.getElementById('pfPlaceholder');
   const MC_THRESHOLD = 100_000;
   const MAX_CARDS    = 30;
-  const seen = new Set();
-  let solPrice = 150;
-  let ws = null;
+  const MAX_SUBS     = 40; // max simultaneous token trade subscriptions
+
+  const seen     = new Set();   // mints already shown
+  const meta     = new Map();   // mint -> {name, symbol}
+  let solPrice   = 150;
+  let ws         = null;
+  let subCount   = 0;
 
   function setStatus(text, state) {
     STATUS.innerHTML = `<span class="pf-dot pf-dot--${state}"></span><span class="pf-status-text">${text}</span>`;
@@ -908,37 +912,34 @@ document.addEventListener('DOMContentLoaded', () => {
     return `$${Math.round(usd).toLocaleString()}`;
   }
 
-  function addCard(token) {
-    if (!token.mint || seen.has(token.mint)) return;
-    seen.add(token.mint);
+  function addCard(mint, name, symbol, usdMc) {
+    if (!mint || seen.has(mint)) return;
+    seen.add(mint);
+    meta.delete(mint);
     if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
 
     const card = document.createElement('div');
     card.className = 'pf-card';
-    const imgSrc = token.image_uri || token.uri || '';
+    const safeName = (name || 'Unknown').replace(/</g, '&lt;');
+    const safeSym  = (symbol || '').replace(/</g, '&lt;');
     card.innerHTML = `
-      <div class="pf-card-icon">${imgSrc ? `<img src="${imgSrc}" onerror="this.parentNode.textContent='🪙'">` : '🪙'}</div>
+      <div class="pf-card-icon">🪙</div>
       <div class="pf-card-info">
-        <div class="pf-card-name">${token.name || 'Unknown'}<span class="pf-card-sym">${token.symbol ? ' ' + token.symbol : ''}</span></div>
-        <div class="pf-card-mc">${mcFormat(token.usd_market_cap)} market cap</div>
+        <div class="pf-card-name">${safeName}<span class="pf-card-sym">${safeSym ? ' ' + safeSym : ''}</span></div>
+        <div class="pf-card-mc">${mcFormat(usdMc)} market cap</div>
       </div>
-      <a class="pf-card-link" href="https://pump.fun/${token.mint}" target="_blank" rel="noopener" title="View on pump.fun">↗</a>`;
+      <a class="pf-card-link" href="https://pump.fun/${mint}" target="_blank" rel="noopener">↗</a>`;
 
     FEED.insertBefore(card, FEED.firstChild);
     requestAnimationFrame(() => card.classList.add('pf-card--visible'));
-
     const cards = FEED.querySelectorAll('.pf-card');
     if (cards.length > MAX_CARDS) cards[cards.length - 1].remove();
   }
 
-  async function pollRest() {
-    try {
-      const r = await fetch('https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=market_cap&order=DESC&includeNsfw=false');
-      const data = await r.json();
-      if (Array.isArray(data)) {
-        data.filter(t => (t.usd_market_cap || 0) >= MC_THRESHOLD).forEach(addCard);
-      }
-    } catch (_) {}
+  function subscribe(mint) {
+    if (subCount >= MAX_SUBS || !ws || ws.readyState !== 1) return;
+    ws.send(JSON.stringify({ method: 'subscribeTokenTrade', keys: [mint] }));
+    subCount++;
   }
 
   function connectWS() {
@@ -947,28 +948,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ws.onopen = () => {
       setStatus('Live', 'live');
+      subCount = 0;
+      // Subscribe to new token creations
       ws.send(JSON.stringify({ method: 'subscribeNewToken' }));
     };
 
     ws.onmessage = (ev) => {
       try {
         const d = JSON.parse(ev.data);
-        const usdMc = d.usd_market_cap || (d.marketCapSol * solPrice);
-        if (usdMc >= MC_THRESHOLD) {
-          addCard({ mint: d.mint, name: d.name, symbol: d.symbol, usd_market_cap: usdMc, image_uri: d.image_uri || d.uri });
+        if (!d || !d.mint) return;
+
+        // New token created — store metadata and subscribe to its trades
+        if (d.txType === 'create') {
+          meta.set(d.mint, { name: d.name, symbol: d.symbol });
+          subscribe(d.mint);
+          // Check if it launched already above threshold (very rare but possible)
+          const usdMc = (d.marketCapSol || 0) * solPrice;
+          if (usdMc >= MC_THRESHOLD) addCard(d.mint, d.name, d.symbol, usdMc);
+          return;
+        }
+
+        // Trade event — check if market cap crossed threshold
+        if (d.txType === 'buy' || d.txType === 'sell') {
+          const usdMc = (d.marketCapSol || 0) * solPrice;
+          if (usdMc >= MC_THRESHOLD && !seen.has(d.mint)) {
+            const m = meta.get(d.mint) || {};
+            addCard(d.mint, m.name, m.symbol, usdMc);
+          }
         }
       } catch (_) {}
     };
 
     ws.onerror = () => setStatus('Reconnecting…', 'error');
-    ws.onclose = () => { setStatus('Reconnecting…', 'error'); setTimeout(connectWS, 5000); };
+    ws.onclose = () => {
+      setStatus('Reconnecting…', 'error');
+      meta.clear();
+      subCount = 0;
+      setTimeout(connectWS, 5000);
+    };
   }
 
   async function init() {
     await fetchSolPrice();
     setInterval(fetchSolPrice, 60_000);
-    await pollRest();
-    setInterval(pollRest, 30_000);
     connectWS();
   }
 
