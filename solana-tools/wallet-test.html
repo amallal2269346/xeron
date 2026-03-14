@@ -2,50 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wallet Receive Test</title>
+  <title>Wallet Receive Test — Mainnet</title>
   <style>
     body { font-family: monospace; background: #111; color: #eee; padding: 40px; max-width: 600px; margin: auto; }
-    button { background: #512da8; color: #fff; border: none; padding: 12px 24px; cursor: pointer; font-size: 15px; border-radius: 6px; margin-top: 16px; }
+    h2 { margin-bottom: 4px; }
+    button { background: #512da8; color: #fff; border: none; padding: 12px 28px; cursor: pointer; font-size: 15px; border-radius: 6px; margin-top: 18px; width: 100%; }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .box { background: #1e1e1e; padding: 16px; border-radius: 8px; margin-top: 16px; word-break: break-all; }
-    .ok  { color: #4caf50; }
-    .err { color: #f44336; }
-    label { display: block; margin-top: 12px; font-size: 13px; color: #aaa; }
-    select, input { width: 100%; padding: 8px; background: #222; color: #eee; border: 1px solid #444; border-radius: 4px; margin-top: 4px; font-size: 14px; box-sizing: border-box; }
+    .box { background: #1e1e1e; padding: 14px 16px; border-radius: 8px; margin-top: 12px; word-break: break-all; font-size: 13px; line-height: 1.6; }
+    .ok  { color: #4caf50; border-left: 3px solid #4caf50; }
+    .err { color: #f44336; border-left: 3px solid #f44336; }
+    .info { border-left: 3px solid #555; }
+    label { display: block; margin-top: 14px; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+    input { width: 100%; padding: 10px; background: #1a1a1a; color: #eee; border: 1px solid #333; border-radius: 4px; margin-top: 6px; font-size: 14px; box-sizing: border-box; }
+    .row { display: flex; gap: 12px; margin-top: 14px; }
+    .row > div { flex: 1; }
+    .row label { margin-top: 0; }
+    .warn { background: #2a1f00; border: 1px solid #7a4f00; border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #ffb74d; margin-top: 16px; }
+    a { color: #90caf9; }
   </style>
 </head>
 <body>
   <h2>SOL Receive Test</h2>
-  <p style="color:#aaa;font-size:13px">Uses your Phantom wallet on <strong>Devnet</strong> to send a tiny amount of SOL to the target wallet. Safe — no real money involved.</p>
+  <p style="color:#666;font-size:12px;margin-top:4px">Mainnet — verify your wallet receives SOL correctly</p>
 
-  <label>Network</label>
-  <select id="network">
-    <option value="devnet" selected>Devnet (recommended for testing)</option>
-    <option value="mainnet-beta">Mainnet (real SOL)</option>
-  </select>
+  <div class="warn">⚠ This sends <strong>real SOL</strong> on mainnet. Keep the amount small (0.001 SOL ≈ $0.10).</div>
 
   <label>Target wallet (receives SOL)</label>
   <input id="target" value="21r2FRqdnjDM6NwmXN4MBynRaY4ygSUNigVFS3ny347G" />
 
-  <label>Amount (SOL)</label>
-  <input id="amount" type="number" value="0.001" step="0.001" min="0.001" />
+  <div class="row">
+    <div>
+      <label>Amount (SOL)</label>
+      <input id="amount" type="number" value="0.001" step="0.001" min="0.001" max="0.1" />
+    </div>
+    <div>
+      <label>USD estimate</label>
+      <input id="usd" readonly placeholder="fetching…" style="color:#aaa" />
+    </div>
+  </div>
 
-  <button id="btn" onclick="runTest()">Connect Phantom &amp; Send Test</button>
+  <button id="btn" onclick="runTest()">Connect Phantom &amp; Send on Mainnet</button>
 
   <div id="log"></div>
 
   <script src="solana-web3.min.js"></script>
   <script>
     const { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } = solanaWeb3;
+    const RPC = 'https://api.mainnet-beta.solana.com';
+    let solPrice = null;
 
-    const RPC = {
-      'devnet':       'https://api.devnet.solana.com',
-      'mainnet-beta': 'https://api.mainnet-beta.solana.com',
-    };
+    // Fetch SOL price for USD estimate display
+    async function fetchPrice() {
+      try {
+        const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+        const d = await r.json();
+        solPrice = d.solana.usd;
+        updateUSD();
+      } catch (_) {}
+    }
 
-    function log(msg, cls = '') {
-      const div = document.getElementById('log');
-      div.innerHTML += `<div class="box ${cls}">${msg}</div>`;
+    function updateUSD() {
+      const amt = parseFloat(document.getElementById('amount').value) || 0;
+      document.getElementById('usd').value = solPrice ? `≈ $${(amt * solPrice).toFixed(3)}` : 'n/a';
+    }
+
+    document.getElementById('amount').addEventListener('input', updateUSD);
+    fetchPrice();
+
+    function log(msg, cls = 'info') {
+      document.getElementById('log').innerHTML += `<div class="box ${cls}">${msg}</div>`;
     }
 
     async function runTest() {
@@ -53,13 +78,12 @@
       btn.disabled = true;
       document.getElementById('log').innerHTML = '';
 
-      const network = document.getElementById('network').value;
       const targetAddr = document.getElementById('target').value.trim();
       const amount = parseFloat(document.getElementById('amount').value);
 
       try {
         // 1. Connect Phantom
-        if (!window.solana?.isPhantom) throw new Error('Phantom wallet not found. Install it first.');
+        if (!window.solana?.isPhantom) throw new Error('Phantom wallet not found. Install it at phantom.app');
         await window.solana.connect();
         const sender = window.solana.publicKey;
         log(`Sender: ${sender.toString()}`);
@@ -70,42 +94,48 @@
         catch { throw new Error('Invalid target wallet address.'); }
         log(`Target: ${targetPk.toString()}`);
 
-        // 3. Build transfer
-        const conn = new Connection(RPC[network], 'confirmed');
+        // 3. Check sender balance
+        const conn = new Connection(RPC, 'confirmed');
+        const balance = await conn.getBalance(sender);
         const lamports = Math.round(amount * LAMPORTS_PER_SOL);
-        log(`Sending ${amount} SOL (${lamports} lamports) on ${network}…`);
+        const usdStr = solPrice ? ` (≈ $${(amount * solPrice).toFixed(3)})` : '';
+        log(`Sender balance: ${(balance / LAMPORTS_PER_SOL).toFixed(6)} SOL`);
 
-        if (network === 'devnet') {
-          log('Airdropping 0.01 SOL to your devnet wallet for gas…');
-          try {
-            const sig = await conn.requestAirdrop(sender, 0.01 * LAMPORTS_PER_SOL);
-            await conn.confirmTransaction(sig);
-          } catch (e) {
-            log('Airdrop skipped (may already have balance): ' + e.message);
-          }
-        }
+        if (balance < lamports + 10000) throw new Error('Insufficient SOL balance (need amount + fee).');
 
-        const tx = new Transaction().add(
-          SystemProgram.transfer({
-            fromPubkey: sender,
-            toPubkey: targetPk,
-            lamports,
-          })
+        log(`Sending ${amount} SOL${usdStr} → target wallet…`);
+
+        // 4. Build tx
+        const { blockhash, lastValidBlockHeight } = await conn.getLatestBlockhash();
+        const tx = new Transaction({
+          recentBlockhash: blockhash,
+          feePayer: sender,
+        }).add(
+          SystemProgram.transfer({ fromPubkey: sender, toPubkey: targetPk, lamports })
         );
-        const { blockhash } = await conn.getLatestBlockhash();
-        tx.recentBlockhash = blockhash;
-        tx.feePayer = sender;
 
-        // 4. Sign & send
+        // 5. Sign & send
         const signed = await window.solana.signTransaction(tx);
-        const txId = await conn.sendRawTransaction(signed.serialize());
-        await conn.confirmTransaction(txId);
+        const txId = await conn.sendRawTransaction(signed.serialize(), { skipPreflight: false });
+        log('Transaction sent, waiting for confirmation…');
 
-        log(`✓ Transaction confirmed!<br>Signature: <a href="https://explorer.solana.com/tx/${txId}?cluster=${network}" target="_blank" style="color:#90caf9">${txId}</a>`, 'ok');
-        log(`Check your target wallet on <a href="https://explorer.solana.com/address/${targetAddr}?cluster=${network}" target="_blank" style="color:#90caf9">Solana Explorer</a>`, 'ok');
+        await conn.confirmTransaction({ signature: txId, blockhash, lastValidBlockHeight });
+
+        // 6. Verify target received
+        const newBal = await conn.getBalance(targetPk);
+        log(
+          `✓ Confirmed!<br>` +
+          `Signature: <a href="https://explorer.solana.com/tx/${txId}" target="_blank">${txId}</a><br>` +
+          `Target balance now: ${(newBal / LAMPORTS_PER_SOL).toFixed(6)} SOL`,
+          'ok'
+        );
+        log(
+          `<a href="https://explorer.solana.com/address/${targetAddr}" target="_blank">View target wallet on Explorer →</a>`,
+          'ok'
+        );
 
       } catch (e) {
-        log('Error: ' + e.message, 'err');
+        log('Error: ' + (e.message || e), 'err');
       } finally {
         btn.disabled = false;
       }
