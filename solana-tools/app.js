@@ -886,10 +886,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const PLACEHOLDER = document.getElementById('pfPlaceholder');
 
   const GRAD_MC   = 69000;   // pump.fun graduation cap
-  const MAX_CARDS = 50;
-  const POLL_MS   = 300000;  // 5-minute refresh
-  const MC_MIN    = 60000;   // $60K – near/above graduation
-  const MC_MAX    = 500000;  // $500K – still in "pumping" territory
+  const MAX_CARDS = 20;
+  const POLL_MS   = 60000;   // 1-minute refresh
+  const MC_MIN    = 80000;   // $80K – strictly near 100K
+  const MC_MAX    = 120000;  // $120K – strictly near 100K
 
   let seenMints    = new Set();
   let isFirstLoad  = true;
