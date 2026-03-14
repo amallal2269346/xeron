@@ -628,6 +628,10 @@ select.input option { background: var(--bg-card); }
   overflow: hidden;
   backdrop-filter: blur(8px);
 }
+.pf-description {
+  margin: .75rem 0 0; padding: 0;
+  font-size: 13px; line-height: 1.6; color: var(--text-2);
+}
 .pf-tagline {
   margin: 0; padding: .25rem 1rem .6rem;
   font-size: 12px; color: var(--text-3); letter-spacing: .02em;
