@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XeronTools — Solana Token Suite</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">XeronTools</span>
+      <span class="logo-badge">SOLANA</span>
+    </a>
+    <nav class="nav">
+      <a class="nav-link active" href="#" data-tab="token-creator">Token Creator</a>
+      <a class="nav-link" href="#" data-tab="token-manager">Token Manager</a>
+      <a class="nav-link" href="#" data-tab="airdrop">Airdrop</a>
+      <a class="nav-link" href="#" data-tab="bundler">Bundler</a>
+      <a class="nav-link" href="#" data-tab="lp-tools">LP Tools</a>
+      <a class="nav-link" href="#" data-tab="volume-bot">Volume Bot</a>
+      <a class="nav-link" href="#" data-tab="wallets">Wallets</a>
+    </nav>
+    <div class="header-right">
+      <div class="network-selector">
+        <span class="network-dot" id="networkDot"></span>
+        <select id="networkSelect" class="network-select">
+          <option value="mainnet-beta">Mainnet</option>
+          <option value="devnet" selected>Devnet</option>
+          <option value="testnet">Testnet</option>
+        </select>
+      </div>
+      <button class="btn btn-connect" id="connectWalletBtn">
+        <span class="btn-icon">◈</span> Connect Wallet
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ─── WALLET BAR ─────────────────────────────────────────────────────────── -->
+<div class="wallet-bar hidden" id="walletBar">
+  <div class="wallet-bar-inner">
+    <div class="wallet-info">
+      <span class="wallet-avatar" id="walletAvatar"></span>
+      <span class="wallet-address" id="walletAddress"></span>
+      <span class="wallet-balance" id="walletBalance">0 SOL</span>
+    </div>
+    <button class="btn btn-sm btn-danger" id="disconnectBtn">Disconnect</button>
+  </div>
+</div>
+
+<!-- ─── HERO (shown when no tab active, fades out on first action) ─────────── -->
+<section class="hero" id="heroSection">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">The Ultimate<br/><span class="gradient-text">Solana Toolkit</span></h1>
+    <p class="hero-sub">Create tokens, manage liquidity, run airdrops, and more — all in one place.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Tokens Created</span></div>
+      <div class="stat-div"></div>
+      <div class="stat"><span class="stat-num">0.01</span><span class="stat-label">SOL Min Fee</span></div>
+      <div class="stat-div"></div>
+      <div class="stat"><span class="stat-num">~400ms</span><span class="stat-label">Block Time</span></div>
+    </div>
+    <div class="hero-actions">
+      <button class="btn btn-primary btn-lg" data-tab="token-creator">Launch Token Creator</button>
+      <button class="btn btn-outline btn-lg" data-tab="wallets">Generate Wallets</button>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MAIN CONTENT ───────────────────────────────────────────────────────── -->
+<main class="main-content" id="mainContent">
+
+  <!-- ── TOKEN CREATOR ──────────────────────────────────────────────────── -->
+  <section class="tab-section" id="tab-token-creator">
+    <div class="section-header">
+      <h2 class="section-title"><span class="icon">🪙</span> Token Creator</h2>
+      <p class="section-sub">Deploy a new SPL token with full on-chain metadata in seconds.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-main">
+        <h3 class="card-title">Basic Info</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Token Name <span class="required">*</span></label>
+            <input type="text" id="tokenName" placeholder="e.g. Moon Coin" class="input" maxlength="32" />
+          </div>
+          <div class="form-group">
+            <label>Token Symbol <span class="required">*</span></label>
+            <input type="text" id="tokenSymbol" placeholder="e.g. MOON" class="input" maxlength="10" />
+          </div>
+          <div class="form-group">
+            <label>Decimals <span class="required">*</span></label>
+            <input type="number" id="tokenDecimals" value="9" min="0" max="9" class="input" />
+          </div>
+          <div class="form-group">
+            <label>Total Supply <span class="required">*</span></label>
+            <input type="number" id="tokenSupply" placeholder="1000000000" class="input" />
+          </div>
+          <div class="form-group span-2">
+            <label>Description</label>
+            <textarea id="tokenDesc" placeholder="Describe your token..." class="input textarea" rows="3"></textarea>
+          </div>
+          <div class="form-group span-2">
+            <label>Token Image URL</label>
+            <input type="url" id="tokenImage" placeholder="https://..." class="input" />
+            <p class="input-hint">Upload to IPFS / Arweave and paste the URL here.</p>
+          </div>
+          <div class="form-group">
+            <label>Website</label>
+            <input type="url" id="tokenWebsite" placeholder="https://..." class="input" />
+          </div>
+          <div class="form-group">
+            <label>Twitter / X</label>
+            <input type="text" id="tokenTwitter" placeholder="@handle" class="input" />
+          </div>
+          <div class="form-group">
+            <label>Telegram</label>
+            <input type="text" id="tokenTelegram" placeholder="t.me/..." class="input" />
+          </div>
+          <div class="form-group">
+            <label>Discord</label>
+            <input type="url" id="tokenDiscord" placeholder="discord.gg/..." class="input" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-side">
+        <h3 class="card-title">Token Authorities</h3>
+        <div class="toggle-list">
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <span class="toggle-label">Revoke Mint Authority</span>
+              <span class="toggle-desc">Prevent future minting of new tokens</span>
+            </div>
+            <label class="toggle"><input type="checkbox" id="revokeMint" checked /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <span class="toggle-label">Revoke Freeze Authority</span>
+              <span class="toggle-desc">Prevent accounts from being frozen</span>
+            </div>
+            <label class="toggle"><input type="checkbox" id="revokeFreeze" checked /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <span class="toggle-label">Revoke Update Authority</span>
+              <span class="toggle-desc">Lock metadata permanently on-chain</span>
+            </div>
+            <label class="toggle"><input type="checkbox" id="revokeUpdate" /><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <h3 class="card-title">Extensions</h3>
+        <div class="toggle-list">
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <span class="toggle-label">Token-2022</span>
+              <span class="toggle-desc">Use the new SPL Token-2022 program</span>
+            </div>
+            <label class="toggle"><input type="checkbox" id="useToken2022" /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <span class="toggle-label">Transfer Fee</span>
+              <span class="toggle-desc">Add on-chain transfer fee (Token-2022)</span>
+            </div>
+            <label class="toggle"><input type="checkbox" id="transferFee" /><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="fee-box" id="transferFeeBox" style="display:none">
+          <div class="form-group">
+            <label>Fee % (basis points)</label>
+            <input type="number" id="feePercent" value="100" min="1" max="10000" class="input input-sm" />
+            <p class="input-hint">100 bp = 1%</p>
+          </div>
+          <div class="form-group">
+            <label>Max Fee</label>
+            <input type="number" id="maxFee" placeholder="e.g. 1000000" class="input input-sm" />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="cost-box">
+          <span class="cost-label">Estimated Cost</span>
+          <span class="cost-value" id="createCost">~0.05 SOL</span>
+        </div>
+        <button class="btn btn-primary btn-full" id="createTokenBtn">
+          <span class="btn-icon">🚀</span> Create Token
+        </button>
+        <p class="disclaimer">Fees go to Solana rent + network. Connect wallet to proceed.</p>
+      </div>
+    </div>
+
+    <!-- Result panel -->
+    <div class="result-panel hidden" id="tokenResult">
+      <div class="result-header">
+        <span class="result-icon success">✓</span>
+        <h3>Token Created Successfully!</h3>
+      </div>
+      <div class="result-grid">
+        <div class="result-row">
+          <span class="result-label">Mint Address</span>
+          <span class="result-value mono" id="resultMint">—</span>
+          <button class="btn-copy" onclick="copyText('resultMint')">Copy</button>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Transaction</span>
+          <span class="result-value mono" id="resultTx">—</span>
+          <a class="btn-copy" id="resultTxLink" href="#" target="_blank">Explorer ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TOKEN MANAGER ───────────────────────────────────────────────────── -->
+  <section class="tab-section hidden" id="tab-token-manager">
+    <div class="section-header">
+      <h2 class="section-title"><span class="icon">⚙️</span> Token Manager</h2>
+      <p class="section-sub">Manage authorities, update metadata, and burn tokens.</p>
+    </div>
+
+    <div class="card-grid cols-3">
+
+      <!-- Lookup card -->
+      <div class="card span-3">
+        <h3 class="card-title">Look Up Token</h3>
+        <div class="input-row">
+          <input type="text" id="managerMintAddr" placeholder="Enter mint address..." class="input flex-1" />
+          <button class="btn btn-primary" id="lookupTokenBtn">Look Up</button>
+        </div>
+        <div class="token-preview hidden" id="tokenPreview">
+          <div class="token-preview-inner">
+            <img id="previewImg" src="" alt="" class="token-preview-img" />
+            <div>
+              <p class="preview-name" id="previewName">—</p>
+              <p class="preview-symbol" id="previewSymbol">—</p>
+              <p class="preview-supply">Supply: <span id="previewSupply">—</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revoke Authorities -->
+      <div class="card">
+        <h3 class="card-title">🔒 Revoke Authorities</h3>
+        <p class="card-desc">Permanently remove mint and freeze authorities to boost token credibility.</p>
+        <div class="toggle-list">
+          <div class="toggle-item">
+            <span class="toggle-label">Mint Authority</span>
+            <label class="toggle"><input type="checkbox" id="rmMintAuth" /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-item">
+            <span class="toggle-label">Freeze Authority</span>
+            <label class="toggle"><input type="checkbox" id="rmFreezeAuth" /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-item">
+            <span class="toggle-label">Update Authority</span>
+            <label class="toggle"><input type="checkbox" id="rmUpdateAuth" /><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <button class="btn btn-warning btn-full mt-2" id="revokeAuthBtn">Revoke Selected</button>
+      </div>
+
+      <!-- Update Metadata -->
+      <div class="card">
+        <h3 class="card-title">✏️ Update Metadata</h3>
+        <p class="card-desc">Update on-chain metadata for your token (requires update authority).</p>
+        <div class="form-group">
+          <label>New Name</label>
+          <input type="text" id="newName" class="input input-sm" placeholder="Leave blank to keep" />
+        </div>
+        <div class="form-group">
+          <label>New Symbol</label>
+          <input type="text" id="newSymbol" class="input input-sm" placeholder="Leave blank to keep" />
+        </div>
+        <div class="form-group">
+          <label>New URI</label>
+          <input type="text" id="newUri" class="input input-sm" placeholder="https://..." />
+        </div>
+        <button class="btn btn-primary btn-full mt-2" id="updateMetaBtn">Update Metadata</button>
+      </div>
+
+      <!-- Burn / Mint -->
+      <div class="card">
+        <h3 class="card-title">🔥 Burn &amp; Mint</h3>
+        <p class="card-desc">Burn tokens from your wallet or mint additional supply (requires authority).</p>
+        <div class="form-group">
+          <label>Amount to Burn</label>
+          <input type="number" id="burnAmount" class="input input-sm" placeholder="0" />
+        </div>
+        <button class="btn btn-danger btn-full" id="burnBtn">Burn Tokens</button>
+        <div class="divider"></div>
+        <div class="form-group">
+          <label>Amount to Mint</label>
+          <input type="number" id="mintAmount" class="input input-sm" placeholder="0" />
+        </div>
+        <div class="form-group">
+          <label>Destination Wallet</label>
+          <input type="text" id="mintDest" class="input input-sm" placeholder="Wallet address" />
+        </div>
+        <button class="btn btn-success btn-full" id="mintBtn">Mint Tokens</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── AIRDROP ─────────────────────────────────────────────────────────── -->
+  <section class="tab-section hidden" id="tab-airdrop">
+    <div class="section-header">
+      <h2 class="section-title"><span class="icon">🪂</span> Airdrop</h2>
+      <p class="section-sub">Send tokens to thousands of wallets in a single batched transaction.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-main">
+        <h3 class="card-title">Recipients</h3>
+        <div class="form-group">
+          <label>Token Mint Address <span class="required">*</span></label>
+          <input type="text" id="airdropMint" placeholder="Mint address..." class="input" />
+        </div>
+
+        <div class="tab-pills">
+          <button class="pill active" data-pill="manual">Manual Entry</button>
+          <button class="pill" data-pill="csv">CSV Upload</button>
+          <button class="pill" data-pill="holders">Token Holders</button>
+        </div>
+
+        <div class="pill-panel" id="pill-manual">
+          <div class="form-group">
+            <label>Wallet Addresses &amp; Amounts</label>
+            <textarea id="airdropRecipients" class="input textarea mono" rows="8"
+              placeholder="One per line: wallet_address,amount&#10;7xKX...abc, 100&#10;9mZP...def, 250"></textarea>
+          </div>
+        </div>
+
+        <div class="pill-panel hidden" id="pill-csv">
+          <div class="upload-zone" id="csvDropZone">
+            <span class="upload-icon">📄</span>
+            <p>Drop CSV file here or <label class="link" for="csvFile">browse</label></p>
+            <input type="file" id="csvFile" accept=".csv" style="display:none" />
+            <p class="upload-hint">Format: address,amount</p>
+          </div>
+          <p id="csvFileName" class="upload-name"></p>
+        </div>
+
+        <div class="pill-panel hidden" id="pill-holders">
+          <div class="form-group">
+            <label>Snapshot from Token</label>
+            <input type="text" id="holdersMint" placeholder="Mint address to snapshot..." class="input" />
+          </div>
+          <div class="form-group">
+            <label>Amount per Holder</label>
+            <input type="number" id="holdersAmount" placeholder="e.g. 1000" class="input" />
+          </div>
+          <button class="btn btn-outline" id="fetchHoldersBtn">Fetch Holders</button>
+          <p class="holders-count hidden" id="holdersCount"></p>
+        </div>
+      </div>
+
+      <div class="card card-side">
+        <h3 class="card-title">Airdrop Settings</h3>
+        <div class="form-group">
+          <label>Batch Size</label>
+          <input type="number" id="batchSize" value="10" min="1" max="20" class="input" />
+          <p class="input-hint">Max 20 per transaction (Solana limit)</p>
+        </div>
+        <div class="form-group">
+          <label>Priority Fee (lamports)</label>
+          <input type="number" id="airdropPriorityFee" value="1000" class="input" />
+        </div>
+        <div class="toggle-item">
+          <div class="toggle-info">
+            <span class="toggle-label">Skip existing ATAs</span>
+            <span class="toggle-desc">Don't create ATAs that already exist</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="skipExistingAta" checked /><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="divider"></div>
+        <div class="airdrop-summary" id="airdropSummary">
+          <div class="summary-row"><span>Recipients</span><span id="recipientCount">0</span></div>
+          <div class="summary-row"><span>Total Amount</span><span id="totalAirdrop">0</span></div>
+          <div class="summary-row"><span>Estimated Cost</span><span id="airdropCost">~0 SOL</span></div>
+        </div>
+        <button class="btn btn-primary btn-full" id="parseRecipientsBtn">Parse Recipients</button>
+        <button class="btn btn-success btn-full mt-1 hidden" id="startAirdropBtn">
+          <span class="btn-icon">🚀</span> Start Airdrop
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-panel hidden" id="airdropProgress">
+      <h3>Airdrop Progress</h3>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="airdropProgressBar" style="width:0%"></div>
+      </div>
+      <p id="airdropProgressText">0 / 0 batches sent</p>
+      <div class="tx-log" id="airdropTxLog"></div>
+    </div>
+  </section>
+
+  <!-- ── BUNDLER ─────────────────────────────────────────────────────────── -->
+  <section class="tab-section hidden" id="tab-bundler">
+    <div class="section-header">
+      <h2 class="section-title"><span class="icon">📦</span> Bundler</h2>
+      <p class="section-sub">Bundle multiple wallets to buy a token at launch simultaneously via Jito.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-main">
+        <h3 class="card-title">Bundle Configuration</h3>
+
+        <div class="form-group">
+          <label>Target Token / Pool Address</label>
+          <input type="text" id="bundleTarget" placeholder="Token mint or Raydium pool..." class="input" />
+        </div>
+
+        <div class="form-group">
+          <label>DEX</label>
+          <div class="select-pills">
+            <button class="select-pill active" data-dex="raydium">Raydium</button>
+            <button class="select-pill" data-dex="pump">Pump.fun</button>
+            <button class="select-pill" data-dex="jupiter">Jupiter</button>
+            <button class="select-pill" data-dex="orca">Orca</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <h3 class="card-title">Wallets</h3>
+        <div id="bundleWallets" class="bundle-wallets">
+          <div class="bundle-wallet-row" data-index="0">
+            <span class="wallet-index">#1</span>
+            <input type="text" placeholder="Private key or mnemonic..." class="input input-sm bw-key" />
+            <input type="number" placeholder="Buy SOL" class="input input-sm bw-amount" style="width:90px" />
+            <button class="btn-icon-only btn-remove-wallet" title="Remove">✕</button>
+          </div>
+        </div>
+        <div class="bundle-wallet-actions">
+          <button class="btn btn-outline btn-sm" id="addBundleWallet">+ Add Wallet</button>
+          <button class="btn btn-outline btn-sm" id="genBundleWallets">⚡ Generate 5 Wallets</button>
+          <button class="btn btn-outline btn-sm" id="importBundleWallets">Import CSV</button>
+        </div>
+      </div>
+
+      <div class="card card-side">
+        <h3 class="card-title">Bundle Settings</h3>
+        <div class="form-group">
+          <label>Jito Tip (SOL)</label>
+          <input type="number" id="jitoTip" value="0.01" step="0.001" class="input" />
+          <p class="input-hint">Higher tip = faster bundle inclusion</p>
+        </div>
+        <div class="form-group">
+          <label>Slippage %</label>
+          <input type="number" id="bundleSlippage" value="10" min="1" max="100" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Delay Between Wallets (ms)</label>
+          <input type="number" id="bundleDelay" value="0" min="0" class="input" />
+        </div>
+        <div class="toggle-item mt-1">
+          <div class="toggle-info">
+            <span class="toggle-label">Anti-MEV Mode</span>
+            <span class="toggle-desc">Route through Jito block engine</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="antiMev" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="divider"></div>
+        <div class="cost-box">
+          <span class="cost-label">Total SOL</span>
+          <span class="cost-value" id="bundleTotalSol">0</span>
+        </div>
+        <button class="btn btn-primary btn-full" id="sendBundleBtn">
+          <span class="btn-icon">📦</span> Send Bundle
+        </button>
+        <button class="btn btn-outline btn-full mt-1" id="simulateBundleBtn">Simulate</button>
+      </div>
+    </div>
+
+    <div class="result-panel hidden" id="bundleResult">
+      <div class="result-header">
+        <span class="result-icon success">✓</span>
+        <h3>Bundle Submitted</h3>
+      </div>
+      <div class="result-grid" id="bundleResultGrid"></div>
+    </div>
+  </section>
+
+  <!-- ── LP TOOLS ────────────────────────────────────────────────────────── -->
+  <section class="tab-section hidden" id="tab-lp-tools">
+    <div class="section-header">
+      <h2 class="section-title"><span class="icon">💧</span> LP Tools</h2>
+      <p class="section-sub">Add / remove Raydium CLMM &amp; AMM liquidity, burn LP tokens, and manage pools.</p>
+    </div>
+
+    <div class="tab-pills" style="margin-bottom:1.5rem">
+      <button class="pill active" data-lp="add">Add Liquidity</button>
+      <button class="pill" data-lp="remove">Remove Liquidity</button>
+      <button class="pill" data-lp="burn">Burn LP</button>
+      <button class="pill" data-lp="create">Create Pool</button>
+    </div>
+
+    <!-- Add Liquidity -->
+    <div class="lp-panel" id="lp-add">
+      <div class="card-grid">
+        <div class="card card-main">
+          <h3 class="card-title">Add Liquidity</h3>
+          <div class="form-group">
+            <label>Pool Address</label>
+            <input type="text" id="addPoolAddr" placeholder="Raydium pool address..." class="input" />
+          </div>
+          <div class="form-group">
+            <label>Token A Amount</label>
+            <div class="input-with-max">
+              <input type="number" id="addAmountA" placeholder="0.00" class="input" />
+              <button class="btn-max" onclick="setMax('addAmountA')">MAX</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Token B Amount</label>
+            <div class="input-with-max">
+              <input type="number" id="addAmountB" placeholder="0.00" class="input" />
+              <button class="btn-max" onclick="setMax('addAmountB')">MAX</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Slippage %</label>
+            <input type="number" id="addSlippage" value="1" class="input" />
+          </div>
+          <button class="btn btn-success btn-full" id="addLiqBtn">Add Liquidity</button>
+        </div>
+        <div class="card card-side">
+          <h3 class="card-title">Pool Info</h3>
+          <div class="pool-info" id="poolInfo">
+            <p class="muted">Enter pool address to load info.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Remove Liquidity -->
+    <div class="lp-panel hidden" id="lp-remove">
+      <div class="card-grid">
+        <div class="card card-main">
+          <h3 class="card-title">Remove Liquidity</h3>
+          <div class="form-group">
+            <label>Pool Address</label>
+            <input type="text" id="removePoolAddr" placeholder="Raydium pool address..." class="input" />
+          </div>
+          <div class="form-group">
+            <label>LP Token Amount</label>
+            <div class="input-with-max">
+              <input type="number" id="removeLpAmount" placeholder="0.00" class="input" />
+              <button class="btn-max" onclick="setMax('removeLpAmount')">MAX</button>
+            </div>
+            <p class="input-hint">Or use percentage:</p>
+            <div class="pct-buttons">
+              <button class="btn-pct" data-pct="25">25%</button>
+              <button class="btn-pct" data-pct="50">50%</button>
+              <button class="btn-pct" data-pct="75">75%</button>
+              <button class="btn-pct" data-pct="100">100%</button>
+            </div>
+          </div>
+          <button class="btn btn-danger btn-full" id="removeLiqBtn">Remove Liquidity</button>
+        </div>
+        <div class="card card-side">
+          <h3 class="card-title">Your LP Positions</h3>
+          <div id="lpPositions"><p class="muted">Connect wallet to see positions.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Burn LP -->
+    <div class="lp-panel hidden" id="lp-burn">
+      <div class="card max-w-600">
+        <h3 class="card-title">🔥 Burn LP Tokens</h3>
+        <p class="card-desc">Permanently burn LP tokens to signal long-term commitment and boost trust.</p>
+        <div class="form-group">
+          <label>LP Token Mint</label>
+          <input type="text" id="burnLpMint" placeholder="LP token mint address..." class="input" />
+        </div>
+        <div class="form-group">
+          <label>Amount to Burn</label>
+          <div class="input-with-max">
+            <input type="number" id="burnLpAmount" placeholder="0.00" class="input" />
+            <button class="btn-max">MAX</button>
+          </div>
+        </div>
+        <div class="warning-box">
+          ⚠️ Burning LP tokens is <strong>irreversible</strong>. This removes your ability to reclaim the underlying liquidity.
+        </div>
+        <button class="btn btn-danger btn-full" id="burnLpBtn">Burn LP Tokens</button>
+      </div>
+    </div>
+
+    <!-- Create Pool -->
+    <div class="lp-panel hidden" id="lp-create">
+      <div class="card-grid">
+        <div class="card card-main">
+          <h3 class="card-title">Create Raydium Pool</h3>
+          <div class="form-group">
+            <label>Base Token Mint</label>
+            <input type="text" id="createBaseToken" placeholder="Your token mint..." class="input" />
+          </div>
+          <div class="form-group">
+            <label>Quote Token</label>
+            <div class="select-pills">
+              <button class="select-pill active" data-quote="sol">SOL</button>
+              <button class="select-pill" data-quote="usdc">USDC</button>
+              <button class="select-pill" data-quote="usdt">USDT</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Initial Base Amount</label>
+            <input type="number" id="initBaseAmount" placeholder="0" class="input" />
+          </div>
+          <div class="form-group">
+            <label>Initial Quote Amount</label>
+            <input type="number" id="initQuoteAmount" placeholder="0" class="input" />
+          </div>
+          <div class="form-group">
+            <label>Open Time (optional)</label>
+            <input type="datetime-local" id="poolOpenTime" class="input" />
+          </div>
+          <button class="btn btn-primary btn-full" id="createPoolBtn">Create Pool</button>
+        </div>
+        <div class="card card-side">
+          <h3 class="card-title">Initial Price</h3>
+          <div class="price-preview">
+            <p class="muted" id="initPricePreview">Enter amounts to see initial price</p>
+          </div>
+          <div class="divider"></div>
+          <h3 class="card-title">Pool Type</h3>
+          <div class="select-pills vertical">
+            <button class="select-pill active" data-pooltype="amm">AMM (Standard)</button>
+            <button class="select-pill" data-pooltype="clmm">CLMM (Concentrated)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── VOLUME BOT ──────────────────────────────────────────────────────── -->
+  <section class="tab-section hidden" id="tab-volume-bot">
+    <div class="section-header">
+      <h2 class="section-title"><span class="icon">📈</span> Volume Bot</h2>
+      <p class="section-sub">Simulate organic trading volume to increase DEX rankings and visibility.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-main">
+        <h3 class="card-title">Bot Configuration</h3>
+        <div class="form-group">
+          <label>Token Mint <span class="required">*</span></label>
+          <input type="text" id="volBotMint" placeholder="Token mint address..." class="input" />
+        </div>
+        <div class="form-group">
+          <label>DEX</label>
+          <div class="select-pills">
+            <button class="select-pill active" data-vdex="raydium">Raydium</button>
+            <button class="select-pill" data-vdex="pump">Pump.fun</button>
+            <button class="select-pill" data-vdex="jupiter">Jupiter</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Buy Amount (SOL)</label>
+            <input type="number" id="volBuyMin" placeholder="Min" class="input input-sm" />
+          </div>
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <input type="number" id="volBuyMax" placeholder="Max" class="input input-sm" />
+          </div>
+          <div class="form-group">
+            <label>Delay Between Trades (s)</label>
+            <input type="number" id="volDelay" value="30" min="5" class="input input-sm" />
+          </div>
+          <div class="form-group">
+            <label>Total Trades</label>
+            <input type="number" id="volTrades" value="100" min="1" class="input input-sm" />
+          </div>
+        </div>
+        <div class="toggle-item">
+          <div class="toggle-info">
+            <span class="toggle-label">Auto-sell after buy</span>
+            <span class="toggle-desc">Immediately sell tokens back after buying</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="volAutoSell" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-item">
+          <div class="toggle-info">
+            <span class="toggle-label">Randomize wallets</span>
+            <span class="toggle-desc">Use different wallets per trade</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="volRandWallet" checked /><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <div class="card card-side">
+        <h3 class="card-title">Funding Wallet</h3>
+        <div class="form-group">
+          <label>Wallet Private Key</label>
+          <input type="password" id="volFundingKey" placeholder="Base58 private key..." class="input" />
+          <p class="input-hint">⚠️ Keys never leave your browser</p>
+        </div>
+        <div class="form-group">
+          <label>Wallets to Spawn</label>
+          <input type="number" id="volWalletCount" value="10" min="1" max="50" class="input" />
+        </div>
+        <div class="form-group">
+          <label>SOL per Wallet</label>
+          <input type="number" id="volSolPerWallet" value="0.05" step="0.01" class="input" />
+        </div>
+        <div class="divider"></div>
+        <div class="cost-box">
+          <span class="cost-label">Est. Total Cost</span>
+          <span class="cost-value" id="volTotalCost">~0 SOL</span>
+        </div>
+
+        <!-- Bot controls -->
+        <div class="bot-controls">
+          <button class="btn btn-success btn-full" id="startBotBtn">
+            ▶ Start Bot
+          </button>
+          <button class="btn btn-danger btn-full mt-1 hidden" id="stopBotBtn">
+            ■ Stop Bot
+          </button>
+        </div>
+
+        <div class="bot-stats hidden" id="botStats">
+          <div class="stat-row"><span>Trades Done</span><span id="botTradesDone">0</span></div>
+          <div class="stat-row"><span>Volume Generated</span><span id="botVolume">0 SOL</span></div>
+          <div class="stat-row"><span>SOL Spent</span><span id="botSolSpent">0 SOL</span></div>
+          <div class="stat-row"><span>Status</span><span class="status-running" id="botStatus">Running</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-2">
+      <h3 class="card-title">Trade Log</h3>
+      <div class="trade-log" id="tradeLog">
+        <p class="muted">Bot not running.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WALLETS ─────────────────────────────────────────────────────────── -->
+  <section class="tab-section hidden" id="tab-wallets">
+    <div class="section-header">
+      <h2 class="section-title"><span class="icon">👛</span> Wallet Generator</h2>
+      <p class="section-sub">Generate, fund, and manage multiple Solana wallets.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-main">
+        <h3 class="card-title">Generate Wallets</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Number of Wallets</label>
+            <input type="number" id="genCount" value="10" min="1" max="100" class="input" />
+          </div>
+          <div class="form-group">
+            <label>Key Format</label>
+            <select id="keyFormat" class="input">
+              <option value="base58">Base58 Private Key</option>
+              <option value="mnemonic">Mnemonic (BIP39)</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="genWalletsBtn">Generate Wallets</button>
+
+        <div class="divider"></div>
+
+        <div class="wallet-table-wrap">
+          <table class="wallet-table" id="walletTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Public Key</th>
+                <th>Private Key</th>
+                <th>Balance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="walletTableBody">
+              <tr><td colspan="5" class="muted text-center">No wallets generated yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card card-side">
+        <h3 class="card-title">Batch Fund Wallets</h3>
+        <div class="form-group">
+          <label>Funding Wallet Key</label>
+          <input type="password" id="fundingKey" placeholder="Base58 private key..." class="input" />
+        </div>
+        <div class="form-group">
+          <label>SOL per Wallet</label>
+          <input type="number" id="solPerWallet" value="0.01" step="0.001" class="input" />
+        </div>
+        <button class="btn btn-success btn-full" id="fundWalletsBtn">Fund All Wallets</button>
+
+        <div class="divider"></div>
+        <h3 class="card-title">Consolidate Wallets</h3>
+        <p class="card-desc">Drain all SOL back to a single wallet.</p>
+        <div class="form-group">
+          <label>Destination Wallet</label>
+          <input type="text" id="consolidateDest" placeholder="Destination address..." class="input" />
+        </div>
+        <button class="btn btn-warning btn-full" id="consolidateBtn">Consolidate SOL</button>
+
+        <div class="divider"></div>
+        <div class="wallet-export-btns">
+          <button class="btn btn-outline btn-sm" id="exportCsvBtn">Export CSV</button>
+          <button class="btn btn-outline btn-sm" id="exportJsonBtn">Export JSON</button>
+          <button class="btn btn-danger btn-sm" id="clearWalletsBtn">Clear All</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">⬡ XeronTools</span>
+    <p class="footer-disclaimer">This tool is for educational and development purposes. Always verify transactions before signing. Private keys never leave your browser.</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">Docs</a>
+      <a href="#" class="footer-link">GitHub</a>
+      <a href="#" class="footer-link">Twitter</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── MODAL ──────────────────────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- ─── TOAST ──────────────────────────────────────────────────────────────── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ─── SCRIPTS ───────────────────────────────────────────────────────────── -->
+<script src="https://unpkg.com/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
