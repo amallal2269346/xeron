@@ -1170,9 +1170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearFeed();
         merged.coins.forEach(function(c) { seenMints.add(c.mint); showCard(c, false); });
         isFirstLoad = false;
-        var label = merged.fallback
-          ? 'Nearest to $50K–100K · ' + merged.coins.length + ' coins'
-          : '$50K–100K · ' + merged.coins.length + ' coins pumping';
+        var label = merged.coins.length + ' coins pumping';
         setStatus(label, 'live');
         startCountdown();
       });
