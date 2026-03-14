@@ -879,92 +879,153 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%cSolana Tools Suite — Educational & Development Use', 'color:#8b98b8');
 });
 
-// ── PumpFun Live Tracker (DexScreener) ─────────────────────────────────────
+// ── PumpFun Live Tracker (pump.fun API) ─────────────────────────────────────
 (function pumpTracker() {
   const FEED         = document.getElementById('pfFeed');
   const STATUS       = document.getElementById('pfStatus');
   const PLACEHOLDER  = document.getElementById('pfPlaceholder');
-  const API          = 'https://api.dexscreener.com/latest/dex/search?q=pump.fun';
-  const MC_THRESHOLD = 100_000;
+  const API          = 'https://frontend-api.pump.fun/coins?offset=0&limit=200&sort=created_timestamp&order=DESC';
+  const MC_THRESHOLD = 100_000;      // $100 K USD
+  const MAX_AGE_MS   = 30 * 60_000;  // 30 minutes
+  const POLL_MS      = 5_000;        // 5 seconds
 
   function setStatus(text, state) {
     STATUS.innerHTML = `<span class="pf-dot pf-dot--${state}"></span><span class="pf-status-text">${text}</span>`;
   }
 
-  function mcFormat(usd) {
+  function fmt(usd) {
     if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
     if (usd >= 1_000)     return `$${(usd / 1_000).toFixed(1)}K`;
     return `$${Math.round(usd).toLocaleString()}`;
   }
 
-  function buildCard(pair) {
-    const mc     = pair.fdv || pair.marketCap || 0;
-    const name   = (pair.baseToken?.name   || 'Unknown').replace(/</g, '&lt;');
-    const symbol = (pair.baseToken?.symbol || '').replace(/</g, '&lt;');
-    const mint   = pair.baseToken?.address || '';
-    const price  = pair.priceUsd ? `$${parseFloat(pair.priceUsd).toFixed(6)}` : '';
-    const chg    = pair.priceChange?.h24;
-    const chgTxt = chg != null ? `${chg >= 0 ? '+' : ''}${chg.toFixed(1)}%` : '';
-    const chgClr = chg != null ? (chg >= 0 ? 'var(--success)' : 'var(--danger)') : 'var(--text-2)';
-    const img    = pair.info?.imageUrl || '';
-    const link   = pair.url || `https://pump.fun/${mint}`;
+  function fmtVol(v) {
+    if (!v || v <= 0) return '';
+    if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
+    if (v >= 1_000)     return `$${(v / 1_000).toFixed(0)}K`;
+    return `$${Math.round(v)}`;
+  }
 
-    // Age label
-    let age = '';
-    if (pair.pairCreatedAt) {
-      const mins = Math.floor((Date.now() - pair.pairCreatedAt) / 60_000);
-      age = mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`;
-    }
+  function ageLabel(ts) {
+    const mins = Math.floor((Date.now() - ts) / 60_000);
+    if (mins < 1)  return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    return `${Math.floor(mins / 60)}h ago`;
+  }
+
+  function safe(str) {
+    return (str || '').replace(/[<>"'&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]));
+  }
+
+  function buildCard(coin) {
+    const mc     = coin.usd_market_cap || coin.market_cap || 0;
+    const name   = safe(coin.name   || 'Unknown');
+    const symbol = safe(coin.symbol || '');
+    const mint   = coin.mint || '';
+    const sol    = coin.price_in_sol != null
+                     ? `◎${parseFloat(coin.price_in_sol).toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`
+                     : '';
+    const vol    = fmtVol(coin.volume_24h);
+    const img    = coin.image_uri || '';
+    const age    = ageLabel(coin.created_timestamp);
 
     const card = document.createElement('div');
-    card.className = 'pf-card pf-card--visible';
+    card.className = 'pf-card';
+    card.dataset.mint = mint;
     card.innerHTML = `
-      <div class="pf-card-icon">${img ? `<img src="${img}" onerror="this.parentNode.innerHTML='🪙'">` : '🪙'}</div>
+      <div class="pf-card-icon">${img ? `<img src="${safe(img)}" alt="" onerror="this.parentNode.innerHTML='🪙'">` : '🪙'}</div>
       <div class="pf-card-info">
-        <div class="pf-card-name">${name}<span class="pf-card-sym">${symbol ? ' ' + symbol : ''}</span></div>
+        <div class="pf-card-name">${name}${symbol ? `<span class="pf-card-sym"> $${symbol}</span>` : ''}</div>
         <div class="pf-card-row">
-          <span class="pf-card-mc">${mcFormat(mc)}</span>
-          ${price  ? `<span class="pf-card-price">${price}</span>` : ''}
-          ${chgTxt ? `<span class="pf-card-chg" style="color:${chgClr}">${chgTxt}</span>` : ''}
-          ${age    ? `<span class="pf-card-age">${age}</span>` : ''}
+          <span class="pf-card-mc">${fmt(mc)}</span>
+          ${sol ? `<span class="pf-card-price">${sol}</span>` : ''}
+          ${vol ? `<span class="pf-card-vol">Vol ${vol}</span>` : ''}
+          <span class="pf-card-age">${age}</span>
         </div>
       </div>
-      <a class="pf-card-link" href="${link}" target="_blank" rel="noopener">↗</a>`;
+      <div class="pf-card-actions">
+        <button class="pf-copy-btn" data-mint="${safe(mint)}" title="Copy mint address">⎘</button>
+        <a class="pf-card-link" href="https://pump.fun/${safe(mint)}" target="_blank" rel="noopener" title="View on Pump.fun">↗</a>
+      </div>`;
+
+    card.querySelector('.pf-copy-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      const btn = e.currentTarget;
+      navigator.clipboard.writeText(mint).then(() => {
+        btn.textContent = '✓';
+        btn.classList.add('pf-copy-btn--ok');
+        setTimeout(() => { btn.textContent = '⎘'; btn.classList.remove('pf-copy-btn--ok'); }, 1500);
+      }).catch(() => {});
+    });
+
     return card;
   }
 
   async function poll() {
     try {
-      setStatus('Updating…', 'connecting');
       const r = await fetch(API);
       if (!r.ok) throw new Error(r.status);
-      const data = await r.json();
+      const raw = await r.json();
+      const coins = Array.isArray(raw) ? raw : (raw.coins || []);
+      const now   = Date.now();
 
-      // Filter: must be Solana + pump.fun token (address ends with 'pump') + above MC threshold
-      const pairs = (data.pairs || [])
-        .filter(p =>
-          p.chainId === 'solana' &&
-          (p.baseToken?.address || '').endsWith('pump') &&
-          (p.fdv || p.marketCap || 0) >= MC_THRESHOLD
-        )
-        // Sort newest first
-        .sort((a, b) => (b.pairCreatedAt || 0) - (a.pairCreatedAt || 0));
+      // Filter: MC >= $100 K and created within last 30 min
+      const filtered = coins
+        .filter(c => {
+          const mc  = c.usd_market_cap || c.market_cap || 0;
+          const age = now - (c.created_timestamp || 0);
+          return mc >= MC_THRESHOLD && age <= MAX_AGE_MS;
+        })
+        .sort((a, b) =>
+          (b.usd_market_cap || b.market_cap || 0) -
+          (a.usd_market_cap || a.market_cap || 0)
+        );
 
-      if (pairs.length === 0) {
-        setStatus('No results', 'error');
+      if (filtered.length === 0) {
+        FEED.innerHTML = '';
+        if (PLACEHOLDER) {
+          PLACEHOLDER.style.display = '';
+          PLACEHOLDER.textContent = 'Scanning for tokens pumping above $100K market cap…';
+        }
+        setStatus('Scanning…', 'connecting');
         return;
       }
 
-      // Replace feed content with fresh results
-      FEED.innerHTML = '';
       if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
-      pairs.forEach(p => FEED.appendChild(buildCard(p)));
-      setStatus(`Live · ${pairs.length} tokens`, 'live');
+
+      // Remove cards that no longer qualify
+      const liveMints = new Set(filtered.map(c => c.mint));
+      FEED.querySelectorAll('.pf-card').forEach(el => {
+        if (!liveMints.has(el.dataset.mint)) el.remove();
+      });
+
+      // Insert new cards and update existing ones
+      filtered.forEach((coin, idx) => {
+        const existing = FEED.querySelector(`.pf-card[data-mint="${coin.mint}"]`);
+        if (existing) {
+          // Refresh live values without re-rendering
+          const mc = coin.usd_market_cap || coin.market_cap || 0;
+          const mcEl  = existing.querySelector('.pf-card-mc');
+          const ageEl = existing.querySelector('.pf-card-age');
+          if (mcEl)  mcEl.textContent  = fmt(mc);
+          if (ageEl) ageEl.textContent = ageLabel(coin.created_timestamp);
+          // Re-order if position changed
+          const cards = FEED.querySelectorAll('.pf-card');
+          if (cards[idx] !== existing) FEED.insertBefore(existing, cards[idx] || null);
+        } else {
+          const card  = buildCard(coin);
+          const cards = FEED.querySelectorAll('.pf-card');
+          FEED.insertBefore(card, cards[idx] || null);
+          requestAnimationFrame(() => card.classList.add('pf-card--visible'));
+        }
+      });
+
+      setStatus(`Live · ${filtered.length} token${filtered.length !== 1 ? 's' : ''}`, 'live');
     } catch (_) {
       setStatus('Retrying…', 'error');
     }
   }
 
   poll();
-  setInterval(poll, 30_000);
+  setInterval(poll, POLL_MS);
 })();
