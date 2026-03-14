@@ -75,6 +75,7 @@ function closeModal() {
 // ── Navigation ─────────────────────────────────────────────────────────────────
 function goHome() {
   document.getElementById('heroSection').style.display = '';
+  document.getElementById('featuresSection').style.display = '';
   document.getElementById('mainContent').classList.remove('visible');
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 }
@@ -82,6 +83,7 @@ function goHome() {
 function switchTab(tabId) {
   // Hide hero, show main content
   document.getElementById('heroSection').style.display = 'none';
+  document.getElementById('featuresSection').style.display = 'none';
   const main = document.getElementById('mainContent');
   main.classList.add('visible');
 

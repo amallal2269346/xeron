@@ -134,10 +134,102 @@ a:hover { color: var(--accent); }
 .hero-bg {
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124,58,237,.25) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,201,224,.1) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124,58,237,.28) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,201,224,.12) 0%, transparent 50%);
   pointer-events: none;
 }
+.hero-grid {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+.hero-hex-field {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+/* Floating hex animations */
+@keyframes hexFloat {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-18px); }
+}
+@keyframes hexFloat2 {
+  0%,100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(12px) rotate(3deg); }
+}
+.fhex-1 { animation: hexFloat  9s ease-in-out infinite; }
+.fhex-2 { animation: hexFloat2 11s ease-in-out infinite; }
+.fhex-3 { animation: hexFloat  13s ease-in-out infinite 1s; }
+.fhex-4 { animation: hexFloat2  8s ease-in-out infinite 2s; }
+.fhex-5 { animation: hexFloat   7s ease-in-out infinite 0.5s; }
+.fhex-6 { animation: hexFloat2 10s ease-in-out infinite 1.5s; }
+/* Pulse nodes */
+@keyframes pulse {
+  0%,100% { r: 2; opacity: .6; }
+  50%      { r: 4; opacity: 1; }
+}
+.fpulse-1 { animation: pulse 3s ease-in-out infinite; }
+.fpulse-2 { animation: pulse 4s ease-in-out infinite 1s; }
+/* Glow orbs */
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none;
+}
+.orb-1 {
+  width: 400px; height: 400px; top: -120px; left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(124,58,237,.22) 0%, transparent 70%);
+  animation: orbDrift 14s ease-in-out infinite;
+}
+.orb-2 {
+  width: 300px; height: 300px; bottom: -80px; right: 5%;
+  background: radial-gradient(circle, rgba(6,201,224,.15) 0%, transparent 70%);
+  animation: orbDrift 18s ease-in-out infinite reverse;
+}
+.orb-3 {
+  width: 200px; height: 200px; top: 20%; left: 5%;
+  background: radial-gradient(circle, rgba(157,92,247,.12) 0%, transparent 70%);
+  animation: orbDrift 10s ease-in-out infinite 3s;
+}
+@keyframes orbDrift {
+  0%,100% { transform: translate(0,0); }
+  33%      { transform: translate(20px, -15px); }
+  66%      { transform: translate(-15px, 10px); }
+}
+
+/* ─── FEATURES GRID ─────────────────────────────────────────────────────────── */
+.features-section {
+  max-width: 1400px; margin: 0 auto; padding: 2.5rem 1.5rem 0;
+}
+.features-inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.feat-card {
+  position: relative; cursor: pointer;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem 1rem 1rem;
+  display: flex; flex-direction: column; gap: .5rem;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  overflow: hidden;
+}
+.feat-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(157,92,247,.06) 0%, transparent 60%);
+  opacity: 0; transition: opacity .2s;
+}
+.feat-card:hover { border-color: rgba(157,92,247,.45); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(124,58,237,.15); }
+.feat-card:hover::before { opacity: 1; }
+.feat-icon-wrap {
+  width: 44px; height: 44px;
+  background: rgba(157,92,247,.1); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: .25rem;
+}
+.feat-card h3 { font-size: 14px; font-weight: 600; color: var(--text); }
+.feat-card p  { font-size: 12px; color: var(--text-3); line-height: 1.5; flex: 1; }
+.feat-arrow {
+  font-size: 14px; color: var(--primary-l); opacity: 0;
+  transition: opacity .2s, transform .2s; align-self: flex-end;
+}
+.feat-card:hover .feat-arrow { opacity: 1; transform: translateX(3px); }
 .hero-content { position: relative; z-index: 1; padding: 4rem 1.5rem; max-width: 700px; }
 .hero-title {
   font-family: var(--font-2); font-size: clamp(36px, 6vw, 64px);

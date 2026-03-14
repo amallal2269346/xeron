@@ -93,7 +93,44 @@
 
 <!-- ─── HERO (shown when no tab active, fades out on first action) ─────────── -->
 <section class="hero" id="heroSection">
-  <div class="hero-bg"></div>
+  <div class="hero-bg">
+    <!-- Animated grid -->
+    <svg class="hero-grid" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(124,58,237,0.07)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)"/>
+    </svg>
+    <!-- Floating hexagons -->
+    <svg class="hero-hex-field" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="hg1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9d5cf7"/><stop offset="1" stop-color="#06c9e0"/></linearGradient>
+      </defs>
+      <!-- large bg hex -->
+      <polygon class="fhex fhex-1" points="600,30 720,95 720,225 600,290 480,225 480,95" fill="none" stroke="url(#hg1)" stroke-width="1.2" opacity="0.18"/>
+      <polygon class="fhex fhex-2" points="1050,80 1130,125 1130,215 1050,260 970,215 970,125" fill="none" stroke="#9d5cf7" stroke-width="1" opacity="0.15"/>
+      <polygon class="fhex fhex-3" points="150,200 210,235 210,305 150,340 90,305 90,235" fill="none" stroke="#06c9e0" stroke-width="1" opacity="0.13"/>
+      <polygon class="fhex fhex-4" points="950,320 1010,355 1010,425 950,460 890,425 890,355" fill="none" stroke="#9d5cf7" stroke-width="0.8" opacity="0.1"/>
+      <polygon class="fhex fhex-5" points="250,50 290,73 290,119 250,142 210,119 210,73" fill="rgba(157,92,247,0.06)" stroke="#9d5cf7" stroke-width="0.8" opacity="0.2"/>
+      <polygon class="fhex fhex-6" points="1100,350 1140,373 1140,419 1100,442 1060,419 1060,373" fill="rgba(6,201,224,0.05)" stroke="#06c9e0" stroke-width="0.8" opacity="0.18"/>
+      <!-- dots / nodes -->
+      <circle class="fpulse fpulse-1" cx="600" cy="30"  r="3" fill="#9d5cf7" opacity="0.6"/>
+      <circle class="fpulse fpulse-2" cx="720" cy="95"  r="2" fill="#06c9e0" opacity="0.5"/>
+      <circle class="fpulse fpulse-3" cx="480" cy="225" r="2.5" fill="#9d5cf7" opacity="0.4"/>
+      <circle class="fpulse fpulse-1" cx="250" cy="50"  r="2" fill="#06c9e0" opacity="0.5"/>
+      <circle class="fpulse fpulse-2" cx="1050" cy="80" r="2.5" fill="#9d5cf7" opacity="0.4"/>
+      <!-- connecting lines -->
+      <line x1="600" y1="30" x2="250" y2="50"  stroke="url(#hg1)" stroke-width="0.5" opacity="0.12"/>
+      <line x1="720" y1="95" x2="1050" y2="80" stroke="url(#hg1)" stroke-width="0.5" opacity="0.1"/>
+      <line x1="480" y1="225" x2="150" y2="200" stroke="#9d5cf7" stroke-width="0.5" opacity="0.1"/>
+    </svg>
+    <!-- Glow orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
   <div class="hero-content">
     <h1 class="hero-title">The Ultimate<br/><span class="gradient-text">Solana Toolkit</span></h1>
     <p class="hero-sub">Create tokens, manage liquidity, run airdrops, and more — all in one place.</p>
@@ -127,6 +164,68 @@
       </div>
     </div>
     <p class="pf-description">Shrug uses Pump.fun infrastructure to deploy tokens instantly, with built in bundling tools for rapid launches and liquidity actions.</p>
+  </div>
+</section>
+
+<!-- ─── FEATURES GRID ─────────────────────────────────────────────────────── -->
+<section class="features-section" id="featuresSection">
+  <div class="features-inner">
+    <div class="feat-card" data-tab="token-creator">
+      <div class="feat-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><defs><linearGradient id="fi1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#9d5cf7"/><stop offset="1" stop-color="#06c9e0"/></linearGradient></defs><circle cx="14" cy="14" r="13" fill="url(#fi1)" fill-opacity="0.12" stroke="url(#fi1)" stroke-width="1.2"/><path d="M9 14h10M14 9v10" stroke="url(#fi1)" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Token Creator</h3>
+      <p>Deploy SPL &amp; Token-2022 tokens with metadata, images, and extensions in seconds.</p>
+      <span class="feat-arrow">→</span>
+    </div>
+    <div class="feat-card" data-tab="token-manager">
+      <div class="feat-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><defs><linearGradient id="fi2" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#9d5cf7"/><stop offset="1" stop-color="#06c9e0"/></linearGradient></defs><circle cx="14" cy="14" r="13" fill="url(#fi2)" fill-opacity="0.12" stroke="url(#fi2)" stroke-width="1.2"/><path d="M8 10h12M8 14h8M8 18h10" stroke="url(#fi2)" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Token Manager</h3>
+      <p>Revoke authorities, update metadata, mint and burn supply on any token you own.</p>
+      <span class="feat-arrow">→</span>
+    </div>
+    <div class="feat-card" data-tab="airdrop">
+      <div class="feat-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><defs><linearGradient id="fi3" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#9d5cf7"/><stop offset="1" stop-color="#06c9e0"/></linearGradient></defs><circle cx="14" cy="14" r="13" fill="url(#fi3)" fill-opacity="0.12" stroke="url(#fi3)" stroke-width="1.2"/><path d="M14 8v8M10 12l4 4 4-4" stroke="url(#fi3)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 19h12" stroke="url(#fi3)" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Airdrop</h3>
+      <p>Bulk-send tokens to thousands of holders via CSV upload or on-chain snapshot.</p>
+      <span class="feat-arrow">→</span>
+    </div>
+    <div class="feat-card" data-tab="bundler">
+      <div class="feat-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><defs><linearGradient id="fi4" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#9d5cf7"/><stop offset="1" stop-color="#06c9e0"/></linearGradient></defs><circle cx="14" cy="14" r="13" fill="url(#fi4)" fill-opacity="0.12" stroke="url(#fi4)" stroke-width="1.2"/><rect x="8" y="10" width="5" height="8" rx="1.5" fill="url(#fi4)" opacity="0.4"/><rect x="15" y="8" width="5" height="12" rx="1.5" fill="url(#fi4)" opacity="0.7"/></svg>
+      </div>
+      <h3>Bundler</h3>
+      <p>Bundle multiple buy wallets into a single atomic launch transaction on PumpFun.</p>
+      <span class="feat-arrow">→</span>
+    </div>
+    <div class="feat-card" data-tab="lp-tools">
+      <div class="feat-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><defs><linearGradient id="fi5" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#9d5cf7"/><stop offset="1" stop-color="#06c9e0"/></linearGradient></defs><circle cx="14" cy="14" r="13" fill="url(#fi5)" fill-opacity="0.12" stroke="url(#fi5)" stroke-width="1.2"/><path d="M8 18 Q11 10 14 14 Q17 18 20 10" stroke="url(#fi5)" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <h3>LP Tools</h3>
+      <p>Add, remove, and burn Raydium liquidity. Create new pools with custom parameters.</p>
+      <span class="feat-arrow">→</span>
+    </div>
+    <div class="feat-card" data-tab="volume-bot">
+      <div class="feat-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><defs><linearGradient id="fi6" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#9d5cf7"/><stop offset="1" stop-color="#06c9e0"/></linearGradient></defs><circle cx="14" cy="14" r="13" fill="url(#fi6)" fill-opacity="0.12" stroke="url(#fi6)" stroke-width="1.2"/><circle cx="14" cy="14" r="4" fill="url(#fi6)" opacity="0.6"/><path d="M14 7v2M14 19v2M7 14h2M19 14h2" stroke="url(#fi6)" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Volume Bot</h3>
+      <p>Automate wash trading across multiple wallets to boost token visibility and rankings.</p>
+      <span class="feat-arrow">→</span>
+    </div>
+    <div class="feat-card" data-tab="wallets">
+      <div class="feat-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><defs><linearGradient id="fi7" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#9d5cf7"/><stop offset="1" stop-color="#06c9e0"/></linearGradient></defs><circle cx="14" cy="14" r="13" fill="url(#fi7)" fill-opacity="0.12" stroke="url(#fi7)" stroke-width="1.2"/><rect x="7" y="11" width="14" height="9" rx="2" fill="none" stroke="url(#fi7)" stroke-width="1.5"/><path d="M7 14h14" stroke="url(#fi7)" stroke-width="1.2"/><circle cx="18" cy="16.5" r="1.2" fill="url(#fi7)"/></svg>
+      </div>
+      <h3>Wallet Generator</h3>
+      <p>Generate, fund, consolidate and export hundreds of Solana wallets at once.</p>
+      <span class="feat-arrow">→</span>
+    </div>
   </div>
 </section>
 
