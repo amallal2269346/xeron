@@ -88,6 +88,10 @@ function switchTab(tabId) {
     l.classList.toggle('active', l.dataset.tab === tabId);
   });
 
+  // Sync mobile select
+  const mSel = document.getElementById('mobileNavSelect');
+  if (mSel) mSel.value = tabId;
+
   // Show target section
   document.querySelectorAll('.tab-section').forEach(s => {
     s.classList.toggle('hidden', s.id !== `tab-${tabId}`);
@@ -681,6 +685,11 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       switchTab(el.dataset.tab);
     });
+  });
+
+  // Mobile nav select
+  document.getElementById('mobileNavSelect').addEventListener('change', e => {
+    switchTab(e.target.value);
   });
 
   // Wallet
