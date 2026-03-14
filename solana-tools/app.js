@@ -671,6 +671,17 @@ function exportWallets(format) {
   URL.revokeObjectURL(url);
 }
 
+function downloadPrivateKeys() {
+  if (!state.genWallets.length) { toast('Generate wallets first.', 'warning'); return; }
+  const lines   = state.genWallets.map((w, i) => `# Wallet ${i + 1}  |  ${w.pubkey}\n${w.privkey}`).join('\n\n');
+  const blob    = new Blob([lines], { type: 'text/plain' });
+  const url     = URL.createObjectURL(blob);
+  const a       = document.createElement('a');
+  a.href = url; a.download = 'private-keys.txt'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Private keys downloaded.', 'success');
+}
+
 function clearWallets() {
   if (!confirm('Clear all generated wallets?')) return;
   state.genWallets = [];
@@ -907,6 +918,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('exportCsvBtn').addEventListener('click', () => exportWallets('csv'));
   document.getElementById('exportJsonBtn').addEventListener('click', () => exportWallets('json'));
   document.getElementById('clearWalletsBtn').addEventListener('click', clearWallets);
+  document.getElementById('dlPrivKeysBtn').addEventListener('click', downloadPrivateKeys);
 
   console.log('%c⬡ Shrug Tool loaded', 'color:#9d5cf7;font-size:18px;font-weight:bold');
   console.log('%cSolana Tools Suite — Educational & Development Use', 'color:#8b98b8');
