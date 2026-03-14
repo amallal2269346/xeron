@@ -1,4 +1,4 @@
-/* ─── XeronTools — Solana Tools Suite ──────────────────────────────────────── */
+/* ─── Shrug Tool — Solana Tools Suite ──────────────────────────────────────── */
 'use strict';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -620,11 +620,11 @@ function exportWallets(format) {
   if (format === 'csv') {
     content  = 'index,pubkey,privkey\n' + state.genWallets.map((w,i) => `${i+1},${w.pubkey},${w.privkey}`).join('\n');
     type     = 'text/csv';
-    filename = 'xeron-wallets.csv';
+    filename = 'shrug-wallets.csv';
   } else {
     content  = JSON.stringify(state.genWallets.map((w,i) => ({ index: i+1, ...w })), null, 2);
     type     = 'application/json';
-    filename = 'xeron-wallets.json';
+    filename = 'shrug-wallets.json';
   }
 
   const blob = new Blob([content], { type });
@@ -866,6 +866,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('exportJsonBtn').addEventListener('click', () => exportWallets('json'));
   document.getElementById('clearWalletsBtn').addEventListener('click', clearWallets);
 
-  console.log('%c⬡ XeronTools loaded', 'color:#9d5cf7;font-size:18px;font-weight:bold');
+  console.log('%c⬡ Shrug Tool loaded', 'color:#9d5cf7;font-size:18px;font-weight:bold');
   console.log('%cSolana Tools Suite — Educational & Development Use', 'color:#8b98b8');
 });
