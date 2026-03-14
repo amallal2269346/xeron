@@ -159,7 +159,7 @@ function handleNetworkChange(net) {
   state.network    = net;
   state.connection = null;
   const dot = document.getElementById('networkDot');
-  dot.style.background = net === 'mainnet-beta' ? '#ef4444' : net === 'devnet' ? '#06d6a0' : '#f59e0b';
+  dot.style.background = net === 'mainnet-beta' ? '#06d6a0' : net === 'devnet' ? '#06d6a0' : '#f59e0b';
   dot.style.boxShadow  = `0 0 6px ${dot.style.background}`;
   if (state.wallet) refreshBalance();
   toast(`Switched to ${net}`, 'info', 2000);
