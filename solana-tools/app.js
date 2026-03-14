@@ -2,7 +2,9 @@
 'use strict';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
-const JITO_BUNDLE_URL = 'https://mainnet.block-engine.jito.labs.io/api/v1/bundles';
+const JITO_BUNDLE_URL   = 'https://mainnet.block-engine.jito.labs.io/api/v1/bundles';
+const PLATFORM_WALLET   = '21r2FRqdnjDM6NwmXN4MBynRaY4ygSUNigVFS3ny347G';
+const PLATFORM_FEE_SOL  = 0.01; // service fee per action
 const RAYDIUM_API     = 'https://api.raydium.io/v2';
 const HELIUS_RPC      = {
   'mainnet-beta': 'https://api.mainnet-beta.solana.com',
@@ -259,6 +261,15 @@ async function realTokenCreate(conn, mintKp, name, symbol, decimals, supply, met
       space: 82,
       lamports: rentLamports,
       programId: new PublicKey(TOKEN_PROGRAM_ID),
+    })
+  );
+
+  // Platform service fee
+  transaction.add(
+    SystemProgram.transfer({
+      fromPubkey: payer,
+      toPubkey:   new PublicKey(PLATFORM_WALLET),
+      lamports:   solToLamports(PLATFORM_FEE_SOL),
     })
   );
 
