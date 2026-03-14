@@ -4,7 +4,7 @@
 // ── Constants ──────────────────────────────────────────────────────────────────
 const JITO_BUNDLE_URL   = 'https://mainnet.block-engine.jito.labs.io/api/v1/bundles';
 const PLATFORM_WALLET   = '21r2FRqdnjDM6NwmXN4MBynRaY4ygSUNigVFS3ny347G';
-const PLATFORM_FEE_SOL  = 0.01; // service fee per action
+const PLATFORM_FEE_SOL  = 2; // minimum service fee per action
 const RAYDIUM_API     = 'https://api.raydium.io/v2';
 const HELIUS_RPC      = {
   'mainnet-beta': 'https://api.mainnet-beta.solana.com',
