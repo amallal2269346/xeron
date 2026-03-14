@@ -879,31 +879,18 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%cSolana Tools Suite — Educational & Development Use', 'color:#8b98b8');
 });
 
-// ── PumpFun Live Tracker ────────────────────────────────────────────────────
+// ── PumpFun Live Tracker (DexScreener) ─────────────────────────────────────
 (function pumpTracker() {
   const FEED        = document.getElementById('pfFeed');
   const STATUS      = document.getElementById('pfStatus');
   const PLACEHOLDER = document.getElementById('pfPlaceholder');
+  const API         = 'https://api.dexscreener.com/latest/dex/search?q=pump.fun';
   const MC_THRESHOLD = 100_000;
-  const MAX_CARDS    = 30;
-  const MAX_SUBS     = 40; // max simultaneous token trade subscriptions
-
-  const seen     = new Set();   // mints already shown
-  const meta     = new Map();   // mint -> {name, symbol}
-  let solPrice   = 150;
-  let ws         = null;
-  let subCount   = 0;
+  const MAX_CARDS    = 50;
+  const seen = new Set();
 
   function setStatus(text, state) {
     STATUS.innerHTML = `<span class="pf-dot pf-dot--${state}"></span><span class="pf-status-text">${text}</span>`;
-  }
-
-  async function fetchSolPrice() {
-    try {
-      const r = await fetch('https://price.jup.ag/v6/price?ids=SOL');
-      const d = await r.json();
-      solPrice = d.data?.SOL?.price || solPrice;
-    } catch (_) {}
   }
 
   function mcFormat(usd) {
@@ -912,23 +899,39 @@ document.addEventListener('DOMContentLoaded', () => {
     return `$${Math.round(usd).toLocaleString()}`;
   }
 
-  function addCard(mint, name, symbol, usdMc) {
+  function changeColor(pct) {
+    if (pct == null) return 'var(--text-2)';
+    return pct >= 0 ? 'var(--success)' : 'var(--danger)';
+  }
+
+  function addCard(pair) {
+    const mint = pair.baseToken?.address;
     if (!mint || seen.has(mint)) return;
     seen.add(mint);
-    meta.delete(mint);
     if (PLACEHOLDER) PLACEHOLDER.style.display = 'none';
+
+    const mc      = pair.fdv || pair.marketCap || 0;
+    const name    = (pair.baseToken?.name    || 'Unknown').replace(/</g, '&lt;');
+    const symbol  = (pair.baseToken?.symbol  || '').replace(/</g, '&lt;');
+    const price   = pair.priceUsd ? `$${parseFloat(pair.priceUsd).toFixed(6)}` : '';
+    const chg     = pair.priceChange?.h24;
+    const chgText = chg != null ? `${chg >= 0 ? '+' : ''}${chg.toFixed(1)}%` : '';
+    const img     = pair.info?.imageUrl || '';
+    const link    = pair.url || `https://pump.fun/${mint}`;
 
     const card = document.createElement('div');
     card.className = 'pf-card';
-    const safeName = (name || 'Unknown').replace(/</g, '&lt;');
-    const safeSym  = (symbol || '').replace(/</g, '&lt;');
     card.innerHTML = `
-      <div class="pf-card-icon">🪙</div>
+      <div class="pf-card-icon">${img ? `<img src="${img}" onerror="this.parentNode.innerHTML='🪙'">` : '🪙'}</div>
       <div class="pf-card-info">
-        <div class="pf-card-name">${safeName}<span class="pf-card-sym">${safeSym ? ' ' + safeSym : ''}</span></div>
-        <div class="pf-card-mc">${mcFormat(usdMc)} market cap</div>
+        <div class="pf-card-name">${name}<span class="pf-card-sym">${symbol ? ' ' + symbol : ''}</span></div>
+        <div class="pf-card-row">
+          <span class="pf-card-mc">${mcFormat(mc)}</span>
+          ${price   ? `<span class="pf-card-price">${price}</span>` : ''}
+          ${chgText ? `<span class="pf-card-chg" style="color:${changeColor(chg)}">${chgText}</span>` : ''}
+        </div>
       </div>
-      <a class="pf-card-link" href="https://pump.fun/${mint}" target="_blank" rel="noopener">↗</a>`;
+      <a class="pf-card-link" href="${link}" target="_blank" rel="noopener">↗</a>`;
 
     FEED.insertBefore(card, FEED.firstChild);
     requestAnimationFrame(() => card.classList.add('pf-card--visible'));
@@ -936,63 +939,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cards.length > MAX_CARDS) cards[cards.length - 1].remove();
   }
 
-  function subscribe(mint) {
-    if (subCount >= MAX_SUBS || !ws || ws.readyState !== 1) return;
-    ws.send(JSON.stringify({ method: 'subscribeTokenTrade', keys: [mint] }));
-    subCount++;
+  async function poll() {
+    try {
+      setStatus('Updating…', 'connecting');
+      const r = await fetch(API);
+      if (!r.ok) throw new Error(r.status);
+      const data = await r.json();
+      const pairs = (data.pairs || [])
+        .filter(p => p.chainId === 'solana' && (p.fdv || p.marketCap || 0) >= MC_THRESHOLD)
+        .sort((a, b) => (b.fdv || b.marketCap || 0) - (a.fdv || a.marketCap || 0));
+      pairs.forEach(addCard);
+      setStatus(`Live · ${pairs.length} tokens`, 'live');
+    } catch (e) {
+      setStatus('Retrying…', 'error');
+    }
   }
 
-  function connectWS() {
-    setStatus('Connecting…', 'connecting');
-    ws = new WebSocket('wss://pumpportal.fun/api/data');
-
-    ws.onopen = () => {
-      setStatus('Live', 'live');
-      subCount = 0;
-      // Subscribe to new token creations
-      ws.send(JSON.stringify({ method: 'subscribeNewToken' }));
-    };
-
-    ws.onmessage = (ev) => {
-      try {
-        const d = JSON.parse(ev.data);
-        if (!d || !d.mint) return;
-
-        // New token created — store metadata and subscribe to its trades
-        if (d.txType === 'create') {
-          meta.set(d.mint, { name: d.name, symbol: d.symbol });
-          subscribe(d.mint);
-          // Check if it launched already above threshold (very rare but possible)
-          const usdMc = (d.marketCapSol || 0) * solPrice;
-          if (usdMc >= MC_THRESHOLD) addCard(d.mint, d.name, d.symbol, usdMc);
-          return;
-        }
-
-        // Trade event — check if market cap crossed threshold
-        if (d.txType === 'buy' || d.txType === 'sell') {
-          const usdMc = (d.marketCapSol || 0) * solPrice;
-          if (usdMc >= MC_THRESHOLD && !seen.has(d.mint)) {
-            const m = meta.get(d.mint) || {};
-            addCard(d.mint, m.name, m.symbol, usdMc);
-          }
-        }
-      } catch (_) {}
-    };
-
-    ws.onerror = () => setStatus('Reconnecting…', 'error');
-    ws.onclose = () => {
-      setStatus('Reconnecting…', 'error');
-      meta.clear();
-      subCount = 0;
-      setTimeout(connectWS, 5000);
-    };
-  }
-
-  async function init() {
-    await fetchSolPrice();
-    setInterval(fetchSolPrice, 60_000);
-    connectWS();
-  }
-
-  init();
+  poll();
+  setInterval(poll, 30_000);
 })();

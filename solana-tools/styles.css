@@ -691,7 +691,10 @@ select.input option { background: var(--bg-card); }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pf-card-sym { font-size: 11px; color: var(--text-2); font-weight: 400; margin-left: .25rem; }
-.pf-card-mc { font-size: 12px; color: var(--success); font-weight: 600; margin-top: .1rem; }
+.pf-card-row { display: flex; align-items: center; gap: .5rem; margin-top: .1rem; flex-wrap: wrap; }
+.pf-card-mc    { font-size: 12px; color: var(--success); font-weight: 600; }
+.pf-card-price { font-size: 11px; color: var(--text-2); }
+.pf-card-chg   { font-size: 11px; font-weight: 600; }
 .pf-card-link {
   font-size: 16px; color: var(--text-3); text-decoration: none;
   flex-shrink: 0; padding: .2rem .3rem; border-radius: 4px;
