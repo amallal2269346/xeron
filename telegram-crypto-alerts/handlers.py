@@ -4,10 +4,11 @@ Telegram command handlers for the Xe Price Alert Bot.
 Commands:
   /start   – welcome message
   /help    – usage instructions
-  /alert <token> <price>  – set a price alert
-  /list                   – show active alerts in this chat
-  /remove <token>         – remove an alert
-  /price <token>          – show current price
+  /alert <token> <above|below> <price>  – set a directional price alert
+  /alert <token> <price>                – shorthand for 'above'
+  /list                                 – show active alerts in this chat
+  /remove <token> [above|below]         – remove an alert
+  /price <token>                        – show current price
 """
 
 import logging
@@ -19,9 +20,6 @@ import price_fetcher as pf
 
 logger = logging.getLogger(__name__)
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Helpers
-# ──────────────────────────────────────────────────────────────────────────────
 
 def _user_display(update: Update) -> str:
     user = update.effective_user
@@ -55,14 +53,22 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     text = (
         "📖 <b>Available Commands</b>\n\n"
         f"<b>Supported tokens:</b> {tokens}\n\n"
+        "<b>Set an alert:</b>\n"
+        "/alert &lt;token&gt; above &lt;price&gt;\n"
+        "  Alert when price rises above target.\n"
+        "  <i>Example:</i> /alert btc above 70000\n\n"
+        "/alert &lt;token&gt; below &lt;price&gt;\n"
+        "  Alert when price drops below target.\n"
+        "  <i>Example:</i> /alert btc below 60000\n\n"
         "/alert &lt;token&gt; &lt;price&gt;\n"
-        "  Set a price alert. Fires once when price ≥ target.\n"
-        "  <i>Example:</i> /alert btc 70000\n\n"
+        "  Shorthand for 'above'.\n"
+        "  <i>Example:</i> /alert eth 4000\n\n"
         "/list\n"
         "  Show all active alerts in this chat.\n\n"
-        "/remove &lt;token&gt;\n"
-        "  Remove an active alert.\n"
-        "  <i>Example:</i> /remove btc\n\n"
+        "/remove &lt;token&gt; [above|below]\n"
+        "  Remove an alert.\n"
+        "  <i>Example:</i> /remove btc above\n"
+        "  <i>Example:</i> /remove btc  (removes all BTC alerts)\n\n"
         "/price &lt;token&gt;\n"
         "  Show the current live price.\n"
         "  <i>Example:</i> /price eth"
@@ -71,14 +77,24 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# /alert <token> <price>
+# /alert <token> [above|below] <price>
 # ──────────────────────────────────────────────────────────────────────────────
 
 async def cmd_alert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     args = context.args or []
 
-    if len(args) != 2:
-        await _reply(update, "⚠️ Usage: /alert &lt;token&gt; &lt;price&gt;\nExample: /alert btc 70000")
+    if len(args) < 2:
+        await _reply(
+            update,
+            "⚠️ Usage:\n"
+            "/alert &lt;token&gt; above &lt;price&gt;\n"
+            "/alert &lt;token&gt; below &lt;price&gt;\n"
+            "/alert &lt;token&gt; &lt;price&gt;\n\n"
+            "Examples:\n"
+            "• /alert btc above 70000\n"
+            "• /alert btc below 60000\n"
+            "• /alert eth 4000"
+        )
         return
 
     token = args[0].upper()
@@ -87,12 +103,31 @@ async def cmd_alert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await _reply(update, f"⚠️ Unsupported token <b>{token}</b>.\nSupported: {supported}")
         return
 
+    # Parse direction and price
+    # Formats: /alert btc 70000  OR  /alert btc above 70000  OR  /alert btc below 60000
+    if len(args) == 2:
+        direction = "above"
+        price_str = args[1]
+    elif len(args) >= 3 and args[1].lower() in ("above", "below"):
+        direction = args[1].lower()
+        price_str = args[2]
+    else:
+        await _reply(
+            update,
+            "⚠️ Invalid format.\n\n"
+            "Examples:\n"
+            "• /alert btc above 70000\n"
+            "• /alert btc below 60000\n"
+            "• /alert eth 4000"
+        )
+        return
+
     try:
-        target_price = float(args[1].replace(",", ""))
+        target_price = float(price_str.replace(",", ""))
         if target_price <= 0:
             raise ValueError
     except ValueError:
-        await _reply(update, "⚠️ Price must be a positive number.\nExample: /alert btc 70000")
+        await _reply(update, "⚠️ Price must be a positive number.\nExample: /alert btc above 70000")
         return
 
     chat_id = update.effective_chat.id
@@ -100,17 +135,21 @@ async def cmd_alert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = user.id if user else 0
     username = user.username if user else None
 
-    await db.add_alert(chat_id, user_id, username, token, target_price)
+    await db.add_alert(chat_id, user_id, username, token, direction, target_price)
 
     formatted = pf.format_price(target_price)
+    arrow = "📈" if direction == "above" else "📉"
+    condition = "rises above" if direction == "above" else "drops below"
+
     await _reply(
         update,
         f"✅ Alert set!\n\n"
         f"Token: <b>{token}</b>\n"
+        f"Direction: {arrow} <b>{direction.upper()}</b>\n"
         f"Target price: <b>{formatted}</b>\n\n"
-        f"I'll notify this chat when {token} reaches {formatted}.",
+        f"I'll notify this chat when {token} {condition} {formatted}.",
     )
-    logger.info("Alert set by %s in chat %s: %s @ %s", username, chat_id, token, target_price)
+    logger.info("Alert set by %s in chat %s: %s %s %s", username, chat_id, token, direction, target_price)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -122,38 +161,44 @@ async def cmd_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     alerts = await db.get_alerts_for_chat(chat_id)
 
     if not alerts:
-        await _reply(update, "📭 No active alerts in this chat.\nUse /alert &lt;token&gt; &lt;price&gt; to set one.")
+        await _reply(update, "📭 No active alerts in this chat.\nUse /alert to set one.")
         return
 
     lines = ["📋 <b>Active Alerts</b>\n"]
     for alert in alerts:
         formatted_price = pf.format_price(alert["target_price"])
+        direction = alert.get("direction", "above")
+        arrow = "📈" if direction == "above" else "📉"
         user_tag = f"@{alert['username']}" if alert.get("username") else "someone"
-        lines.append(f"• <b>{alert['token']}</b> → {formatted_price}  (set by {user_tag})")
+        lines.append(
+            f"• <b>{alert['token']}</b> {arrow} {direction} {formatted_price}  (set by {user_tag})"
+        )
 
     await _reply(update, "\n".join(lines))
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# /remove <token>
+# /remove <token> [above|below]
 # ──────────────────────────────────────────────────────────────────────────────
 
 async def cmd_remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     args = context.args or []
 
     if not args:
-        await _reply(update, "⚠️ Usage: /remove &lt;token&gt;\nExample: /remove btc")
+        await _reply(update, "⚠️ Usage: /remove &lt;token&gt; [above|below]\nExamples:\n• /remove btc above\n• /remove btc")
         return
 
     token = args[0].upper()
+    direction = args[1].lower() if len(args) >= 2 and args[1].lower() in ("above", "below") else None
     chat_id = update.effective_chat.id
-    deleted = await db.remove_alert(chat_id, token)
+
+    deleted = await db.remove_alert(chat_id, token, direction)
 
     if deleted:
-        await _reply(update, f"🗑️ Alert for <b>{token}</b> has been removed.")
-        logger.info("Alert removed for %s in chat %s by %s", token, chat_id, _user_display(update))
+        suffix = f" ({direction})" if direction else " (all)"
+        await _reply(update, f"🗑️ Alert for <b>{token}</b>{suffix} has been removed.")
     else:
-        await _reply(update, f"⚠️ No active alert found for <b>{token}</b> in this chat.")
+        await _reply(update, f"⚠️ No matching alert found for <b>{token}</b>{ ' ' + direction if direction else '' } in this chat.")
 
 
 # ──────────────────────────────────────────────────────────────────────────────

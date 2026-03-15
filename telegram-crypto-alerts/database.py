@@ -14,15 +14,21 @@ async def init_db() -> None:
     async with aiosqlite.connect(DB_PATH) as db:
         await db.execute("""
             CREATE TABLE IF NOT EXISTS alerts (
-                id          INTEGER PRIMARY KEY AUTOINCREMENT,
-                chat_id     INTEGER NOT NULL,
-                user_id     INTEGER NOT NULL,
-                username    TEXT,
-                token       TEXT NOT NULL,
+                id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                chat_id      INTEGER NOT NULL,
+                user_id      INTEGER NOT NULL,
+                username     TEXT,
+                token        TEXT NOT NULL,
+                direction    TEXT NOT NULL DEFAULT 'above',
                 target_price REAL NOT NULL,
-                created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        # Migrate existing databases that lack the direction column
+        try:
+            await db.execute("ALTER TABLE alerts ADD COLUMN direction TEXT NOT NULL DEFAULT 'above'")
+        except Exception:
+            pass  # column already exists
         await db.execute(
             "CREATE INDEX IF NOT EXISTS idx_alerts_chat ON alerts(chat_id)"
         )
@@ -37,24 +43,25 @@ async def add_alert(
     user_id: int,
     username: Optional[str],
     token: str,
+    direction: str,
     target_price: float,
 ) -> int:
     """
-    Insert an alert. If one already exists for (chat_id, token), replace it.
+    Insert an alert. If one already exists for (chat_id, token, direction), replace it.
+    direction must be 'above' or 'below'.
     Returns the new alert id.
     """
     async with aiosqlite.connect(DB_PATH) as db:
-        # Remove any existing alert for this token in this chat first
         await db.execute(
-            "DELETE FROM alerts WHERE chat_id = ? AND token = ?",
-            (chat_id, token),
+            "DELETE FROM alerts WHERE chat_id = ? AND token = ? AND direction = ?",
+            (chat_id, token, direction),
         )
         cursor = await db.execute(
             """
-            INSERT INTO alerts (chat_id, user_id, username, token, target_price)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO alerts (chat_id, user_id, username, token, direction, target_price)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (chat_id, user_id, username, token, target_price),
+            (chat_id, user_id, username, token, direction, target_price),
         )
         await db.commit()
         return cursor.lastrowid
@@ -65,7 +72,7 @@ async def get_alerts_for_chat(chat_id: int) -> list[dict]:
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
-            "SELECT * FROM alerts WHERE chat_id = ? ORDER BY created_at",
+            "SELECT * FROM alerts WHERE chat_id = ? ORDER BY token, direction",
             (chat_id,),
         ) as cursor:
             rows = await cursor.fetchall()
@@ -81,13 +88,22 @@ async def get_all_alerts() -> list[dict]:
             return [dict(row) for row in rows]
 
 
-async def remove_alert(chat_id: int, token: str) -> bool:
-    """Delete an alert by (chat_id, token). Returns True if one was deleted."""
+async def remove_alert(chat_id: int, token: str, direction: Optional[str] = None) -> bool:
+    """
+    Delete alert(s) by (chat_id, token) and optionally direction.
+    Returns True if at least one was deleted.
+    """
     async with aiosqlite.connect(DB_PATH) as db:
-        cursor = await db.execute(
-            "DELETE FROM alerts WHERE chat_id = ? AND token = ?",
-            (chat_id, token),
-        )
+        if direction:
+            cursor = await db.execute(
+                "DELETE FROM alerts WHERE chat_id = ? AND token = ? AND direction = ?",
+                (chat_id, token, direction),
+            )
+        else:
+            cursor = await db.execute(
+                "DELETE FROM alerts WHERE chat_id = ? AND token = ?",
+                (chat_id, token),
+            )
         await db.commit()
         return cursor.rowcount > 0
 
