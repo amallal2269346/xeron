@@ -203,6 +203,45 @@ header{
 .fp-level.ib-sell .fp-sell-bar{background:rgba(239,68,68,.85)}
 .fp-legend{display:flex;justify-content:space-between;margin-top:6px;font-size:9px}
 
+/* TP / SL / Time row */
+.wc-tpsl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-bottom:1px solid var(--line)}
+.tpsl-cell{padding:7px 12px;display:flex;flex-direction:column;gap:1px;border-right:1px solid var(--line)}
+.tpsl-cell:last-child{border-right:none}
+.tpsl-cell .tk{font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:var(--sub)}
+.tpsl-cell .tv{font-size:11px;font-weight:700}
+.tv-tp{color:var(--green)}.tv-sl{color:var(--red)}.tv-nt{color:var(--dim);font-weight:400;font-style:italic}
+.tv-time{color:var(--sub)}
+
+/* History toggle */
+.hist-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;border-top:1px solid var(--line);background:transparent;width:100%;text-align:left;transition:background .12s}
+.hist-toggle:hover{background:rgba(255,255,255,.02)}
+.hist-toggle-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);display:flex;align-items:center;gap:6px}
+.hist-count{background:var(--line);color:var(--sub);font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px}
+.hist-arrow{font-size:10px;color:var(--dim);transition:transform .2s}
+.hist-arrow.open{transform:rotate(180deg)}
+
+/* History rows */
+.hist-body{display:none;border-top:1px solid var(--line)}
+.hist-body.open{display:block}
+.hist-row{display:grid;grid-template-columns:60px 60px 1fr 1fr 60px;gap:4px;align-items:center;padding:7px 14px;border-bottom:1px solid rgba(30,34,51,.5);font-size:10px}
+.hist-row:last-child{border-bottom:none}
+.hist-row:hover{background:rgba(255,255,255,.015)}
+.hr-asset{font-weight:700;color:var(--text)}
+.hr-side{padding:1px 6px;border-radius:3px;font-size:9px;font-weight:800;text-transform:uppercase;width:fit-content}
+.hr-long{background:rgba(34,197,94,.12);color:var(--green)}
+.hr-short{background:rgba(239,68,68,.12);color:var(--red)}
+.hr-prices{display:flex;flex-direction:column;gap:1px}
+.hr-price{font-size:9px;color:var(--sub)}
+.hr-price b{color:var(--text)}
+.hr-meta{display:flex;flex-direction:column;gap:1px}
+.hr-dur{font-size:9px;color:var(--dim)}
+.hr-date{font-size:9px;color:var(--dim)}
+.hr-pnl{font-weight:700;text-align:right}
+.hr-win{color:var(--green)}.hr-loss{color:var(--red)}
+.hr-badge{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;text-transform:uppercase;text-align:center;margin-top:2px}
+.hrb-win{background:rgba(34,197,94,.12);color:var(--green)}
+.hrb-loss{background:rgba(239,68,68,.12);color:var(--red)}
+
 /* Card footer */
 .wc-foot{padding:8px 14px;display:flex;justify-content:space-between;align-items:center}
 .wc-foot .vol{font-size:10px;color:var(--sub)}
@@ -338,53 +377,93 @@ header{
 
 <script>
 // ── Data ──────────────────────────────────────────────────────────
+// pos.openedMinsAgo = minutes since position was opened
+// pos.tp = take profit price (null = no target)
+// pos.sl = stop loss price (null = no stop loss)
+// history = closed trade log (shown for high WR whales ≥ 80%)
 var WHALES = [
   {w:"0xA1b2\u20269F3c",a:"0xA1b2C3d4E5f6A7B8C9D0E1F2A3B4C5D6E7F89F3c",style:"day",pair:"BTC-PERP",age:18,lev:25,wr:.78,pnl:142300,vol:8400000,trades:34,mkt:38000000000,
-   pos:{side:"long",asset:"BTC",size:"2.4 BTC",entry:68200,liq:61800},
+   pos:{side:"long",asset:"BTC",size:"2.4 BTC",entry:68200,liq:61800,openedMinsAgo:154,tp:71500,sl:66800},
    of:{cvd:1240000,cvdT:"up",delta:340000,buy:4800000,sell:3600000,sig:"bull",
      fp:[{p:68500,b:420,s:110},{p:68400,b:380,s:190},{p:68300,b:520,s:85},{p:68200,b:290,s:340},{p:68100,b:180,s:95}]}},
   {w:"0xB3f4\u20262A1d",a:"0xB3f4D5e6F7A8B9C0D1E2F3A4B5C6D7E8F9A02A1d",style:"swing",pair:"ETH-PERP",age:91,lev:10,wr:.84,pnl:89700,vol:3200000,trades:6,mkt:19000000000,
-   pos:{side:"long",asset:"ETH",size:"48 ETH",entry:3420,liq:2990},
+   pos:{side:"long",asset:"ETH",size:"48 ETH",entry:3420,liq:2990,openedMinsAgo:820,tp:3780,sl:3300},
    of:{cvd:890000,cvdT:"up",delta:210000,buy:2100000,sell:1100000,sig:"bull",
-     fp:[{p:3440,b:310,s:80},{p:3430,b:290,s:130},{p:3420,b:440,s:70},{p:3410,b:200,s:280},{p:3400,b:160,s:85}]}},
+     fp:[{p:3440,b:310,s:80},{p:3430,b:290,s:130},{p:3420,b:440,s:70},{p:3410,b:200,s:280},{p:3400,b:160,s:85}]},
+   history:[
+     {asset:"BTC",side:"long",size:"1.8 BTC",entry:64200,exit:67800,opened:"Mar 13 08:15",closed:"Mar 13 19:30",dur:"11h 15m",pnl:64800,win:true},
+     {asset:"SOL",side:"short",size:"5K SOL",entry:172,exit:158,opened:"Mar 12 14:00",closed:"Mar 12 22:45",dur:"8h 45m",pnl:70000,win:true},
+     {asset:"ETH",side:"long",size:"60 ETH",entry:3180,exit:3310,opened:"Mar 11 10:20",closed:"Mar 11 21:10",dur:"10h 50m",pnl:78000,win:true},
+     {asset:"BTC",side:"short",size:"1.2 BTC",entry:68900,exit:69600,opened:"Mar 10 09:00",closed:"Mar 10 12:30",dur:"3h 30m",pnl:-8400,win:false},
+     {asset:"ETH",side:"long",size:"35 ETH",entry:3080,exit:3240,opened:"Mar 09 16:00",closed:"Mar 10 07:45",dur:"15h 45m",pnl:56000,win:true},
+   ]},
   {w:"0xC5d6\u20268B7e",a:"0xC5d6E7f8A9B0C1D2E3F4A5B6C7D8E9F0A1B28B7e",style:"day",pair:"SOL-PERP",age:11,lev:50,wr:.71,pnl:-23100,vol:12700000,trades:61,mkt:4200000000,
-   pos:{side:"short",asset:"SOL",size:"3200 SOL",entry:162,liq:181},
+   pos:{side:"short",asset:"SOL",size:"3200 SOL",entry:162,liq:181,openedMinsAgo:47,tp:148,sl:null},
    of:{cvd:-540000,cvdT:"down",delta:-280000,buy:5900000,sell:6800000,sig:"bear",
      fp:[{p:163,b:120,s:410},{p:162,b:90,s:380},{p:161,b:210,s:140},{p:160,b:85,s:330},{p:159,b:140,s:290}]}},
   {w:"0xD7e8\u20264C3f",a:"0xD7e8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C44C3f",style:"swing",pair:"BTC-PERP",age:210,lev:15,wr:.91,pnl:311000,vol:6900000,trades:9,mkt:38000000000,
-   pos:{side:"long",asset:"BTC",size:"5.1 BTC",entry:66900,liq:59200},
+   pos:{side:"long",asset:"BTC",size:"5.1 BTC",entry:66900,liq:59200,openedMinsAgo:2160,tp:72000,sl:65000},
    of:{cvd:2100000,cvdT:"up",delta:580000,buy:4200000,sell:2700000,sig:"bull",
-     fp:[{p:67200,b:510,s:95},{p:67100,b:460,s:150},{p:67000,b:620,s:80},{p:66900,b:390,s:200},{p:66800,b:280,s:110}]}},
+     fp:[{p:67200,b:510,s:95},{p:67100,b:460,s:150},{p:67000,b:620,s:80},{p:66900,b:390,s:200},{p:66800,b:280,s:110}]},
+   history:[
+     {asset:"BTC",side:"long",size:"4.2 BTC",entry:62400,exit:67100,opened:"Mar 10 07:00",closed:"Mar 13 14:20",dur:"3d 7h",pnl:197400,win:true},
+     {asset:"ETH",side:"short",size:"80 ETH",entry:3620,exit:3420,opened:"Mar 08 11:00",closed:"Mar 09 20:30",dur:"1d 9h",pnl:160000,win:true},
+     {asset:"SOL",side:"long",size:"8K SOL",entry:148,exit:163,opened:"Mar 05 09:00",closed:"Mar 07 18:00",dur:"2d 9h",pnl:120000,win:true},
+     {asset:"BTC",side:"short",size:"2.0 BTC",entry:71200,exit:69800,opened:"Mar 03 15:00",closed:"Mar 04 09:30",dur:"18h 30m",pnl:28000,win:true},
+     {asset:"ETH",side:"long",size:"100 ETH",entry:3150,exit:3080,opened:"Feb 28 10:00",closed:"Feb 28 22:00",dur:"12h",pnl:-70000,win:false},
+     {asset:"BTC",side:"long",size:"3.5 BTC",entry:58200,exit:63400,opened:"Feb 25 08:00",closed:"Feb 27 16:00",dur:"2d 8h",pnl:182000,win:true},
+   ]},
   {w:"0xE9f0\u20266D5a",a:"0xE9f0A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D66D5a",style:"day",pair:"ETH-PERP",age:44,lev:20,wr:.76,pnl:54200,vol:5100000,trades:28,mkt:19000000000,
    pos:null,
    of:{cvd:120000,cvdT:"flat",delta:30000,buy:2600000,sell:2500000,sig:"neut",
      fp:[{p:3480,b:200,s:190},{p:3470,b:180,s:175},{p:3460,b:195,s:185},{p:3450,b:160,s:170},{p:3440,b:210,s:200}]}},
   {w:"0xF1a2\u20260E7b",a:"0xF1a2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E80E7b",style:"swing",pair:"ETH-PERP",age:180,lev:8,wr:.88,pnl:198400,vol:2800000,trades:4,mkt:19000000000,
-   pos:{side:"short",asset:"ETH",size:"120 ETH",entry:3550,liq:3890},
+   pos:{side:"short",asset:"ETH",size:"120 ETH",entry:3550,liq:3890,openedMinsAgo:390,tp:3250,sl:3650},
    of:{cvd:-780000,cvdT:"down",delta:-310000,buy:1200000,sell:1600000,sig:"bear",
-     fp:[{p:3560,b:80,s:360},{p:3550,b:110,s:400},{p:3540,b:90,s:280},{p:3530,b:170,s:210},{p:3520,b:140,s:320}]}},
+     fp:[{p:3560,b:80,s:360},{p:3550,b:110,s:400},{p:3540,b:90,s:280},{p:3530,b:170,s:210},{p:3520,b:140,s:320}]},
+   history:[
+     {asset:"BTC",side:"short",size:"2.5 BTC",entry:71400,exit:68200,opened:"Mar 12 06:00",closed:"Mar 13 10:00",dur:"1d 4h",pnl:80000,win:true},
+     {asset:"ETH",side:"long",size:"90 ETH",entry:3200,exit:3480,opened:"Mar 09 14:00",closed:"Mar 11 09:30",dur:"1d 19h",pnl:252000,win:true},
+     {asset:"SOL",side:"short",size:"6K SOL",entry:168,exit:155,opened:"Mar 07 09:00",closed:"Mar 08 17:00",dur:"1d 8h",pnl:78000,win:true},
+     {asset:"ETH",side:"long",size:"80 ETH",entry:3350,exit:3290,opened:"Mar 05 11:00",closed:"Mar 05 20:30",dur:"9h 30m",pnl:-48000,win:false},
+     {asset:"BTC",side:"long",size:"1.5 BTC",entry:65800,exit:68100,opened:"Mar 03 08:00",closed:"Mar 04 14:00",dur:"1d 6h",pnl:34500,win:true},
+   ]},
   {w:"0xA3b4\u20261F8c",a:"0xA3b4C5D6E7F8A9B0C1D2E3F4A5B6C7D8E9F01F8c",style:"day",pair:"SOL-PERP",age:7,lev:30,wr:.69,pnl:78900,vol:9300000,trades:47,mkt:4200000000,
-   pos:{side:"long",asset:"SOL",size:"12K SOL",entry:158,liq:141},
+   pos:{side:"long",asset:"SOL",size:"12K SOL",entry:158,liq:141,openedMinsAgo:68,tp:null,sl:150},
    of:{cvd:430000,cvdT:"up",delta:140000,buy:5100000,sell:4200000,sig:"bull",
      fp:[{p:159,b:330,s:120},{p:158,b:410,s:90},{p:157,b:280,s:200},{p:156,b:190,s:140},{p:155,b:240,s:110}]}},
   {w:"0xB5c6\u20263A2d",a:"0xB5c6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A23A2d",style:"swing",pair:"BTC-PERP",age:365,lev:12,wr:.82,pnl:-11200,vol:1700000,trades:3,mkt:38000000000,
-   pos:{side:"short",asset:"BTC",size:"1.8 BTC",entry:69100,liq:75800},
+   pos:{side:"short",asset:"BTC",size:"1.8 BTC",entry:69100,liq:75800,openedMinsAgo:1440,tp:64000,sl:71000},
    of:{cvd:-320000,cvdT:"down",delta:-90000,buy:800000,sell:900000,sig:"bear",
-     fp:[{p:69200,b:90,s:310},{p:69100,b:110,s:350},{p:69000,b:200,s:180},{p:68900,b:160,s:240},{p:68800,b:130,s:190}]}},
+     fp:[{p:69200,b:90,s:310},{p:69100,b:110,s:350},{p:69000,b:200,s:180},{p:68900,b:160,s:240},{p:68800,b:130,s:190}]},
+   history:[
+     {asset:"BTC",side:"long",size:"2.0 BTC",entry:64500,exit:68800,opened:"Mar 11 07:00",closed:"Mar 13 12:00",dur:"2d 5h",pnl:86000,win:true},
+     {asset:"ETH",side:"short",size:"70 ETH",entry:3600,exit:3380,opened:"Mar 09 10:00",closed:"Mar 10 16:00",dur:"1d 6h",pnl:154000,win:true},
+     {asset:"BTC",side:"long",size:"1.5 BTC",entry:66200,exit:65800,opened:"Mar 07 08:00",closed:"Mar 07 18:30",dur:"10h 30m",pnl:-6000,win:false},
+     {asset:"SOL",side:"long",size:"4K SOL",entry:145,exit:158,opened:"Mar 05 09:00",closed:"Mar 06 21:00",dur:"1d 12h",pnl:52000,win:true},
+   ]},
   {w:"0xC7d8\u20265B4e",a:"0xC7d8E9F0A1B2C3D4E5F6A7B8C9D0E1F2A3B45B4e",style:"day",pair:"AVAX-PERP",age:22,lev:40,wr:.73,pnl:66100,vol:7600000,trades:52,mkt:1300000000,
-   pos:{side:"long",asset:"AVAX",size:"8K AVAX",entry:38.4,liq:31.2},
+   pos:{side:"long",asset:"AVAX",size:"8K AVAX",entry:38.4,liq:31.2,openedMinsAgo:93,tp:44.0,sl:null},
    of:{cvd:190000,cvdT:"up",delta:80000,buy:4100000,sell:3500000,sig:"bull",
      fp:[{p:38.8,b:280,s:100},{p:38.6,b:310,s:130},{p:38.4,b:250,s:95},{p:38.2,b:180,s:220},{p:38.0,b:140,s:90}]}},
   {w:"0xD9e0\u20267C6f",a:"0xD9e0F1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C67C6f",style:"swing",pair:"BTC-PERP",age:520,lev:6,wr:.93,pnl:428000,vol:4400000,trades:5,mkt:38000000000,
-   pos:{side:"long",asset:"BTC",size:"7.3 BTC",entry:65400,liq:58100},
+   pos:{side:"long",asset:"BTC",size:"7.3 BTC",entry:65400,liq:58100,openedMinsAgo:4320,tp:74000,sl:63000},
    of:{cvd:3400000,cvdT:"up",delta:920000,buy:2800000,sell:1600000,sig:"bull",
-     fp:[{p:65700,b:580,s:70},{p:65600,b:510,s:90},{p:65500,b:640,s:60},{p:65400,b:480,s:110},{p:65300,b:350,s:80}]}},
+     fp:[{p:65700,b:580,s:70},{p:65600,b:510,s:90},{p:65500,b:640,s:60},{p:65400,b:480,s:110},{p:65300,b:350,s:80}]},
+   history:[
+     {asset:"ETH",side:"long",size:"150 ETH",entry:3100,exit:3490,opened:"Mar 08 06:00",closed:"Mar 11 20:00",dur:"3d 14h",pnl:585000,win:true},
+     {asset:"BTC",side:"short",size:"4.0 BTC",entry:72800,exit:68400,opened:"Mar 04 09:00",closed:"Mar 07 15:00",dur:"3d 6h",pnl:176000,win:true},
+     {asset:"SOL",side:"long",size:"15K SOL",entry:138,exit:162,opened:"Feb 27 08:00",closed:"Mar 03 18:00",dur:"4d 10h",pnl:360000,win:true},
+     {asset:"ETH",side:"long",size:"120 ETH",entry:3280,exit:3210,opened:"Feb 24 10:00",closed:"Feb 24 22:00",dur:"12h",pnl:-84000,win:false},
+     {asset:"BTC",side:"long",size:"5.0 BTC",entry:55200,exit:62800,opened:"Feb 18 07:00",closed:"Feb 22 14:00",dur:"4d 7h",pnl:380000,win:true},
+     {asset:"AVAX",side:"short",size:"20K AVAX",entry:42,exit:36,opened:"Feb 14 09:00",closed:"Feb 16 18:00",dur:"2d 9h",pnl:120000,win:true},
+   ]},
   {w:"0xE1f2\u20269D0a",a:"0xE1f2A3B4C5D6E7F8A9B0C1D2E3F4A5B6C7D89D0a",style:"day",pair:"ARB-PERP",age:14,lev:35,wr:.74,pnl:91400,vol:6200000,trades:39,mkt:820000000,
-   pos:{side:"long",asset:"ARB",size:"450K ARB",entry:1.18,liq:0.98},
+   pos:{side:"long",asset:"ARB",size:"450K ARB",entry:1.18,liq:0.98,openedMinsAgo:210,tp:null,sl:1.08},
    of:{cvd:310000,cvdT:"up",delta:120000,buy:3400000,sell:2800000,sig:"bull",
      fp:[{p:1.21,b:220,s:90},{p:1.20,b:300,s:110},{p:1.19,b:260,s:80},{p:1.18,b:190,s:240},{p:1.17,b:150,s:95}]}},
   {w:"0xF3a4\u20260E1b",a:"0xF3a4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E00E1b",style:"swing",pair:"OP-PERP",age:60,lev:8,wr:.79,pnl:44600,vol:2100000,trades:7,mkt:980000000,
-   pos:{side:"short",asset:"OP",size:"800K OP",entry:2.41,liq:2.74},
+   pos:{side:"short",asset:"OP",size:"800K OP",entry:2.41,liq:2.74,openedMinsAgo:560,tp:2.10,sl:null},
    of:{cvd:-210000,cvdT:"down",delta:-85000,buy:980000,sell:1120000,sig:"bear",
      fp:[{p:2.44,b:95,s:290},{p:2.43,b:110,s:310},{p:2.42,b:180,s:190},{p:2.41,b:140,s:260},{p:2.40,b:120,s:200}]}},
 ];
@@ -408,6 +487,18 @@ var HM = [
 var HL = "https://app.hyperliquid.xyz/explorer/address/";
 
 // ── Format helpers ────────────────────────────────────────────────
+function relTime(mins){
+  if(mins<60)return mins+'m ago';
+  if(mins<1440)return Math.floor(mins/60)+'h '+(mins%60)+'m ago';
+  var d=Math.floor(mins/1440), h=Math.floor((mins%1440)/60);
+  return d+'d '+(h?h+'h ':'')+' ago';
+}
+function fPx(n){
+  // format a price — don't add $ sign to keep compact, caller adds it
+  if(n>=1000)return n.toLocaleString();
+  if(n>=10)return n.toFixed(2);
+  return n.toFixed(3);
+}
 function fM(n){
   var a=Math.abs(n);
   if(a>=1e9)return "$"+(a/1e9).toFixed(1)+"B";
@@ -489,6 +580,37 @@ function fpHTML(fp){
     +'<div class="fp-legend"><span class="rd">\u25c4 Sell pressure</span><span class="gn">Buy pressure \u25ba</span></div>';
 }
 
+// ── Trade history HTML ────────────────────────────────────────────
+function histHTML(w){
+  var wins=w.history.filter(function(t){return t.win;}).length;
+  var rows=w.history.map(function(t){
+    return '<div class="hist-row">'
+      +'<div><div class="hr-asset">'+t.asset+'</div><div class="hr-side hr-'+t.side+'">'+t.side.toUpperCase()+'</div></div>'
+      +'<div class="hr-prices">'
+        +'<div class="hr-price">In: <b>$'+fPx(t.entry)+'</b></div>'
+        +'<div class="hr-price">Out: <b>$'+fPx(t.exit)+'</b></div>'
+      +'</div>'
+      +'<div class="hr-meta"><div class="hr-date">'+t.opened+'</div><div class="hr-dur">'+t.dur+'</div></div>'
+      +'<div><div class="hr-pnl '+(t.win?'hr-win':'hr-loss')+'">'+(t.win?'+':'\u2212')+'$'+Math.abs(t.pnl).toLocaleString()+'</div>'
+        +'<div class="hr-badge '+(t.win?'hrb-win':'hrb-loss')+'">'+(t.win?'WIN':'LOSS')+'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+  return '<button class="hist-toggle" onclick="toggleHist(this)">'
+    +'<span class="hist-toggle-label">📋 Trade History <span class="hist-count">'+w.history.length+' trades</span> <span style="color:var(--green);font-size:9px">'+wins+' wins</span></span>'
+    +'<span class="hist-arrow">&#9660;</span>'
+    +'</button>'
+    +'<div class="hist-body">'+rows+'</div>';
+}
+
+function toggleHist(btn){
+  var arrow=btn.querySelector('.hist-arrow');
+  var body=btn.nextElementSibling;
+  var isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  arrow.classList.toggle('open',!isOpen);
+}
+
 // ── Signals ───────────────────────────────────────────────────────
 function renderSigs(list){
   var el=document.getElementById("sigs");
@@ -531,14 +653,25 @@ function renderGrid(list){
     var flowIcon=o.sig==="bull"?"\u25b2":o.sig==="bear"?"\u25bc":"\u25b6";
     var flowColor=o.sig==="bull"?"var(--green)":o.sig==="bear"?"var(--red)":"var(--sub)";
 
-    // position row
-    var posRow=w.pos
-      ?'<div class="wc-pos">'
-          +'<span class="side-pill side-'+w.pos.side+'">'+w.pos.side.toUpperCase()+'</span>'
-          +'<span class="pos-detail"><b>'+w.pos.asset+'</b> &nbsp;'+w.pos.size+'</span>'
-          +'<span class="pos-entry">Entry <b>$'+w.pos.entry.toLocaleString()+'</b> &nbsp; Liq <b style="color:var(--red)">$'+w.pos.liq.toLocaleString()+'</b></span>'
+    // position row + TP/SL/time row
+    var posRow;
+    if(w.pos){
+      var p=w.pos;
+      var tpHtml=p.tp?'<span class="tv tv-tp">$'+fPx(p.tp)+'</span>':'<span class="tv tv-nt">No Target</span>';
+      var slHtml=p.sl?'<span class="tv tv-sl">$'+fPx(p.sl)+'</span>':'<span class="tv tv-nt">No SL</span>';
+      posRow='<div class="wc-pos">'
+          +'<span class="side-pill side-'+p.side+'">'+p.side.toUpperCase()+'</span>'
+          +'<span class="pos-detail"><b>'+p.asset+'</b> &nbsp;'+p.size+'</span>'
+          +'<span class="pos-entry">Entry <b>$'+fPx(p.entry)+'</b> &nbsp; Liq <b style="color:var(--red)">$'+fPx(p.liq)+'</b></span>'
         +'</div>'
-      :'<div class="no-pos">No open position &mdash; watching</div>';
+        +'<div class="wc-tpsl">'
+          +'<div class="tpsl-cell"><span class="tk">Target (TP)</span>'+tpHtml+'</div>'
+          +'<div class="tpsl-cell"><span class="tk">Stop Loss (SL)</span>'+slHtml+'</div>'
+          +'<div class="tpsl-cell"><span class="tk">Opened</span><span class="tv tv-time">'+relTime(p.openedMinsAgo)+'</span></div>'
+        +'</div>';
+    } else {
+      posRow='<div class="no-pos">No open position &mdash; watching market</div>';
+    }
 
     return '<div class="wc'+cardCls+'">'
       // head
@@ -577,6 +710,8 @@ function renderGrid(list){
         +'<div class="fp-title"><span>Footprint</span><span style="color:var(--dim)">&mdash; '+w.trades+' trades today</span></div>'
         +fpHTML(o.fp)
       +'</div>'
+      // trade history (high WR ≥ 80% only)
+      + (w.history&&w.history.length?histHTML(w):'')
       // card footer
       +'<div class="wc-foot">'
         +'<span class="vol">Vol <b>'+fM(w.vol)+'</b> &nbsp;|&nbsp; Mkt <b>'+fM(w.mkt)+'</b></span>'
