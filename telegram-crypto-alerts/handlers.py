@@ -214,6 +214,53 @@ async def cmd_remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# /active
+# ──────────────────────────────────────────────────────────────────────────────
+
+async def cmd_active(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    chat_id = update.effective_chat.id
+    alerts = await db.get_alerts_for_chat(chat_id)
+
+    if not alerts:
+        await _reply(update, "📭 No active alerts in this chat.\nUse /alert to set one.")
+        return
+
+    # Fetch current prices for all alerted tokens
+    tokens = list({a["token"] for a in alerts})
+    prices = await pf.fetch_prices(tokens)
+
+    lines = [f"📊 <b>Active Alerts</b>  ({len(alerts)} total)\n"]
+    for alert in alerts:
+        token = alert["token"]
+        direction = alert.get("direction", "above")
+        target = alert["target_price"]
+        arrow = "📈" if direction == "above" else "📉"
+        user_tag = f"@{alert['username']}" if alert.get("username") else "someone"
+
+        current = prices.get(token)
+        if current is not None:
+            diff = current - target
+            pct = (diff / target) * 100
+            if direction == "above":
+                remaining = target - current
+                status = f"🟢 <b>TRIGGERED</b>" if current >= target else f"{pf.format_price(abs(remaining))} away ({abs(pct):.1f}%)"
+            else:
+                remaining = current - target
+                status = f"🟢 <b>TRIGGERED</b>" if current <= target else f"{pf.format_price(abs(remaining))} away ({abs(pct):.1f}%)"
+            price_line = f"Current: {pf.format_price(current)} — {status}"
+        else:
+            price_line = "Current: unavailable"
+
+        lines.append(
+            f"\n{arrow} <b>{token}</b> {direction} {pf.format_price(target)}\n"
+            f"   {price_line}\n"
+            f"   Set by {user_tag}"
+        )
+
+    await _reply(update, "\n".join(lines))
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # /tokens
 # ──────────────────────────────────────────────────────────────────────────────
 
