@@ -3,532 +3,716 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>🐋 WhaleTracker — Footprint & Order Flow</title>
+<title>🐋 WhaleTracker — Hyperliquid Pro Traders</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#08090d;--surface:#0f1117;--surface2:#161920;--border:#1c2030;
-  --accent:#00e5ff;--green:#00e676;--red:#ff1744;--yellow:#ffd600;--purple:#c084fc;
-  --text:#dde4f0;--muted:#4e5a7a;--radius:8px;
+  --bg:#07080c;--s1:#0d0f16;--s2:#12151f;--border:#1a1e2e;
+  --accent:#00d4ff;--green:#00e676;--red:#ff1a4b;--yellow:#ffc107;--purple:#a78bfa;--orange:#ff7043;
+  --text:#d8e0f0;--muted:#48546e;--radius:8px;
+  --green-dim:rgba(0,230,118,.12);--red-dim:rgba(255,26,75,.12);
 }
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;min-height:100vh}
+a{text-decoration:none}
 
-/* ── Header ─────────────────────────────────────────── */
-header{display:flex;align-items:center;gap:16px;padding:12px 22px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:20;flex-wrap:wrap}
-.logo{font-size:19px;font-weight:800;color:var(--accent);white-space:nowrap;letter-spacing:-.3px}
-.subtitle{color:var(--muted);font-size:11px;flex:1;white-space:nowrap}
-.live{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--green);white-space:nowrap}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.hdr-filters{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-.filter-group{display:flex;gap:5px;align-items:center}
-.filter-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-right:2px}
-.fbtn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:11px;transition:.18s;white-space:nowrap}
-.fbtn.active,.fbtn:hover{font-weight:700;border-color:var(--accent)}
-.fbtn.active{background:var(--accent);color:#000}
-.fbtn.vbtn.active{background:var(--purple);border-color:var(--purple);color:#fff}
-.fbtn.vbtn:hover{border-color:var(--purple);color:var(--purple)}
+/* ─── Scrollbar ─────────────────────────────────── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 
-/* ── Stats bar ──────────────────────────────────────── */
-.stats-bar{display:flex;gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
-.stat{flex:1;display:flex;flex-direction:column;gap:2px;padding:10px 16px;background:var(--surface)}
-.stat .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
-.stat .val{font-size:18px;font-weight:800;color:var(--accent)}
-.stat .val.gn{color:var(--green)}
-.stat .val.rd{color:var(--red)}
+/* ─── Header ────────────────────────────────────── */
+header{background:var(--s1);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:30}
+.hdr-top{display:flex;align-items:center;gap:14px;padding:10px 0;flex-wrap:wrap}
+.logo{font-size:18px;font-weight:900;color:var(--accent);letter-spacing:-.5px;white-space:nowrap}
+.hl-badge{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);color:var(--accent);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.subtitle{color:var(--muted);font-size:11px;flex:1}
+.live-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:var(--green);white-space:nowrap}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.3s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ── Flow Signals strip ─────────────────────────────── */
-.signals-wrap{padding:14px 22px 0;overflow-x:auto}
-.signals-inner{display:flex;gap:10px;padding-bottom:14px;min-width:max-content}
-.sig-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-width:200px;transition:border-color .2s;cursor:default}
+/* Filter bar */
+.filter-bar{display:flex;gap:16px;padding:8px 0 10px;flex-wrap:wrap;border-top:1px solid var(--border)}
+.fg{display:flex;align-items:center;gap:5px}
+.fg-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.fb{padding:3px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:11px;transition:.15s;white-space:nowrap}
+.fb:hover{border-color:var(--accent);color:var(--accent)}
+.fb.on{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.fb.on-wr{background:var(--green);border-color:var(--green);color:#000;font-weight:700}
+.fb.on-v{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:700}
+.fb.on-age{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:700}
+
+/* ─── Stats bar ─────────────────────────────────── */
+.stats{display:flex;background:var(--border);gap:1px}
+.st{flex:1;background:var(--s1);padding:9px 16px;display:flex;flex-direction:column;gap:2px}
+.st .k{font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+.st .v{font-size:17px;font-weight:800;color:var(--accent)}
+.st .v.gn{color:var(--green)}.st .v.rd{color:var(--red)}
+
+/* ─── Layout: two-col for heatmap + signals ──────── */
+.top-row{display:grid;grid-template-columns:340px 1fr;gap:12px;padding:14px 20px}
+@media(max-width:900px){.top-row{grid-template-columns:1fr}}
+
+/* ─── BTC Heatmap panel ─────────────────────────── */
+.heatmap-panel{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:10px}
+.panel-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.panel-title span{color:var(--accent);font-size:12px;font-weight:800}
+
+/* Direction gauge */
+.dir-gauge{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+.dir-label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+.dir-bar-wrap{height:8px;border-radius:4px;overflow:hidden;display:flex;margin-bottom:6px}
+.dir-up{background:linear-gradient(90deg,var(--green),rgba(0,230,118,.6));transition:width .5s}
+.dir-dn{background:linear-gradient(90deg,rgba(255,26,75,.6),var(--red));transition:width .5s}
+.dir-pcts{display:flex;justify-content:space-between;font-size:11px;font-weight:700}
+
+/* Heatmap rows */
+.hm-rows{display:flex;flex-direction:column;gap:2px}
+.hm-row{display:flex;align-items:center;gap:0;height:20px;position:relative;border-radius:2px;overflow:hidden}
+.hm-row.current-price{border:1px solid var(--accent);background:rgba(0,212,255,.06);height:22px}
+.hm-price-lbl{width:60px;font-size:9px;font-family:monospace;text-align:right;padding-right:6px;color:var(--muted);flex-shrink:0;z-index:1}
+.hm-row.current-price .hm-price-lbl{color:var(--accent);font-weight:700;font-size:10px}
+.hm-mid{width:1px;background:var(--border);flex-shrink:0;height:100%}
+.hm-ask-side{flex:1;display:flex;justify-content:flex-start;align-items:center;height:100%}
+.hm-bid-side{flex:1;display:flex;justify-content:flex-end;align-items:center;height:100%}
+.hm-ask-bar{height:70%;border-radius:0 2px 2px 0;background:linear-gradient(90deg,rgba(255,26,75,.7),rgba(255,26,75,.2));min-width:1px;transition:width .4s}
+.hm-bid-bar{height:70%;border-radius:2px 0 0 2px;background:linear-gradient(270deg,rgba(0,230,118,.7),rgba(0,230,118,.2));min-width:1px;transition:width .4s}
+.hm-row.big-liq .hm-ask-bar{filter:brightness(1.4)}
+.hm-row.big-liq .hm-bid-bar{filter:brightness(1.4)}
+.hm-liq-val{position:absolute;font-size:8px;color:var(--muted);right:4px;line-height:20px}
+.hm-legend{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px}
+.hm-legend span{display:flex;align-items:center;gap:4px}
+.hm-dot{width:6px;height:6px;border-radius:50%}
+
+/* ─── Signals panel ─────────────────────────────── */
+.signals-panel{display:flex;flex-direction:column;gap:10px}
+.signals-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.sig-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;min-width:190px;flex-shrink:0;transition:border-color .15s}
+.sig-card:hover{border-color:rgba(0,212,255,.3)}
 .sig-card.bull{border-left:3px solid var(--green)}
 .sig-card.bear{border-left:3px solid var(--red)}
 .sig-card.neut{border-left:3px solid var(--muted)}
-.sig-top{display:flex;justify-content:space-between;align-items:center}
-.sig-asset{font-weight:800;font-size:15px}
-.sig-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase}
-.sb-bull{background:rgba(0,230,118,.15);color:var(--green)}
-.sb-bear{background:rgba(255,23,68,.15);color:var(--red)}
-.sb-neut{background:rgba(78,90,122,.2);color:var(--muted)}
-.sig-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
-.sig-row span:last-child{font-weight:600;color:var(--text)}
-.sig-cvd-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:2px}
-.sig-cvd-fill{height:100%;border-radius:2px;transition:width .4s}
+.sig-asset{font-size:16px;font-weight:900}
+.sig-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase}
+.sb-bull{background:var(--green-dim);color:var(--green)}
+.sb-bear{background:var(--red-dim);color:var(--red)}
+.sb-neut{background:rgba(72,84,110,.2);color:var(--muted)}
+.sig-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted);margin-top:4px}
+.sig-row strong{font-size:11px;color:var(--text)}
+.bs-mini{height:3px;border-radius:2px;overflow:hidden;display:flex;margin-top:3px}
+.bs-mini-b{background:var(--green)}
+.bs-mini-s{background:var(--red)}
 
-/* ── Section headings ───────────────────────────────── */
-.section-hd{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+/* ─── Main area ─────────────────────────────────── */
+main{padding:0 20px 20px;display:flex;flex-direction:column;gap:18px}
+.sec-hd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.sec-hd::after{content:"";flex:1;height:1px;background:var(--border)}
 
-/* ── Main layout ────────────────────────────────────── */
-main{padding:18px 22px;display:flex;flex-direction:column;gap:24px}
-
-/* ── Table ──────────────────────────────────────────── */
-.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
-table{width:100%;border-collapse:collapse;min-width:1100px}
-thead th{padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
-thead th:hover,thead th.sorted{color:var(--accent)}
+/* ─── Table ─────────────────────────────────────── */
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--s1)}
+table{width:100%;border-collapse:collapse;min-width:1180px}
+thead th{padding:9px 11px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;transition:.12s}
+thead th:hover,thead th.srt{color:var(--accent)}
 tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
 tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:rgba(0,229,255,.03)}
-tbody td{padding:10px 12px;vertical-align:middle;white-space:nowrap}
-.empty{text-align:center;color:var(--muted);padding:40px !important}
+tbody tr:hover{background:rgba(0,212,255,.025)}
+tbody td{padding:9px 11px;vertical-align:middle;white-space:nowrap}
+.empty-row{text-align:center;color:var(--muted);padding:36px !important}
 
-/* Table cell types */
-.wpill{font-family:monospace;font-size:12px;color:var(--accent);background:rgba(0,229,255,.07);padding:2px 7px;border-radius:4px}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase}
-.b-day{background:rgba(255,214,0,.13);color:var(--yellow)}
-.b-swing{background:rgba(0,230,118,.11);color:var(--green)}
-.lev{font-weight:800;color:var(--yellow)}
-.wr-wrap{display:flex;align-items:center;gap:7px;min-width:100px}
+/* Cell styles */
+.wpill{font-family:'Courier New',monospace;font-size:11px;color:var(--accent);background:rgba(0,212,255,.07);padding:2px 7px;border-radius:4px;display:inline-flex;align-items:center;gap:5px}
+.age-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.age-new{background:var(--orange)}
+.age-old{background:var(--muted)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase}
+.b-day{background:rgba(255,193,7,.13);color:var(--yellow)}
+.b-swing{background:var(--green-dim);color:var(--green)}
+.lev{font-weight:900;color:var(--yellow);font-size:13px}
+.wr-wrap{display:flex;align-items:center;gap:6px;min-width:90px}
 .wr-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
-.wr-fill{height:100%;border-radius:2px}
+.wr-fill{height:100%;border-radius:2px;transition:width .4s}
 .wh{background:var(--green)}.wm{background:var(--yellow)}.wl{background:var(--red)}
-.side{padding:2px 7px;border-radius:3px;font-size:10px;font-weight:800;text-transform:uppercase}
-.long{background:rgba(0,230,118,.14);color:var(--green)}
-.short{background:rgba(255,23,68,.14);color:var(--red)}
+.side-tag{padding:2px 7px;border-radius:3px;font-size:9px;font-weight:900;text-transform:uppercase}
+.long{background:var(--green-dim);color:var(--green)}
+.short{background:var(--red-dim);color:var(--red)}
 .nopos{color:var(--muted);font-size:11px}
 .ppos{color:var(--green);font-weight:700}
 .pneg{color:var(--red);font-weight:700}
-.lnk{padding:3px 10px;border-radius:4px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:11px;text-decoration:none;transition:.15s;display:inline-block}
+.lnk{padding:3px 9px;border-radius:4px;border:1px solid var(--accent);color:var(--accent);font-size:10px;transition:.14s;display:inline-block}
 .lnk:hover{background:var(--accent);color:#000}
+.fl-bull{color:var(--green);font-weight:700;font-size:11px}
+.fl-bear{color:var(--red);font-weight:700;font-size:11px}
+.fl-neut{color:var(--muted);font-weight:700;font-size:11px}
+.cvd-val{font-weight:700;font-size:11px}
+.bs-bar-wrap{display:flex;align-items:center;gap:4px;min-width:110px}
+.bs-bar{flex:1;height:5px;border-radius:3px;overflow:hidden;display:flex}
+.bsb{background:var(--green)}.bss{background:var(--red)}
+.vol-cell{display:flex;flex-direction:column}
+.vol-w{font-weight:700;font-size:12px}
+.vol-m{font-size:9px;color:var(--muted)}
+.pair-tag{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:var(--purple);font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700}
 
-/* Flow signal cell */
-.flow-cell{display:flex;align-items:center;gap:6px}
-.flow-icon{font-size:13px}
-.flow-label{font-size:11px;font-weight:700}
-.fl-bull{color:var(--green)}.fl-bear{color:var(--red)}.fl-neut{color:var(--muted)}
+/* ─── Footprint cards ────────────────────────────── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:14px;transition:border-color .15s}
+.card:hover{border-color:rgba(0,212,255,.35)}
+.card.c-bull{border-top:2px solid var(--green)}
+.card.c-bear{border-top:2px solid var(--red)}
+.c-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.c-wallet{font-family:monospace;font-size:11px;color:var(--accent);display:flex;align-items:center;gap:5px}
+.c-meta{display:flex;gap:5px;align-items:center}
+.c-body{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.cs .k{font-size:8px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);margin-bottom:2px}
+.cs .v{font-size:13px;font-weight:700}
 
-/* CVD cell */
-.cvd-cell{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700}
-.cvd-arrow{font-size:14px}
+/* Footprint */
+.fp-wrap{border-top:1px solid var(--border);padding-top:10px;margin-top:2px}
+.fp-hd{display:flex;justify-content:space-between;font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:5px}
+.fp-rows{display:flex;flex-direction:column;gap:2px}
+.fp-row{display:flex;align-items:center;height:17px;border-radius:2px;overflow:hidden;position:relative}
+.fp-row.ib-b{background:rgba(0,230,118,.07)}
+.fp-row.ib-s{background:rgba(255,26,75,.07)}
+.fp-pl{width:48px;font-size:8px;font-family:monospace;color:var(--muted);text-align:right;padding-right:5px;flex-shrink:0}
+.fp-sell{height:100%;background:rgba(255,26,75,.55);border-radius:1px 0 0 1px;transition:width .35s}
+.fp-buy{height:100%;background:rgba(0,230,118,.55);border-radius:0 1px 1px 0;transition:width .35s}
+.fp-mid{width:1px;background:var(--border);flex-shrink:0;height:100%}
+.fp-half{flex:1;display:flex}
+.fp-half.r{justify-content:flex-start}
+.fp-half.l{justify-content:flex-end}
+.fp-leg{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:3px;padding:0 48px}
 
-/* Buy/Sell ratio bar */
-.bs-wrap{display:flex;align-items:center;gap:5px;min-width:120px}
-.bs-bar{flex:1;height:6px;border-radius:3px;overflow:hidden;display:flex}
-.bs-buy{background:var(--green)}
-.bs-sell{background:var(--red)}
-.bs-pct{font-size:10px;color:var(--muted)}
-
-/* Volume coin cell */
-.vol-cell{display:flex;flex-direction:column;gap:1px}
-.vol-whale{font-size:12px;font-weight:700}
-.vol-mkt{font-size:10px;color:var(--muted)}
-
-/* ── Footprint cards ─────────────────────────────────── */
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color .18s}
-.card:hover{border-color:rgba(0,229,255,.4)}
-.card.bull-card{border-top:2px solid var(--green)}
-.card.bear-card{border-top:2px solid var(--red)}
-.card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.card-wallet{font-family:monospace;font-size:12px;color:var(--accent)}
-.card-meta{display:flex;gap:6px;align-items:center}
-.card-body{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.cs .k{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
-.cs .v{font-size:14px;font-weight:700}
-
-/* Footprint chart */
-.fp-section{border-top:1px solid var(--border);padding-top:12px;margin-top:4px}
-.fp-title{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;justify-content:space-between}
-.fp-chart{display:flex;flex-direction:column;gap:2px}
-.fp-row{display:flex;align-items:center;gap:0;height:18px;border-radius:2px;position:relative;overflow:hidden}
-.fp-row.imb-buy{background:rgba(0,230,118,.07)}
-.fp-row.imb-sell{background:rgba(255,23,68,.07)}
-.fp-price{width:52px;font-size:9px;color:var(--muted);font-family:monospace;text-align:right;padding-right:6px;flex-shrink:0;z-index:1}
-.fp-sell-bar{height:100%;background:rgba(255,23,68,.55);border-radius:1px 0 0 1px;transition:width .3s}
-.fp-buy-bar{height:100%;background:rgba(0,230,118,.55);border-radius:0 1px 1px 0;transition:width .3s}
-.fp-center{width:1px;background:var(--border);flex-shrink:0;height:100%}
-.fp-vols{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:3px;padding:0 52px}
-
-/* Order flow summary in card */
-.of-section{border-top:1px solid var(--border);padding-top:10px;margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-.of-item .k{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+/* Order flow in card */
+.of-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;border-top:1px solid var(--border);padding-top:9px;margin-top:9px}
+.of-item .k{font-size:8px;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
 .of-item .v{font-size:12px;font-weight:700}
+.c-ftr{margin-top:9px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:10px}
 
-.card-ftr{margin-top:10px;padding-top:9px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:11px}
+/* ─── Footer ─────────────────────────────────────── */
+footer{text-align:center;padding:14px;color:var(--muted);font-size:10px;border-top:1px solid var(--border)}
 
-/* ── Footer ─────────────────────────────────────────── */
-footer{text-align:center;padding:16px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:8px}
-
-@media(max-width:640px){
-  .stats-bar{flex-wrap:wrap}
-  .stat{min-width:50%}
-  main{padding:12px 14px}
-  header{padding:10px 14px}
+@media(max-width:600px){
+  .stats{flex-wrap:wrap}.st{min-width:50%}
+  main{padding:0 12px 16px}
+  .top-row{padding:12px}
+  header{padding:0 12px}
 }
 </style>
 </head>
 <body>
 
-<!-- ── Header ─────────────────────────────────────────── -->
+<!-- ─── Header ────────────────────────────────────────── -->
 <header>
-  <div class="logo">🐋 WhaleTracker</div>
-  <div class="subtitle">Footprint &amp; Order Flow · Leverage · High Volume</div>
-  <div class="live"><span class="dot"></span>LIVE</div>
-  <div class="hdr-filters">
-    <div class="filter-group">
-      <span class="filter-label">Style</span>
-      <button class="fbtn active" data-f="all">All</button>
-      <button class="fbtn" data-f="day">Day</button>
-      <button class="fbtn" data-f="swing">Swing</button>
+  <div class="hdr-top">
+    <div class="logo">🐋 WhaleTracker</div>
+    <span class="hl-badge">HYPERLIQUID</span>
+    <div class="subtitle">Pro leverage traders · Footprint &amp; Order Flow · Liquidity Heatmap</div>
+    <div class="live-pill"><span class="dot"></span>LIVE</div>
+  </div>
+  <div class="filter-bar">
+    <div class="fg">
+      <span class="fg-label">Style</span>
+      <button class="fb on" data-f="all">All</button>
+      <button class="fb" data-f="day">Day</button>
+      <button class="fb" data-f="swing">Swing</button>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Mkt Vol</span>
-      <button class="fbtn vbtn active" data-v="0">Any</button>
-      <button class="fbtn vbtn" data-v="1000000000">$1B+</button>
-      <button class="fbtn vbtn" data-v="5000000000">$5B+</button>
-      <button class="fbtn vbtn" data-v="10000000000">$10B+</button>
+    <div class="fg">
+      <span class="fg-label">Win Rate</span>
+      <button class="fb on-wr on" data-wr="0">Any</button>
+      <button class="fb" data-wr="60">60%+</button>
+      <button class="fb" data-wr="70">70%+</button>
+      <button class="fb" data-wr="80">80%+</button>
+    </div>
+    <div class="fg">
+      <span class="fg-label">Mkt Vol</span>
+      <button class="fb on-v on" data-v="0">Any</button>
+      <button class="fb" data-v="1000000000">$1B+</button>
+      <button class="fb" data-v="5000000000">$5B+</button>
+      <button class="fb" data-v="10000000000">$10B+</button>
+    </div>
+    <div class="fg">
+      <span class="fg-label">Wallet Age</span>
+      <button class="fb on-age on" data-age="all">All</button>
+      <button class="fb" data-age="fresh">Fresh &lt;30d</button>
+      <button class="fb" data-age="est">Established</button>
     </div>
   </div>
 </header>
 
-<!-- ── Stats bar ──────────────────────────────────────── -->
-<section class="stats-bar">
-  <div class="stat"><span class="lbl">Whales Tracked</span><span class="val" id="s-whales">—</span></div>
-  <div class="stat"><span class="lbl">Avg Win Rate</span><span class="val" id="s-wr">—</span></div>
-  <div class="stat"><span class="lbl">Total 24h Vol</span><span class="val" id="s-vol">—</span></div>
-  <div class="stat"><span class="lbl">Open Positions</span><span class="val" id="s-pos">—</span></div>
-  <div class="stat"><span class="lbl">Net Market CVD</span><span class="val" id="s-cvd">—</span></div>
-</section>
-
-<!-- ── Order Flow Signals strip ──────────────────────── -->
-<div class="signals-wrap">
-  <div class="section-hd" style="margin-bottom:8px">&#9889; Live Order Flow Signals</div>
-  <div class="signals-inner" id="sig-strip"></div>
+<!-- ─── Stats ─────────────────────────────────────────── -->
+<div class="stats">
+  <div class="st"><span class="k">Whales</span><span class="v" id="s-n">—</span></div>
+  <div class="st"><span class="k">Avg Win Rate</span><span class="v" id="s-wr">—</span></div>
+  <div class="st"><span class="k">24h Vol</span><span class="v" id="s-vol">—</span></div>
+  <div class="st"><span class="k">Open Pos</span><span class="v" id="s-pos">—</span></div>
+  <div class="st"><span class="k">Net CVD</span><span class="v" id="s-cvd">—</span></div>
+  <div class="st"><span class="k">BTC Direction</span><span class="v" id="s-dir">—</span></div>
 </div>
 
-<!-- ── Main ───────────────────────────────────────────── -->
+<!-- ─── Heatmap + Signals ─────────────────────────────── -->
+<div class="top-row">
+
+  <!-- BTC Liquidity Heatmap -->
+  <div class="heatmap-panel">
+    <div class="panel-title">
+      BTC Liquidity Heatmap
+      <span id="btc-price">$—</span>
+    </div>
+
+    <!-- Direction gauge -->
+    <div class="dir-gauge">
+      <div class="dir-label">Directional Probability (based on bid/ask liquidity)</div>
+      <div class="dir-bar-wrap">
+        <div class="dir-up" id="dir-up-bar" style="width:50%"></div>
+        <div class="dir-dn" id="dir-dn-bar" style="width:50%"></div>
+      </div>
+      <div class="dir-pcts">
+        <span style="color:var(--green)" id="dir-up-pct">&#9650; UP 50%</span>
+        <span style="color:var(--red)"   id="dir-dn-pct">&#9660; DOWN 50%</span>
+      </div>
+    </div>
+
+    <!-- Heatmap rows -->
+    <div class="hm-rows" id="hm-rows"></div>
+    <div class="hm-legend">
+      <span><span class="hm-dot" style="background:var(--green)"></span>Bid liquidity (support)</span>
+      <span><span class="hm-dot" style="background:var(--red)"></span>Ask liquidity (resistance)</span>
+    </div>
+  </div>
+
+  <!-- Order Flow Signals -->
+  <div class="signals-panel">
+    <div class="sec-hd" style="margin-bottom:0">&#9889; Live Order Flow Signals</div>
+    <div class="signals-scroll" id="sig-strip"></div>
+  </div>
+
+</div>
+
+<!-- ─── Main ──────────────────────────────────────────── -->
 <main>
 
   <!-- Table -->
   <div>
-    <div class="section-hd">Whale Leaderboard</div>
-    <div class="table-wrap">
+    <div class="sec-hd">Whale Leaderboard</div>
+    <div class="tw">
       <table>
         <thead>
           <tr>
             <th>#</th>
             <th data-col="wallet">Wallet</th>
             <th data-col="style">Style</th>
+            <th>Pair</th>
+            <th data-col="walletAge">Age</th>
             <th data-col="leverage">Lev</th>
             <th data-col="winRate">Win Rate</th>
             <th data-col="pnl24h">24h PnL</th>
             <th data-col="vol24h">Whale Vol</th>
             <th data-col="trades">Trades</th>
-            <th data-col="flowSignal">Flow Signal</th>
-            <th data-col="cvd">CVD Trend</th>
-            <th>Buy / Sell</th>
+            <th data-col="flowSignal">Flow</th>
+            <th data-col="cvd">CVD</th>
+            <th>Buy/Sell</th>
             <th>Position</th>
             <th>Hyperlink</th>
           </tr>
         </thead>
         <tbody id="tbody">
-          <tr><td colspan="13" class="empty">Loading…</td></tr>
+          <tr><td colspan="15" class="empty-row">Loading…</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- Footprint cards -->
+  <!-- Footprint position cards -->
   <div>
-    <div class="section-hd" id="cards-title">Open Positions + Footprint Chart</div>
+    <div class="sec-hd">Open Positions — Footprint Chart</div>
     <div class="cards-grid" id="cards"></div>
   </div>
 
 </main>
 
-<footer>Refreshes every 30s &nbsp;·&nbsp; Footprint = buy/sell volume per price level &nbsp;·&nbsp; CVD = Cumulative Volume Delta &nbsp;·&nbsp; Not financial advice</footer>
+<footer>
+  Refreshes every 30s &nbsp;·&nbsp;
+  Footprint = buy/sell aggressor volume per price level &nbsp;·&nbsp;
+  CVD = Cumulative Volume Delta &nbsp;·&nbsp;
+  Heatmap = resting bid/ask liquidity clusters &nbsp;·&nbsp;
+  Not financial advice
+</footer>
 
 <script>
-// ── Whale data with orderflow ─────────────────────────────────────────────────
-// mktVol = 24h market volume of the coin (for high-volume filter)
-// flow   = orderflow data: cvd, delta, buyVol, sellVol, signal, footprint
+// ──────────────────────────────────────────────────────────────────
+// DATA
+// walletAge: days since first trade (fresh = <30)
+// mktVol: coin 24h market volume for filter
+// flow: orderflow & footprint
+// ──────────────────────────────────────────────────────────────────
 var RAW = [
   {
     wallet:"0xA1b2\u20269F3c", addr:"0xA1b2C3d4E5f6A7B8C9D0E1F2A3B4C5D6E7F89F3c",
-    style:"day", leverage:25, winRate:.78, pnl24h:142300, vol24h:8400000, trades:34,
-    pos:{side:"long", asset:"BTC", size:"2.4 BTC", entry:68200, liq:61800},
-    mktVol:38000000000,
-    flow:{cvd:1240000, cvdTrend:"up", delta:340000, buyVol:4800000, sellVol:3600000, signal:"bull",
+    style:"day", pair:"BTC-PERP", walletAge:18, leverage:25, winRate:.78,
+    pnl24h:142300, vol24h:8400000, trades:34, mktVol:38000000000,
+    pos:{side:"long",asset:"BTC",size:"2.4 BTC",entry:68200,liq:61800},
+    flow:{cvd:1240000,cvdTrend:"up",delta:340000,buyVol:4800000,sellVol:3600000,signal:"bull",
       fp:[{p:68500,b:420,s:110},{p:68400,b:380,s:190},{p:68300,b:520,s:85},{p:68200,b:290,s:340},{p:68100,b:180,s:95}]}
   },
   {
     wallet:"0xB3f4\u20262A1d", addr:"0xB3f4D5e6F7A8B9C0D1E2F3A4B5C6D7E8F9A02A1d",
-    style:"swing", leverage:10, winRate:.84, pnl24h:89700, vol24h:3200000, trades:6,
-    pos:{side:"long", asset:"ETH", size:"48 ETH", entry:3420, liq:2990},
-    mktVol:19000000000,
-    flow:{cvd:890000, cvdTrend:"up", delta:210000, buyVol:2100000, sellVol:1100000, signal:"bull",
+    style:"swing", pair:"ETH-PERP", walletAge:91, leverage:10, winRate:.84,
+    pnl24h:89700, vol24h:3200000, trades:6, mktVol:19000000000,
+    pos:{side:"long",asset:"ETH",size:"48 ETH",entry:3420,liq:2990},
+    flow:{cvd:890000,cvdTrend:"up",delta:210000,buyVol:2100000,sellVol:1100000,signal:"bull",
       fp:[{p:3440,b:310,s:80},{p:3430,b:290,s:130},{p:3420,b:440,s:70},{p:3410,b:200,s:280},{p:3400,b:160,s:85}]}
   },
   {
     wallet:"0xC5d6\u20268B7e", addr:"0xC5d6E7f8A9B0C1D2E3F4A5B6C7D8E9F0A1B28B7e",
-    style:"day", leverage:50, winRate:.71, pnl24h:-23100, vol24h:12700000, trades:61,
-    pos:{side:"short", asset:"SOL", size:"3200 SOL", entry:162, liq:181},
-    mktVol:4200000000,
-    flow:{cvd:-540000, cvdTrend:"down", delta:-280000, buyVol:5900000, sellVol:6800000, signal:"bear",
+    style:"day", pair:"SOL-PERP", walletAge:11, leverage:50, winRate:.71,
+    pnl24h:-23100, vol24h:12700000, trades:61, mktVol:4200000000,
+    pos:{side:"short",asset:"SOL",size:"3200 SOL",entry:162,liq:181},
+    flow:{cvd:-540000,cvdTrend:"down",delta:-280000,buyVol:5900000,sellVol:6800000,signal:"bear",
       fp:[{p:163,b:120,s:410},{p:162,b:90,s:380},{p:161,b:210,s:140},{p:160,b:85,s:330},{p:159,b:140,s:290}]}
   },
   {
     wallet:"0xD7e8\u20264C3f", addr:"0xD7e8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C44C3f",
-    style:"swing", leverage:15, winRate:.91, pnl24h:311000, vol24h:6900000, trades:9,
-    pos:{side:"long", asset:"BTC", size:"5.1 BTC", entry:66900, liq:59200},
-    mktVol:38000000000,
-    flow:{cvd:2100000, cvdTrend:"up", delta:580000, buyVol:4200000, sellVol:2700000, signal:"bull",
+    style:"swing", pair:"BTC-PERP", walletAge:210, leverage:15, winRate:.91,
+    pnl24h:311000, vol24h:6900000, trades:9, mktVol:38000000000,
+    pos:{side:"long",asset:"BTC",size:"5.1 BTC",entry:66900,liq:59200},
+    flow:{cvd:2100000,cvdTrend:"up",delta:580000,buyVol:4200000,sellVol:2700000,signal:"bull",
       fp:[{p:67200,b:510,s:95},{p:67100,b:460,s:150},{p:67000,b:620,s:80},{p:66900,b:390,s:200},{p:66800,b:280,s:110}]}
   },
   {
     wallet:"0xE9f0\u20266D5a", addr:"0xE9f0A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D66D5a",
-    style:"day", leverage:20, winRate:.76, pnl24h:54200, vol24h:5100000, trades:28,
-    pos:null, mktVol:19000000000,
-    flow:{cvd:120000, cvdTrend:"flat", delta:30000, buyVol:2600000, sellVol:2500000, signal:"neut",
+    style:"day", pair:"ETH-PERP", walletAge:44, leverage:20, winRate:.76,
+    pnl24h:54200, vol24h:5100000, trades:28, mktVol:19000000000,
+    pos:null,
+    flow:{cvd:120000,cvdTrend:"flat",delta:30000,buyVol:2600000,sellVol:2500000,signal:"neut",
       fp:[{p:3480,b:200,s:190},{p:3470,b:180,s:175},{p:3460,b:195,s:185},{p:3450,b:160,s:170},{p:3440,b:210,s:200}]}
   },
   {
     wallet:"0xF1a2\u20260E7b", addr:"0xF1a2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E80E7b",
-    style:"swing", leverage:8, winRate:.88, pnl24h:198400, vol24h:2800000, trades:4,
-    pos:{side:"short", asset:"ETH", size:"120 ETH", entry:3550, liq:3890},
-    mktVol:19000000000,
-    flow:{cvd:-780000, cvdTrend:"down", delta:-310000, buyVol:1200000, sellVol:1600000, signal:"bear",
+    style:"swing", pair:"ETH-PERP", walletAge:180, leverage:8, winRate:.88,
+    pnl24h:198400, vol24h:2800000, trades:4, mktVol:19000000000,
+    pos:{side:"short",asset:"ETH",size:"120 ETH",entry:3550,liq:3890},
+    flow:{cvd:-780000,cvdTrend:"down",delta:-310000,buyVol:1200000,sellVol:1600000,signal:"bear",
       fp:[{p:3560,b:80,s:360},{p:3550,b:110,s:400},{p:3540,b:90,s:280},{p:3530,b:170,s:210},{p:3520,b:140,s:320}]}
   },
   {
     wallet:"0xA3b4\u20261F8c", addr:"0xA3b4C5D6E7F8A9B0C1D2E3F4A5B6C7D8E9F01F8c",
-    style:"day", leverage:30, winRate:.69, pnl24h:78900, vol24h:9300000, trades:47,
-    pos:{side:"long", asset:"SOL", size:"12K SOL", entry:158, liq:141},
-    mktVol:4200000000,
-    flow:{cvd:430000, cvdTrend:"up", delta:140000, buyVol:5100000, sellVol:4200000, signal:"bull",
+    style:"day", pair:"SOL-PERP", walletAge:7, leverage:30, winRate:.69,
+    pnl24h:78900, vol24h:9300000, trades:47, mktVol:4200000000,
+    pos:{side:"long",asset:"SOL",size:"12K SOL",entry:158,liq:141},
+    flow:{cvd:430000,cvdTrend:"up",delta:140000,buyVol:5100000,sellVol:4200000,signal:"bull",
       fp:[{p:159,b:330,s:120},{p:158,b:410,s:90},{p:157,b:280,s:200},{p:156,b:190,s:140},{p:155,b:240,s:110}]}
   },
   {
     wallet:"0xB5c6\u20263A2d", addr:"0xB5c6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A23A2d",
-    style:"swing", leverage:12, winRate:.82, pnl24h:-11200, vol24h:1700000, trades:3,
-    pos:{side:"short", asset:"BTC", size:"1.8 BTC", entry:69100, liq:75800},
-    mktVol:38000000000,
-    flow:{cvd:-320000, cvdTrend:"down", delta:-90000, buyVol:800000, sellVol:900000, signal:"bear",
+    style:"swing", pair:"BTC-PERP", walletAge:365, leverage:12, winRate:.82,
+    pnl24h:-11200, vol24h:1700000, trades:3, mktVol:38000000000,
+    pos:{side:"short",asset:"BTC",size:"1.8 BTC",entry:69100,liq:75800},
+    flow:{cvd:-320000,cvdTrend:"down",delta:-90000,buyVol:800000,sellVol:900000,signal:"bear",
       fp:[{p:69200,b:90,s:310},{p:69100,b:110,s:350},{p:69000,b:200,s:180},{p:68900,b:160,s:240},{p:68800,b:130,s:190}]}
   },
   {
     wallet:"0xC7d8\u20265B4e", addr:"0xC7d8E9F0A1B2C3D4E5F6A7B8C9D0E1F2A3B45B4e",
-    style:"day", leverage:40, winRate:.73, pnl24h:66100, vol24h:7600000, trades:52,
-    pos:{side:"long", asset:"AVAX", size:"8K AVAX", entry:38.4, liq:31.2},
-    mktVol:1300000000,
-    flow:{cvd:190000, cvdTrend:"up", delta:80000, buyVol:4100000, sellVol:3500000, signal:"bull",
+    style:"day", pair:"AVAX-PERP", walletAge:22, leverage:40, winRate:.73,
+    pnl24h:66100, vol24h:7600000, trades:52, mktVol:1300000000,
+    pos:{side:"long",asset:"AVAX",size:"8K AVAX",entry:38.4,liq:31.2},
+    flow:{cvd:190000,cvdTrend:"up",delta:80000,buyVol:4100000,sellVol:3500000,signal:"bull",
       fp:[{p:38.8,b:280,s:100},{p:38.6,b:310,s:130},{p:38.4,b:250,s:95},{p:38.2,b:180,s:220},{p:38.0,b:140,s:90}]}
   },
   {
     wallet:"0xD9e0\u20267C6f", addr:"0xD9e0F1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C67C6f",
-    style:"swing", leverage:6, winRate:.93, pnl24h:428000, vol24h:4400000, trades:5,
-    pos:{side:"long", asset:"BTC", size:"7.3 BTC", entry:65400, liq:58100},
-    mktVol:38000000000,
-    flow:{cvd:3400000, cvdTrend:"up", delta:920000, buyVol:2800000, sellVol:1600000, signal:"bull",
+    style:"swing", pair:"BTC-PERP", walletAge:520, leverage:6, winRate:.93,
+    pnl24h:428000, vol24h:4400000, trades:5, mktVol:38000000000,
+    pos:{side:"long",asset:"BTC",size:"7.3 BTC",entry:65400,liq:58100},
+    flow:{cvd:3400000,cvdTrend:"up",delta:920000,buyVol:2800000,sellVol:1600000,signal:"bull",
       fp:[{p:65700,b:580,s:70},{p:65600,b:510,s:90},{p:65500,b:640,s:60},{p:65400,b:480,s:110},{p:65300,b:350,s:80}]}
   },
+  {
+    wallet:"0xE1f2\u20269D0a", addr:"0xE1f2A3B4C5D6E7F8A9B0C1D2E3F4A5B6C7D89D0a",
+    style:"day", pair:"ARB-PERP", walletAge:14, leverage:35, winRate:.74,
+    pnl24h:91400, vol24h:6200000, trades:39, mktVol:820000000,
+    pos:{side:"long",asset:"ARB",size:"450K ARB",entry:1.18,liq:0.98},
+    flow:{cvd:310000,cvdTrend:"up",delta:120000,buyVol:3400000,sellVol:2800000,signal:"bull",
+      fp:[{p:1.21,b:220,s:90},{p:1.20,b:300,s:110},{p:1.19,b:260,s:80},{p:1.18,b:190,s:240},{p:1.17,b:150,s:95}]}
+  },
+  {
+    wallet:"0xF3a4\u20260E1b", addr:"0xF3a4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E00E1b",
+    style:"swing", pair:"OP-PERP", walletAge:60, leverage:8, winRate:.79,
+    pnl24h:44600, vol24h:2100000, trades:7, mktVol:980000000,
+    pos:{side:"short",asset:"OP",size:"800K OP",entry:2.41,liq:2.74},
+    flow:{cvd:-210000,cvdTrend:"down",delta:-85000,buyVol:980000,sellVol:1120000,signal:"bear",
+      fp:[{p:2.44,b:95,s:290},{p:2.43,b:110,s:310},{p:2.42,b:180,s:190},{p:2.41,b:140,s:260},{p:2.40,b:120,s:200}]}
+  },
+];
+
+// ─── BTC Heatmap data ─────────────────────────────────────────────
+var BTC_PRICE = 68450;
+var HM_BASE = [
+  // asks (above price) — resistance zones
+  {p:71000, liq:52000000, side:"ask", big:true},
+  {p:70000, liq:38000000, side:"ask", big:true},
+  {p:69500, liq:18000000, side:"ask"},
+  {p:69000, liq:29000000, side:"ask"},
+  {p:68800, liq:11000000, side:"ask"},
+  {p:68600, liq: 7000000, side:"ask"},
+  // current price
+  {p:68450, liq:0, side:"current"},
+  // bids (below price) — support zones
+  {p:68200, liq: 9000000, side:"bid"},
+  {p:68000, liq:24000000, side:"bid"},
+  {p:67500, liq:14000000, side:"bid"},
+  {p:67000, liq:41000000, side:"bid", big:true},
+  {p:66000, liq:19000000, side:"bid"},
+  {p:65000, liq:31000000, side:"bid", big:true},
 ];
 
 var HL = "https://app.hyperliquid.xyz/explorer/address/";
 
-// ── Formatters ────────────────────────────────────────────────────────────────
-function fUsd(n,sign){
+// ─── Formatters ───────────────────────────────────────────────────
+function fM(n){
   var a=Math.abs(n);
-  var s=a>=1000000000?"$"+(a/1000000000).toFixed(1)+"B":a>=1000000?"$"+(a/1000000).toFixed(1)+"M":a>=1000?"$"+(a/1000).toFixed(0)+"K":"$"+a.toFixed(0);
-  if(sign===false)return s;
-  return (n<0?"\u2212":"+")+s;
+  if(a>=1000000000)return "$"+(a/1000000000).toFixed(1)+"B";
+  if(a>=1000000)return "$"+(a/1000000).toFixed(1)+"M";
+  if(a>=1000)return "$"+(a/1000).toFixed(0)+"K";
+  return "$"+a.toFixed(0);
 }
-function fVol(n){return fUsd(n,false);}
+function fSign(n){return (n>=0?"+":"\u2212")+fM(Math.abs(n));}
 function fPct(n){return (n*100).toFixed(1)+"%";}
 function fLev(n){return n+"\u00d7";}
-function fDelta(n){return (n>=0?"+":"")+fUsd(n,false);}
 function wrCls(r){return r>=.80?"wh":r>=.65?"wm":"wl";}
 
-// ── State ─────────────────────────────────────────────────────────────────────
-var whales=[], styleFilter="all", volFilter=0, sortCol="winRate", sortDir=-1;
+// ─── State ────────────────────────────────────────────────────────
+var whales=[], fStyle="all", fWR=0, fVol=0, fAge="all", sortCol="winRate", sortDir=-1;
 
-// ── Jitter (simulate live ticks) ──────────────────────────────────────────────
+// ─── Jitter ───────────────────────────────────────────────────────
 function jitter(w){
   var f=w.flow;
-  var j=0.93+Math.random()*0.14;
-  var newBuy=Math.round(f.buyVol*j);
-  var newSell=Math.round(f.sellVol*(0.95+Math.random()*0.1));
-  var newDelta=newBuy-newSell;
-  var newCvd=Math.round(f.cvd+(newDelta*0.05));
-  // jitter footprint
-  var newFp=f.fp.map(function(r){
-    return {p:r.p, b:Math.round(r.b*(0.88+Math.random()*0.24)), s:Math.round(r.s*(0.88+Math.random()*0.24))};
+  var nb=Math.round(f.buyVol*(0.9+Math.random()*0.2));
+  var ns=Math.round(f.sellVol*(0.9+Math.random()*0.2));
+  var nd=nb-ns;
+  var nc=Math.round(f.cvd+(nd*0.04));
+  var nfp=f.fp.map(function(r){
+    return {p:r.p,b:Math.round(r.b*(0.85+Math.random()*0.3)),s:Math.round(r.s*(0.85+Math.random()*0.3))};
   });
   return Object.assign({},w,{
-    pnl24h: Math.round(w.pnl24h*(0.96+Math.random()*0.08)),
-    vol24h:  Math.round(w.vol24h*(0.98+Math.random()*0.04)),
-    flow: Object.assign({},f,{cvd:newCvd, delta:newDelta, buyVol:newBuy, sellVol:newSell, fp:newFp}),
-    // derived for sorting
-    flowSignal: f.signal==="bull"?2:f.signal==="bear"?0:1,
-    cvd: newCvd
+    pnl24h:Math.round(w.pnl24h*(0.97+Math.random()*0.06)),
+    vol24h:Math.round(w.vol24h*(0.99+Math.random()*0.02)),
+    flowSignal:f.signal==="bull"?2:f.signal==="bear"?0:1,
+    cvd:nc,
+    flow:Object.assign({},f,{cvd:nc,delta:nd,buyVol:nb,sellVol:ns,fp:nfp})
   });
 }
 
-// ── Footprint SVG ─────────────────────────────────────────────────────────────
-function fpHTML(fp){
-  var maxV=0;
-  for(var i=0;i<fp.length;i++){if(fp[i].b>maxV)maxV=fp[i].b;if(fp[i].s>maxV)maxV=fp[i].s;}
-  if(maxV===0)maxV=1;
-  var HALF=80; // px each side
-  var rows=fp.map(function(r){
-    var bw=Math.round((r.b/maxV)*HALF);
-    var sw=Math.round((r.s/maxV)*HALF);
-    var imb=r.b>r.s*2?"imb-buy":r.s>r.b*2?"imb-sell":"";
-    return '<div class="fp-row '+imb+'">'
-      +'<div class="fp-price">'+r.p.toLocaleString()+'</div>'
-      +'<div style="width:'+HALF+'px;display:flex;justify-content:flex-end">'
-        +'<div class="fp-sell-bar" style="width:'+sw+'px"></div>'
-      +'</div>'
-      +'<div class="fp-center"></div>'
-      +'<div style="width:'+HALF+'px">'
-        +'<div class="fp-buy-bar" style="width:'+bw+'px"></div>'
-      +'</div>'
-      +'</div>';
-  }).join("");
-  return '<div class="fp-chart">'+rows+'</div>'
-    +'<div class="fp-vols"><span style="color:var(--red)">&#9664; Sell</span><span style="color:var(--green)">Buy &#9654;</span></div>';
+// ─── Heatmap ──────────────────────────────────────────────────────
+function renderHeatmap(){
+  var rows=HM_BASE;
+  var maxLiq=0;
+  for(var i=0;i<rows.length;i++)if(rows[i].liq>maxLiq)maxLiq=rows[i].liq;
+  if(maxLiq===0)maxLiq=1;
+  var HALF=110; // px
+  var bidTotal=0, askTotal=0;
+  for(var j=0;j<rows.length;j++){
+    if(rows[j].side==="bid")bidTotal+=rows[j].liq;
+    if(rows[j].side==="ask")askTotal+=rows[j].liq;
+  }
+  var total=bidTotal+askTotal;
+  var upPct=total>0?Math.round(bidTotal/total*100):50;
+  var dnPct=100-upPct;
+  // update direction gauge
+  document.getElementById("dir-up-bar").style.width=upPct+"%";
+  document.getElementById("dir-dn-bar").style.width=dnPct+"%";
+  document.getElementById("dir-up-pct").textContent="\u25b2 UP "+upPct+"%";
+  document.getElementById("dir-dn-pct").textContent="\u25bc DOWN "+dnPct+"%";
+  document.getElementById("btc-price").textContent="$"+BTC_PRICE.toLocaleString();
+  document.getElementById("s-dir").textContent=(upPct>dnPct?"&#9650; ":"\u25bc ")+(upPct>dnPct?upPct:dnPct)+"%";
+  document.getElementById("s-dir").className="v "+(upPct>dnPct?"gn":"rd");
+  // rows
+  var html="";
+  for(var k=0;k<rows.length;k++){
+    var r=rows[k];
+    if(r.side==="current"){
+      html+='<div class="hm-row current-price"><div class="hm-price-lbl">$'+r.p.toLocaleString()+'</div><div style="flex:1;text-align:center;font-size:9px;color:var(--accent);font-weight:700">&#9664; CURRENT PRICE &#9654;</div></div>';
+      continue;
+    }
+    var barW=Math.round((r.liq/maxLiq)*HALF);
+    var bigCls=r.big?" big-liq":"";
+    if(r.side==="ask"){
+      html+='<div class="hm-row'+bigCls+'">'
+        +'<div class="hm-price-lbl">$'+r.p.toLocaleString()+'</div>'
+        +'<div class="hm-bid-side"></div>'
+        +'<div class="hm-mid"></div>'
+        +'<div class="hm-ask-side"><div class="hm-ask-bar" style="width:'+barW+'px"></div></div>'
+        +(r.big?'<div class="hm-liq-val">'+fM(r.liq)+'</div>':'')
+        +'</div>';
+    } else {
+      html+='<div class="hm-row'+bigCls+'">'
+        +'<div class="hm-price-lbl">$'+r.p.toLocaleString()+'</div>'
+        +'<div class="hm-bid-side"><div class="hm-bid-bar" style="width:'+barW+'px"></div></div>'
+        +'<div class="hm-mid"></div>'
+        +'<div class="hm-ask-side"></div>'
+        +(r.big?'<div class="hm-liq-val">'+fM(r.liq)+'</div>':'')
+        +'</div>';
+    }
+  }
+  document.getElementById("hm-rows").innerHTML=html;
 }
 
-// ── Render signals strip ──────────────────────────────────────────────────────
+// ─── Signals strip ────────────────────────────────────────────────
 function renderSignals(data){
   var strip=document.getElementById("sig-strip");
   var active=data.filter(function(w){return w.pos;});
-  if(!active.length){strip.innerHTML='<span style="color:var(--muted);font-size:12px">No active positions</span>';return;}
+  if(!active.length){strip.innerHTML='<span style="color:var(--muted);font-size:11px">No active positions in filtered set.</span>';return;}
   strip.innerHTML=active.map(function(w){
     var f=w.flow;
-    var p=w.pos;
     var sc=f.signal==="bull"?"bull":f.signal==="bear"?"bear":"neut";
     var bc=f.signal==="bull"?"sb-bull":f.signal==="bear"?"sb-bear":"sb-neut";
-    var label=f.signal==="bull"?"Strong Buy Flow":f.signal==="bear"?"Strong Sell Flow":"Neutral Flow";
+    var label=f.signal==="bull"?"Buy Flow":f.signal==="bear"?"Sell Flow":"Neutral";
     var bPct=Math.round(f.buyVol/(f.buyVol+f.sellVol)*100);
-    var cvdAbs=Math.abs(f.cvd);
-    var cvdPct=Math.min(100,Math.round(cvdAbs/5000000*100));
-    var cvdColor=f.cvdTrend==="up"?"var(--green)":f.cvdTrend==="down"?"var(--red)":"var(--muted)";
+    var dColor=f.delta>=0?"var(--green)":"var(--red)";
     return '<div class="sig-card '+sc+'">'
-      +'<div class="sig-top">'
-        +'<span class="sig-asset">'+p.asset+'</span>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+        +'<span class="sig-asset">'+w.pos.asset+'</span>'
         +'<span class="sig-badge '+bc+'">'+label+'</span>'
       +'</div>'
-      +'<div class="sig-row"><span>CVD</span><span style="color:'+cvdColor+'">'+fDelta(f.cvd)+'</span></div>'
-      +'<div class="sig-cvd-bar"><div class="sig-cvd-fill" style="width:'+cvdPct+'%;background:'+cvdColor+'"></div></div>'
-      +'<div class="sig-row"><span>Delta</span><span style="color:'+(f.delta>=0?"var(--green)":"var(--red)")+'">'+fDelta(f.delta)+'</span></div>'
-      +'<div class="sig-row"><span>Buy/Sell</span><span>'+bPct+'% / '+(100-bPct)+'%</span></div>'
-      +'<div class="sig-row"><span>Side</span><span class="side '+p.side+'">'+p.side.toUpperCase()+'</span></div>'
+      +'<span class="pair-tag" style="margin-bottom:6px;display:inline-block">'+w.pair+'</span>'
+      +'<div class="sig-row"><span>CVD</span><strong style="color:'+(f.cvdTrend==="up"?"var(--green)":f.cvdTrend==="down"?"var(--red)":"var(--muted)")+'">'+fSign(f.cvd)+'</strong></div>'
+      +'<div class="sig-row"><span>Delta</span><strong style="color:'+dColor+'">'+fSign(f.delta)+'</strong></div>'
+      +'<div class="sig-row"><span>Buy/Sell</span><strong>'+bPct+'% / '+(100-bPct)+'%</strong></div>'
+      +'<div class="bs-mini" style="margin-top:5px">'
+        +'<div class="bs-mini-b" style="width:'+bPct+'%;height:100%"></div>'
+        +'<div class="bs-mini-s" style="width:'+(100-bPct)+'%;height:100%"></div>'
+      +'</div>'
+      +'<div class="sig-row" style="margin-top:5px"><span>Side</span><strong><span class="side-tag '+w.pos.side+'">'+w.pos.side.toUpperCase()+'</span></strong></div>'
     +'</div>';
   }).join("");
 }
 
-// ── Render table ──────────────────────────────────────────────────────────────
+// ─── Table ────────────────────────────────────────────────────────
 function renderTable(data){
-  var tbody=document.getElementById("tbody");
-  if(!data.length){tbody.innerHTML='<tr><td colspan="13" class="empty">No whales match filters.</td></tr>';return;}
-  tbody.innerHTML=data.map(function(w,i){
+  var tb=document.getElementById("tbody");
+  if(!data.length){tb.innerHTML='<tr><td colspan="15" class="empty-row">No whales match current filters.</td></tr>';return;}
+  tb.innerHTML=data.map(function(w,i){
     var f=w.flow;
-    var pc=w.pnl24h>=0?"ppos":"pneg";
-    var sc=w.style==="day"?"b-day":"b-swing";
     var bPct=Math.round(f.buyVol/(f.buyVol+f.sellVol)*100);
     var sPct=100-bPct;
-    // flow signal
-    var flowHtml,flowColor;
-    if(f.signal==="bull"){flowHtml="&#9650; Strong Buy";flowColor="fl-bull";}
-    else if(f.signal==="bear"){flowHtml="&#9660; Strong Sell";flowColor="fl-bear";}
-    else{flowHtml="&#9654; Neutral";flowColor="fl-neut";}
-    // CVD
-    var cvdArrow=f.cvdTrend==="up"?"\u2191":f.cvdTrend==="down"?"\u2193":"\u2192";
+    var ageFresh=w.walletAge<=30;
+    var ageLabel=ageFresh?"<"+w.walletAge+"d":w.walletAge+"d";
+    var flowHtml=f.signal==="bull"?'<span class="fl-bull">&#9650; Buy</span>':f.signal==="bear"?'<span class="fl-bear">&#9660; Sell</span>':'<span class="fl-neut">&#9654; Neut</span>';
     var cvdColor=f.cvdTrend==="up"?"var(--green)":f.cvdTrend==="down"?"var(--red)":"var(--muted)";
-    // position
     var posHtml=w.pos
-      ?'<div style="display:flex;align-items:center;gap:5px"><span class="side '+w.pos.side+'">'+w.pos.side.toUpperCase()+'</span><span style="font-size:11px">'+w.pos.asset+' '+w.pos.size+'</span></div>'
+      ?'<div style="display:flex;align-items:center;gap:4px"><span class="side-tag '+w.pos.side+'">'+w.pos.side.toUpperCase()+'</span><span style="font-size:10px">'+w.pos.asset+' '+w.pos.size+'</span></div>'
       :'<span class="nopos">— flat</span>';
     return '<tr>'
-      +'<td>'+( i+1)+'</td>'
-      +'<td><span class="wpill">'+w.wallet+'</span></td>'
-      +'<td><span class="badge '+sc+'">'+w.style+'</span></td>'
+      +'<td style="color:var(--muted)">'+( i+1)+'</td>'
+      +'<td><span class="wpill"><span class="age-dot '+(ageFresh?"age-new":"age-old")+'"></span>'+w.wallet+'</span></td>'
+      +'<td><span class="badge '+(w.style==="day"?"b-day":"b-swing")+'">'+w.style+'</span></td>'
+      +'<td><span class="pair-tag">'+w.pair+'</span></td>'
+      +'<td style="color:'+(ageFresh?"var(--orange)":"var(--muted)")+'">'+ageLabel+'</td>'
       +'<td><span class="lev">'+fLev(w.leverage)+'</span></td>'
       +'<td><div class="wr-wrap"><span>'+fPct(w.winRate)+'</span><div class="wr-bar"><div class="wr-fill '+wrCls(w.winRate)+'" style="width:'+(w.winRate*100)+'%"></div></div></div></td>'
-      +'<td class="'+pc+'">'+fUsd(w.pnl24h)+'</td>'
-      +'<td><div class="vol-cell"><span class="vol-whale">'+fVol(w.vol24h)+'</span><span class="vol-mkt">mkt '+fVol(w.mktVol)+'</span></div></td>'
+      +'<td class="'+(w.pnl24h>=0?"ppos":"pneg")+'">'+fSign(w.pnl24h)+'</td>'
+      +'<td><div class="vol-cell"><span class="vol-w">'+fM(w.vol24h)+'</span><span class="vol-m">mkt '+fM(w.mktVol)+'</span></div></td>'
       +'<td>'+w.trades+'</td>'
-      +'<td><span class="flow-label '+flowColor+'">'+flowHtml+'</span></td>'
-      +'<td><span class="cvd-cell" style="color:'+cvdColor+'"><span class="cvd-arrow">'+cvdArrow+'</span>'+fDelta(f.cvd)+'</span></td>'
-      +'<td><div class="bs-wrap"><span class="bs-pct" style="color:var(--green)">'+bPct+'%</span><div class="bs-bar" style="flex:1"><div class="bs-buy" style="width:'+bPct+'%;height:6px;display:inline-block"></div><div class="bs-sell" style="width:'+sPct+'%;height:6px;display:inline-block"></div></div><span class="bs-pct" style="color:var(--red)">'+sPct+'%</span></div></td>'
+      +'<td>'+flowHtml+'</td>'
+      +'<td><span class="cvd-val" style="color:'+cvdColor+'">'+fSign(f.cvd)+'</span></td>'
+      +'<td><div class="bs-bar-wrap">'
+        +'<span style="color:var(--green);font-size:10px">'+bPct+'%</span>'
+        +'<div class="bs-bar"><div class="bsb" style="width:'+bPct+'%;height:100%"></div><div class="bss" style="width:'+sPct+'%;height:100%"></div></div>'
+        +'<span style="color:var(--red);font-size:10px">'+sPct+'%</span>'
+      +'</div></td>'
       +'<td>'+posHtml+'</td>'
       +'<td><a class="lnk" href="'+HL+w.addr+'" target="_blank" rel="noopener">View &#8599;</a></td>'
       +'</tr>';
   }).join("");
 }
 
-// ── Render footprint cards ────────────────────────────────────────────────────
+// ─── Footprint card ───────────────────────────────────────────────
+function fpRows(fp){
+  var maxV=0;
+  for(var i=0;i<fp.length;i++){if(fp[i].b>maxV)maxV=fp[i].b;if(fp[i].s>maxV)maxV=fp[i].s;}
+  if(maxV===0)maxV=1;
+  var HALF=70;
+  return fp.map(function(r){
+    var bw=Math.round((r.b/maxV)*HALF);
+    var sw=Math.round((r.s/maxV)*HALF);
+    var cls=r.b>r.s*2?" ib-b":r.s>r.b*2?" ib-s":"";
+    return '<div class="fp-row'+cls+'">'
+      +'<div class="fp-pl">'+r.p.toLocaleString()+'</div>'
+      +'<div class="fp-half l"><div class="fp-sell" style="width:'+sw+'px"></div></div>'
+      +'<div class="fp-mid"></div>'
+      +'<div class="fp-half r"><div class="fp-buy" style="width:'+bw+'px"></div></div>'
+      +'</div>';
+  }).join("");
+}
+
 function renderCards(data){
   var grid=document.getElementById("cards");
   var active=data.filter(function(w){return w.pos;});
-  if(!active.length){grid.innerHTML='<div style="color:var(--muted);font-size:12px">No open positions.</div>';return;}
+  if(!active.length){grid.innerHTML='<div style="color:var(--muted);font-size:11px">No open positions in filtered set.</div>';return;}
   grid.innerHTML=active.map(function(w){
     var p=w.pos; var f=w.flow;
     var pc=w.pnl24h>=0?"ppos":"pneg";
-    var cardCls=f.signal==="bull"?"bull-card":f.signal==="bear"?"bear-card":"";
+    var cCls=f.signal==="bull"?"c-bull":f.signal==="bear"?"c-bear":"";
     var bPct=Math.round(f.buyVol/(f.buyVol+f.sellVol)*100);
+    var dColor=f.delta>=0?"var(--green)":"var(--red)";
     var cvdColor=f.cvdTrend==="up"?"var(--green)":f.cvdTrend==="down"?"var(--red)":"var(--muted)";
-    var deltaColor=f.delta>=0?"var(--green)":"var(--red)";
-    return '<div class="card '+cardCls+'">'
+    return '<div class="card '+cCls+'">'
       // header
-      +'<div class="card-hdr">'
-        +'<span class="card-wallet">'+w.wallet+'</span>'
-        +'<div class="card-meta">'
-          +'<span class="badge '+(w.style==="day"?"b-day":"b-swing")+'">'+w.style+'</span>'
-          +'<span class="lev" style="font-size:12px">'+fLev(w.leverage)+'</span>'
-        +'</div>'
+      +'<div class="c-hdr">'
+        +'<span class="c-wallet"><span class="age-dot '+(w.walletAge<=30?"age-new":"age-old")+'"></span>'+w.wallet+'</span>'
+        +'<div class="c-meta"><span class="pair-tag">'+w.pair+'</span><span class="lev" style="font-size:11px">'+fLev(w.leverage)+'</span></div>'
       +'</div>'
-      // position grid
-      +'<div class="card-body">'
+      // position stats
+      +'<div class="c-body">'
         +'<div class="cs"><div class="k">Asset</div><div class="v">'+p.asset+'</div></div>'
-        +'<div class="cs"><div class="k">Side</div><div class="v"><span class="side '+p.side+'">'+p.side.toUpperCase()+'</span></div></div>'
-        +'<div class="cs"><div class="k">Size</div><div class="v" style="font-size:12px">'+p.size+'</div></div>'
-        +'<div class="cs"><div class="k">Entry</div><div class="v" style="font-size:12px">$'+p.entry.toLocaleString()+'</div></div>'
-        +'<div class="cs"><div class="k">Liq Price</div><div class="v" style="color:var(--red);font-size:12px">$'+p.liq.toLocaleString()+'</div></div>'
-        +'<div class="cs"><div class="k">24h PnL</div><div class="v '+pc+'" style="font-size:12px">'+fUsd(w.pnl24h)+'</div></div>'
+        +'<div class="cs"><div class="k">Side</div><div class="v"><span class="side-tag '+p.side+'">'+p.side.toUpperCase()+'</span></div></div>'
+        +'<div class="cs"><div class="k">Size</div><div class="v" style="font-size:11px">'+p.size+'</div></div>'
+        +'<div class="cs"><div class="k">Entry</div><div class="v" style="font-size:11px">$'+p.entry.toLocaleString()+'</div></div>'
+        +'<div class="cs"><div class="k">Liq</div><div class="v" style="color:var(--red);font-size:11px">$'+p.liq.toLocaleString()+'</div></div>'
+        +'<div class="cs"><div class="k">24h PnL</div><div class="v '+pc+'" style="font-size:11px">'+fSign(w.pnl24h)+'</div></div>'
       +'</div>'
       // order flow row
-      +'<div class="of-section">'
-        +'<div class="of-item"><div class="k">CVD</div><div class="v" style="color:'+cvdColor+'">'+fDelta(f.cvd)+'</div></div>'
-        +'<div class="of-item"><div class="k">Delta</div><div class="v" style="color:'+deltaColor+'">'+fDelta(f.delta)+'</div></div>'
+      +'<div class="of-row">'
+        +'<div class="of-item"><div class="k">CVD</div><div class="v" style="color:'+cvdColor+'">'+fSign(f.cvd)+'</div></div>'
+        +'<div class="of-item"><div class="k">Delta</div><div class="v" style="color:'+dColor+'">'+fSign(f.delta)+'</div></div>'
         +'<div class="of-item"><div class="k">Buy%</div><div class="v" style="color:var(--green)">'+bPct+'%</div></div>'
       +'</div>'
       // footprint
-      +'<div class="fp-section">'
-        +'<div class="fp-title"><span>Footprint · Price Levels</span><span style="color:var(--border)">&#9644;</span></div>'
-        +fpHTML(f.fp)
+      +'<div class="fp-wrap">'
+        +'<div class="fp-hd"><span>Footprint (price levels)</span><span>&#8592; SELL &nbsp; BUY &#8594;</span></div>'
+        +'<div class="fp-rows">'+fpRows(f.fp)+'</div>'
+        +'<div class="fp-leg"><span style="color:var(--red)">Aggressive Sell</span><span style="color:var(--green)">Aggressive Buy</span></div>'
       +'</div>'
       // footer
-      +'<div class="card-ftr">'
-        +'<span style="color:var(--muted)">Mkt Vol: <b style="color:var(--text)">'+fVol(w.mktVol)+'</b></span>'
+      +'<div class="c-ftr">'
+        +'<span style="color:var(--muted)">Win rate: <b style="color:var(--text)">'+fPct(w.winRate)+'</b> &nbsp;|&nbsp; Age: <b style="color:'+(w.walletAge<=30?"var(--orange)":"var(--text)")+'">'+w.walletAge+'d</b></span>'
         +'<a class="lnk" href="'+HL+w.addr+'" target="_blank" rel="noopener">View &#8599;</a>'
       +'</div>'
       +'</div>';
   }).join("");
 }
 
-// ── Render stats bar ──────────────────────────────────────────────────────────
+// ─── Stats bar ────────────────────────────────────────────────────
 function renderStats(data){
   if(!data.length)return;
   var avgWR=data.reduce(function(s,w){return s+w.winRate;},0)/data.length;
   var totalVol=data.reduce(function(s,w){return s+w.vol24h;},0);
   var openPos=data.filter(function(w){return w.pos;}).length;
   var netCvd=data.reduce(function(s,w){return s+w.flow.cvd;},0);
-  document.getElementById("s-whales").textContent=data.length;
+  document.getElementById("s-n").textContent=data.length;
   document.getElementById("s-wr").textContent=fPct(avgWR);
-  document.getElementById("s-vol").textContent=fVol(totalVol);
+  document.getElementById("s-vol").textContent=fM(totalVol);
   document.getElementById("s-pos").textContent=openPos;
-  var cvdEl=document.getElementById("s-cvd");
-  cvdEl.textContent=(netCvd>=0?"+":"")+fVol(Math.abs(netCvd));
-  cvdEl.className="val "+(netCvd>=0?"gn":"rd");
+  var ce=document.getElementById("s-cvd");
+  ce.textContent=fSign(netCvd);
+  ce.className="v "+(netCvd>=0?"gn":"rd");
 }
 
-// ── Filter + sort + render ────────────────────────────────────────────────────
+// ─── Filter + sort ────────────────────────────────────────────────
 function refresh(){
   var data=whales.filter(function(w){
-    if(styleFilter!=="all"&&w.style!==styleFilter)return false;
-    if(volFilter>0&&w.mktVol<volFilter)return false;
+    if(fStyle!=="all"&&w.style!==fStyle)return false;
+    if(fWR>0&&w.winRate*100<fWR)return false;
+    if(fVol>0&&w.mktVol<fVol)return false;
+    if(fAge==="fresh"&&w.walletAge>30)return false;
+    if(fAge==="est"&&w.walletAge<=30)return false;
     return true;
   });
   data=data.slice().sort(function(a,b){
@@ -544,46 +728,48 @@ function refresh(){
   renderStats(data);
 }
 
-// ── Load ──────────────────────────────────────────────────────────────────────
+// ─── Load ─────────────────────────────────────────────────────────
 function load(){
   whales=RAW.map(jitter);
   refresh();
+  // jitter heatmap liq slightly
+  for(var i=0;i<HM_BASE.length;i++){
+    if(HM_BASE[i].side!=="current"&&HM_BASE[i].liq>0)
+      HM_BASE[i].liq=Math.round(HM_BASE[i].liq*(0.97+Math.random()*0.06));
+  }
+  renderHeatmap();
 }
 
-// ── Events ────────────────────────────────────────────────────────────────────
-// Style filter
-document.querySelectorAll(".fbtn[data-f]").forEach(function(btn){
-  btn.addEventListener("click",function(){
-    document.querySelectorAll(".fbtn[data-f]").forEach(function(b){b.classList.remove("active");});
-    btn.classList.add("active");
-    styleFilter=btn.getAttribute("data-f");
-    refresh();
+// ─── Events ───────────────────────────────────────────────────────
+function bindFilter(sel, stateKey, onCls){
+  document.querySelectorAll(sel).forEach(function(btn){
+    btn.addEventListener("click",function(){
+      document.querySelectorAll(sel).forEach(function(b){b.classList.remove("on","on-wr","on-v","on-age");});
+      btn.classList.add(onCls);
+      if(stateKey==="fStyle")fStyle=btn.getAttribute("data-f");
+      else if(stateKey==="fWR")fWR=parseInt(btn.getAttribute("data-wr"),10)||0;
+      else if(stateKey==="fVol")fVol=parseFloat(btn.getAttribute("data-v"))||0;
+      else if(stateKey==="fAge")fAge=btn.getAttribute("data-age");
+      refresh();
+    });
   });
-});
+}
+bindFilter(".fb[data-f]","fStyle","on");
+bindFilter(".fb[data-wr]","fWR","on-wr");
+bindFilter(".fb[data-v]","fVol","on-v");
+bindFilter(".fb[data-age]","fAge","on-age");
 
-// Volume filter
-document.querySelectorAll(".fbtn[data-v]").forEach(function(btn){
-  btn.addEventListener("click",function(){
-    document.querySelectorAll(".fbtn[data-v]").forEach(function(b){b.classList.remove("active");});
-    btn.classList.add("active");
-    volFilter=parseInt(btn.getAttribute("data-v"),10)||0;
-    refresh();
-  });
-});
-
-// Column sort
 document.querySelectorAll("thead th[data-col]").forEach(function(th){
   th.addEventListener("click",function(){
     var col=th.getAttribute("data-col");
-    if(sortCol===col)sortDir*=-1;
-    else{sortCol=col;sortDir=-1;}
-    document.querySelectorAll("thead th").forEach(function(t){t.classList.remove("sorted");});
-    th.classList.add("sorted");
+    if(sortCol===col)sortDir*=-1; else{sortCol=col;sortDir=-1;}
+    document.querySelectorAll("thead th").forEach(function(t){t.classList.remove("srt");});
+    th.classList.add("srt");
     refresh();
   });
 });
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ─── Init ─────────────────────────────────────────────────────────
 load();
 setInterval(load,30000);
 </script>
