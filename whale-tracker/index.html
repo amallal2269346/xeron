@@ -338,27 +338,72 @@ header{
 .view-btn{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#3a5888;padding:4px 10px;border:1px solid rgba(59,130,246,.18);border-radius:6px;transition:all .15s}
 .view-btn:hover{background:rgba(59,130,246,.12);color:var(--accent);border-color:rgba(59,130,246,.35)}
 
-/* ── BTC Setup — Terminal Style ──────────────────────── */
-.setup-wrap{
-  border-radius:12px;overflow:hidden;
-  border:1px solid #1a2040;
-  background:#07090f;
-  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset;
+/* ── BTC Setup Featured Section ─────────────────────── */
+/* outer glowing wrapper */
+.setup-feature{
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid rgba(59,130,246,.22);
+  box-shadow:
+    0 0 0 1px rgba(59,130,246,.06) inset,
+    0 12px 52px rgba(59,130,246,.1),
+    0 4px 24px rgba(0,0,0,.5);
   position:relative;
 }
-/* top bar */
-.setup-topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 18px;
-  background:rgba(255,255,255,.025);
-  border-bottom:1px solid #1a2040;
+/* gradient accent line across the very top */
+.setup-feature::before{
+  content:"";
+  position:absolute;top:0;left:0;right:0;height:2px;z-index:2;
+  background:linear-gradient(90deg,transparent,var(--accent) 30%,var(--purple) 70%,transparent);
+  pointer-events:none;
 }
-.setup-topbar-left{display:flex;align-items:center;gap:10px}
-.setup-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#5a6a90}
-.setup-live{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:var(--green)}
-.setup-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
-.setup-pair-badge{font-family:monospace;font-size:11px;font-weight:700;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:var(--accent);padding:2px 9px;border-radius:4px}
-.setup-update{font-size:9px;color:#2e3a52}
+/* prominent banner header */
+.setup-banner{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 20px;
+  background:linear-gradient(135deg,rgba(59,130,246,.07) 0%,rgba(167,139,250,.03) 55%,transparent);
+  border-bottom:1px solid rgba(59,130,246,.12);
+}
+.sb-inner{display:flex;align-items:center;gap:12px}
+.sb-badge{
+  display:inline-flex;align-items:center;gap:5px;flex-shrink:0;
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);
+  color:var(--green);font-size:8px;font-weight:800;
+  padding:4px 11px;border-radius:20px;
+  letter-spacing:1px;text-transform:uppercase;
+}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;flex-shrink:0}
+.sb-heading{font-size:17px;font-weight:900;color:#e2e8f5;letter-spacing:-.2px;line-height:1.1}
+.sb-sub{font-size:9px;color:#3a5070;margin-top:2px;letter-spacing:.3px}
+.sb-chips{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.sb-chip{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  color:#3a5070;font-size:8px;font-weight:700;
+  padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;
+}
+.sb-chip.ac{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.22);color:var(--accent)}
+/* inner wrap — no own border/radius, contained by .setup-feature */
+.setup-wrap{
+  overflow:hidden;
+  background:#07090f;
+  box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;
+  position:relative;
+}
+/* stats top bar */
+.setup-topbar{
+  display:flex;align-items:stretch;
+  background:rgba(0,0,0,.3);
+  border-bottom:1px solid rgba(59,130,246,.1);
+}
+.setup-tstat{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;flex:1;padding:9px 10px;position:relative;
+}
+.setup-tstat+.setup-tstat::before{
+  content:"";position:absolute;left:0;top:20%;height:60%;width:1px;background:rgba(255,255,255,.06);
+}
+.sts-label{font-size:8px;text-transform:uppercase;letter-spacing:.6px;color:#2a3a52;font-weight:700}
+.sts-val{font-size:14px;font-weight:800;color:#8090a8;font-family:'Courier New',monospace;line-height:1}
 /* split panel */
 .setup-split{display:grid;grid-template-columns:1fr auto 1fr}
 @media(max-width:640px){.setup-split{grid-template-columns:1fr;grid-template-rows:auto auto auto}}
@@ -595,8 +640,20 @@ header{
   <div class="main">
 
     <!-- BTC Setup -->
-    <div class="setup-section">
-      <div class="sec-label">🎯 BTC Trade Setup — Based on Whale Entries</div>
+    <div class="setup-feature">
+      <div class="setup-banner">
+        <div class="sb-inner">
+          <span class="sb-badge"><span class="sb-dot"></span>LIVE</span>
+          <div>
+            <div class="sb-heading">BTC Trade Setup</div>
+            <div class="sb-sub">Whale consensus · aggregated entry zones · TP/SL levels</div>
+          </div>
+        </div>
+        <div class="sb-chips">
+          <span class="sb-chip">Consensus Signal</span>
+          <span class="sb-chip ac">BTC-PERP</span>
+        </div>
+      </div>
       <div id="btc-setup"></div>
     </div>
 
@@ -831,14 +888,14 @@ function renderBTCSetup(){
   var biasLabel=netCvd>0?'Net CVD Bullish':'Net CVD Bearish';
   var biasCls=netCvd>0?'bias-bull':'bias-bear';
   var totalPos=btcLongs.length+btcShorts.length;
+  var allBtcWR=(btcLongs.concat(btcShorts)).reduce(function(s,w){return s+w.wr;},0)/Math.max(1,totalPos);
   el.innerHTML='<div class="setup-wrap">'
     +'<div class="setup-topbar">'
-      +'<div class="setup-topbar-left">'
-        +'<span class="setup-label">BTC Trade Setup</span>'
-        +'<span class="setup-live"><span class="setup-dot"></span>LIVE</span>'
-        +'<span class="setup-pair-badge">BTC-PERP</span>'
-      +'</div>'
-      +'<span class="setup-update">Derived from whale entries \u00b7 updates every 30s</span>'
+      +'<div class="setup-tstat"><span class="sts-label">Positions</span><span class="sts-val">'+totalPos+'</span></div>'
+      +'<div class="setup-tstat"><span class="sts-label">Longs</span><span class="sts-val" style="color:rgba(34,197,94,.8)">'+btcLongs.length+'</span></div>'
+      +'<div class="setup-tstat"><span class="sts-label">Shorts</span><span class="sts-val" style="color:rgba(239,68,68,.8)">'+btcShorts.length+'</span></div>'
+      +'<div class="setup-tstat"><span class="sts-label">Avg WR</span><span class="sts-val" style="color:var(--accent)">'+(totalPos?Math.round(allBtcWR*100)+'%':'—')+'</span></div>'
+      +'<div class="setup-tstat"><span class="sts-label">Net CVD</span><span class="setup-bias '+biasCls+'" style="font-size:10px;font-weight:700">'+biasLabel+'</span></div>'
     +'</div>'
     +'<div class="setup-split">'
       +setupSide(btcLongs,'long')
