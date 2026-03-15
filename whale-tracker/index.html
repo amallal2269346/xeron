@@ -1,60 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Whale Tracker — Pro Leverage Traders</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>🐋 WhaleTracker — Pro Leverage Traders</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;--surface:#111318;--border:#1f2330;
+  --accent:#00e5ff;--green:#00e676;--red:#ff1744;--yellow:#ffd600;
+  --text:#e0e6f0;--muted:#5a6380;--radius:8px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;min-height:100vh}
+
+/* Header */
+header{display:flex;align-items:center;gap:20px;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-wrap:wrap}
+.logo{font-size:20px;font-weight:700;color:var(--accent);white-space:nowrap}
+.subtitle{color:var(--muted);font-size:12px;flex:1}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--green)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.filters{display:flex;gap:6px}
+.fbtn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:12px;transition:.2s}
+.fbtn.active,.fbtn:hover{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+.stat{flex:1;display:flex;flex-direction:column;gap:3px;padding:12px 18px;background:var(--surface)}
+.stat .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat .val{font-size:20px;font-weight:700;color:var(--accent)}
+
+/* Main */
+main{padding:24px;display:flex;flex-direction:column;gap:28px}
+
+/* Table */
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+table{width:100%;border-collapse:collapse;min-width:860px}
+thead th{padding:11px 13px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--accent)}
+thead th.sorted{color:var(--accent)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s;cursor:default}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(0,229,255,.04)}
+tbody td{padding:11px 13px;white-space:nowrap;vertical-align:middle}
+.empty{text-align:center;color:var(--muted);padding:40px !important}
+
+/* Cells */
+.wpill{font-family:monospace;font-size:13px;color:var(--accent);background:rgba(0,229,255,.08);padding:3px 8px;border-radius:4px}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.b-day{background:rgba(255,214,0,.14);color:var(--yellow)}
+.b-swing{background:rgba(0,230,118,.12);color:var(--green)}
+.lev{font-weight:700;color:var(--yellow)}
+.wr-wrap{display:flex;align-items:center;gap:8px;min-width:110px}
+.wr-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.wr-fill{height:100%;border-radius:2px}
+.wh{background:var(--green)}.wm{background:var(--yellow)}.wl{background:var(--red)}
+.pos-wrap{display:flex;align-items:center;gap:6px}
+.side{padding:2px 7px;border-radius:3px;font-size:11px;font-weight:700;text-transform:uppercase}
+.long{background:rgba(0,230,118,.15);color:var(--green)}
+.short{background:rgba(255,23,68,.15);color:var(--red)}
+.nopos{color:var(--muted);font-size:12px}
+.ppos{color:var(--green);font-weight:700}
+.pneg{color:var(--red);font-weight:700}
+.lnk{padding:4px 11px;border-radius:4px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;text-decoration:none;transition:.18s;display:inline-block}
+.lnk:hover{background:var(--accent);color:#000}
+
+/* Cards */
+.cards-title{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color .2s}
+.card:hover{border-color:var(--accent)}
+.card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-wallet{font-family:monospace;font-size:13px;color:var(--accent)}
+.card-body{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cs .k{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.cs .v{font-size:15px;font-weight:700}
+.card-ftr{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px}
+
+/* Footer */
+footer{text-align:center;padding:18px;color:var(--muted);font-size:12px;border-top:1px solid var(--border)}
+
+@media(max-width:600px){
+  .stats-bar{flex-wrap:wrap}
+  .stat{min-width:50%}
+  main{padding:14px}
+}
+</style>
 </head>
 <body>
-  <header>
-    <div class="logo">🐋 WhaleTracker</div>
-    <div class="subtitle">Pro leverage traders · High volume · High win rate</div>
-    <div class="filters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="day">Day Trade</button>
-      <button class="filter-btn" data-filter="swing">Swing Trade</button>
-    </div>
-  </header>
 
-  <section class="stats-bar">
-    <div class="stat"><span class="label">Total Whales</span><span class="value" id="total-whales">—</span></div>
-    <div class="stat"><span class="label">Avg Win Rate</span><span class="value" id="avg-winrate">—</span></div>
-    <div class="stat"><span class="label">Total Volume 24h</span><span class="value" id="total-volume">—</span></div>
-    <div class="stat"><span class="label">Active Positions</span><span class="value" id="active-pos">—</span></div>
-  </section>
+<header>
+  <div class="logo">🐋 WhaleTracker</div>
+  <div class="subtitle">Pro leverage traders &middot; High volume &middot; High win rate</div>
+  <div class="live"><span class="dot"></span> LIVE</div>
+  <div class="filters">
+    <button class="fbtn active" data-f="all">All</button>
+    <button class="fbtn" data-f="day">Day Trade</button>
+    <button class="fbtn" data-f="swing">Swing Trade</button>
+  </div>
+</header>
 
-  <main>
-    <div class="table-wrapper">
-      <table id="whale-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Wallet</th>
-            <th>Style</th>
-            <th>Leverage</th>
-            <th>Win Rate</th>
-            <th>24h PnL</th>
-            <th>Volume 24h</th>
-            <th>Trades</th>
-            <th>Active Position</th>
-            <th>Link</th>
-          </tr>
-        </thead>
-        <tbody id="whale-body">
-          <tr><td colspan="10" class="loading">Loading whale data…</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section class="stats-bar">
+  <div class="stat"><span class="lbl">Total Whales</span><span class="val" id="s-whales">—</span></div>
+  <div class="stat"><span class="lbl">Avg Win Rate</span><span class="val" id="s-wr">—</span></div>
+  <div class="stat"><span class="lbl">24h Volume</span><span class="val" id="s-vol">—</span></div>
+  <div class="stat"><span class="lbl">Open Positions</span><span class="val" id="s-pos">—</span></div>
+</section>
 
-    <div id="position-cards" class="cards-grid"></div>
-  </main>
+<main>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th data-col="wallet">Wallet</th>
+          <th data-col="style">Style</th>
+          <th data-col="leverage">Leverage</th>
+          <th data-col="winRate">Win Rate</th>
+          <th data-col="pnl24h">24h PnL</th>
+          <th data-col="volume24h">Volume 24h</th>
+          <th data-col="trades24h">Trades</th>
+          <th>Active Position</th>
+          <th>Hyperlink</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="10" class="empty">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-  <footer>
-    <span>Data refreshes every 30s · Not financial advice · Track smarter, not harder.</span>
-  </footer>
+  <div>
+    <div class="cards-title" id="cards-title"></div>
+    <div class="cards-grid" id="cards"></div>
+  </div>
+</main>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+<footer>Data refreshes every 30s &nbsp;·&nbsp; Not financial advice &nbsp;·&nbsp; Track smarter, not harder.</footer>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+const WHALES = [
+  {wallet:"0xA1b2…9F3c", addr:"0xA1b2C3d4E5f6A7B8C9D0E1F2A3B4C5D6E7F89F3c", style:"day",   leverage:25, winRate:.78, pnl24h:142300,  vol24h:8400000,  trades:34, pos:{side:"long",  asset:"BTC", size:"2.4 BTC",   entry:68200, liq:61800}},
+  {wallet:"0xB3f4…2A1d", addr:"0xB3f4D5e6F7A8B9C0D1E2F3A4B5C6D7E8F9A02A1d", style:"swing", leverage:10, winRate:.84, pnl24h:89700,   vol24h:3200000,  trades:6,  pos:{side:"long",  asset:"ETH", size:"48 ETH",    entry:3420,  liq:2990}},
+  {wallet:"0xC5d6…8B7e", addr:"0xC5d6E7f8A9B0C1D2E3F4A5B6C7D8E9F0A1B28B7e", style:"day",   leverage:50, winRate:.71, pnl24h:-23100,  vol24h:12700000, trades:61, pos:{side:"short", asset:"SOL", size:"3200 SOL",  entry:162,   liq:181}},
+  {wallet:"0xD7e8…4C3f", addr:"0xD7e8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C44C3f", style:"swing", leverage:15, winRate:.91, pnl24h:311000,  vol24h:6900000,  trades:9,  pos:{side:"long",  asset:"BTC", size:"5.1 BTC",   entry:66900, liq:59200}},
+  {wallet:"0xE9f0…6D5a", addr:"0xE9f0A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D66D5a", style:"day",   leverage:20, winRate:.76, pnl24h:54200,   vol24h:5100000,  trades:28, pos:null},
+  {wallet:"0xF1a2…0E7b", addr:"0xF1a2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E80E7b", style:"swing", leverage:8,  winRate:.88, pnl24h:198400,  vol24h:2800000,  trades:4,  pos:{side:"short", asset:"ETH", size:"120 ETH",   entry:3550,  liq:3890}},
+  {wallet:"0xA3b4…1F8c", addr:"0xA3b4C5D6E7F8A9B0C1D2E3F4A5B6C7D8E9F01F8c", style:"day",   leverage:30, winRate:.69, pnl24h:78900,   vol24h:9300000,  trades:47, pos:{side:"long",  asset:"ARB", size:"200K ARB",  entry:1.24,  liq:1.08}},
+  {wallet:"0xB5c6…3A2d", addr:"0xB5c6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A23A2d", style:"swing", leverage:12, winRate:.82, pnl24h:-11200,  vol24h:1700000,  trades:3,  pos:{side:"short", asset:"BTC", size:"1.8 BTC",   entry:69100, liq:75800}},
+  {wallet:"0xC7d8…5B4e", addr:"0xC7d8E9F0A1B2C3D4E5F6A7B8C9D0E1F2A3B45B4e", style:"day",   leverage:40, winRate:.73, pnl24h:66100,   vol24h:7600000,  trades:52, pos:{side:"long",  asset:"AVAX",size:"8000 AVAX", entry:38.4,  liq:31.2}},
+  {wallet:"0xD9e0…7C6f", addr:"0xD9e0F1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C67C6f", style:"swing", leverage:6,  winRate:.93, pnl24h:428000,  vol24h:4400000,  trades:5,  pos:{side:"long",  asset:"BTC", size:"7.3 BTC",   entry:65400, liq:58100}},
+];
+
+const HL = "https://app.hyperliquid.xyz/explorer/address/";
+
+// ── Format helpers ────────────────────────────────────────────────────────────
+function fUsd(n){
+  const a=Math.abs(n);
+  const s=a>=1000000?"$"+(a/1000000).toFixed(2)+"M":a>=1000?"$"+(a/1000).toFixed(1)+"K":"$"+a.toFixed(0);
+  return (n<0?"-":"+")+s;
+}
+function fVol(n){return n>=1000000?"$"+(n/1000000).toFixed(1)+"M":"$"+(n/1000).toFixed(0)+"K";}
+function fPct(n){return (n*100).toFixed(1)+"%";}
+function fLev(n){return n+"\u00d7";}
+function wrCls(r){return r>=.80?"wh":r>=.65?"wm":"wl";}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let whales=[], filter="all", sortCol="winRate", sortDir=-1;
+
+// ── Jitter simulation ─────────────────────────────────────────────────────────
+function jitter(w){
+  return Object.assign({},w,{
+    pnl24h:Math.round(w.pnl24h*(0.95+Math.random()*0.10)),
+    vol24h:Math.round(w.vol24h*(0.97+Math.random()*0.06))
+  });
+}
+
+// ── Render table ──────────────────────────────────────────────────────────────
+function renderTable(data){
+  var tbody=document.getElementById("tbody");
+  if(!data.length){tbody.innerHTML='<tr><td colspan="10" class="empty">No whales match.</td></tr>';return;}
+  tbody.innerHTML=data.map(function(w,i){
+    var pc=w.pnl24h>=0?"ppos":"pneg";
+    var sc=w.style==="day"?"b-day":"b-swing";
+    var posHtml=w.pos
+      ?'<div class="pos-wrap"><span class="side '+w.pos.side+'">'+w.pos.side.toUpperCase()+'</span><span>'+w.pos.asset+' '+w.pos.size+'</span></div>'
+      :'<span class="nopos">— no open pos</span>';
+    return '<tr>'
+      +'<td>'+(i+1)+'</td>'
+      +'<td><span class="wpill">'+w.wallet+'</span></td>'
+      +'<td><span class="badge '+sc+'">'+w.style+'</span></td>'
+      +'<td><span class="lev">'+fLev(w.leverage)+'</span></td>'
+      +'<td><div class="wr-wrap"><span>'+fPct(w.winRate)+'</span><div class="wr-bar"><div class="wr-fill '+wrCls(w.winRate)+'" style="width:'+(w.winRate*100)+'%"></div></div></div></td>'
+      +'<td class="'+pc+'">'+fUsd(w.pnl24h)+'</td>'
+      +'<td>'+fVol(w.vol24h)+'</td>'
+      +'<td>'+w.trades+'</td>'
+      +'<td>'+posHtml+'</td>'
+      +'<td><a class="lnk" href="'+HL+w.addr+'" target="_blank" rel="noopener">View &#8599;</a></td>'
+      +'</tr>';
+  }).join("");
+}
+
+// ── Render cards ──────────────────────────────────────────────────────────────
+function renderCards(data){
+  var active=data.filter(function(w){return w.pos;});
+  var title=document.getElementById("cards-title");
+  var grid=document.getElementById("cards");
+  if(!active.length){title.textContent="";grid.innerHTML="";return;}
+  title.textContent="Open Positions ("+active.length+")";
+  grid.innerHTML=active.map(function(w){
+    var p=w.pos;
+    var pc=w.pnl24h>=0?"ppos":"pneg";
+    return '<div class="card">'
+      +'<div class="card-hdr"><span class="card-wallet">'+w.wallet+'</span><span class="badge '+(w.style==="day"?"b-day":"b-swing")+'">'+w.style+'</span></div>'
+      +'<div class="card-body">'
+        +'<div class="cs"><div class="k">Asset</div><div class="v">'+p.asset+'</div></div>'
+        +'<div class="cs"><div class="k">Side</div><div class="v side '+p.side+'" style="display:inline-block">'+p.side.toUpperCase()+'</div></div>'
+        +'<div class="cs"><div class="k">Size</div><div class="v">'+p.size+'</div></div>'
+        +'<div class="cs"><div class="k">Leverage</div><div class="v" style="color:var(--yellow)">'+fLev(w.leverage)+'</div></div>'
+        +'<div class="cs"><div class="k">Entry</div><div class="v">$'+p.entry.toLocaleString()+'</div></div>'
+        +'<div class="cs"><div class="k">Liq Price</div><div class="v" style="color:var(--red)">$'+p.liq.toLocaleString()+'</div></div>'
+      +'</div>'
+      +'<div class="card-ftr"><span class="'+pc+'">PnL 24h: '+fUsd(w.pnl24h)+'</span><a class="lnk" href="'+HL+w.addr+'" target="_blank" rel="noopener">View &#8599;</a></div>'
+      +'</div>';
+  }).join("");
+}
+
+// ── Render stats ──────────────────────────────────────────────────────────────
+function renderStats(data){
+  if(!data.length)return;
+  var avgWR=data.reduce(function(s,w){return s+w.winRate;},0)/data.length;
+  var totalVol=data.reduce(function(s,w){return s+w.vol24h;},0);
+  var openPos=data.filter(function(w){return w.pos;}).length;
+  document.getElementById("s-whales").textContent=data.length;
+  document.getElementById("s-wr").textContent=fPct(avgWR);
+  document.getElementById("s-vol").textContent=fVol(totalVol);
+  document.getElementById("s-pos").textContent=openPos;
+}
+
+// ── Apply filter + sort ───────────────────────────────────────────────────────
+function refresh(){
+  var data=filter==="all"?whales:whales.filter(function(w){return w.style===filter;});
+  data=data.slice().sort(function(a,b){
+    var av=a[sortCol], bv=b[sortCol];
+    if(typeof av==="string"){av=av.toLowerCase();bv=bv.toLowerCase();}
+    return av<bv?sortDir:av>bv?-sortDir:0;
+  });
+  renderTable(data);
+  renderCards(data);
+  renderStats(data);
+}
+
+// ── Load (simulate live) ──────────────────────────────────────────────────────
+function load(){
+  whales=WHALES.map(jitter);
+  refresh();
+}
+
+// ── Events ────────────────────────────────────────────────────────────────────
+document.querySelectorAll(".fbtn").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    document.querySelectorAll(".fbtn").forEach(function(b){b.classList.remove("active");});
+    btn.classList.add("active");
+    filter=btn.getAttribute("data-f");
+    refresh();
+  });
+});
+
+document.querySelectorAll("thead th[data-col]").forEach(function(th){
+  th.addEventListener("click",function(){
+    var col=th.getAttribute("data-col");
+    if(sortCol===col)sortDir*=-1;
+    else{sortCol=col;sortDir=-1;}
+    document.querySelectorAll("thead th").forEach(function(t){t.classList.remove("sorted");});
+    th.classList.add("sorted");
+    refresh();
+  });
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+load();
+setInterval(load,30000);
+</script>
 </body>
 </html>
