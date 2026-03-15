@@ -542,6 +542,80 @@ header{
 .ss-wait .sig-status-dot{background:#2e3e56}
 .ss-wait{color:#2e3e56}
 
+/* ── Live Day Trade Panel ───────────────────────────── */
+.ldt-section{margin-bottom:20px;border-radius:12px;overflow:hidden;border:1px solid rgba(59,130,246,.28);background:#07090f;position:relative;}
+.ldt-section::before{content:"";display:block;height:2px;background:linear-gradient(90deg,#3b82f6 0%,#22c55e 45%,#a78bfa 85%,transparent);}
+.ldt-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(34,197,94,.03));border-bottom:1px solid rgba(59,130,246,.1);}
+.ldt-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.32);color:var(--accent);font-size:7px;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;flex-shrink:0}
+.ldt-badge-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.ldt-heading{font-size:14px;font-weight:900;color:#d0d8f0}
+.ldt-sub{font-size:9px;color:#2e3e56;margin-top:2px}
+.ldt-refresh{font-size:8px;color:#2a3850;text-transform:uppercase;letter-spacing:.8px}
+.ldt-body{display:flex;gap:0;min-height:200px}
+/* Hero */
+.ldt-hero{flex:0 0 290px;padding:16px 18px;border-right:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:9px}
+.ldt-top-badge{font-size:7px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.28);color:var(--accent);padding:2px 8px;border-radius:3px;display:inline-block;margin-bottom:2px}
+.ldt-asset-name{font-size:20px;font-weight:900;color:#d0d8f0;letter-spacing:-.5px;line-height:1}
+.ldt-asset-meta{font-size:9px;color:#3a5060;margin-top:1px}
+.ldt-dir{font-size:10px;font-weight:900;padding:3px 11px;border-radius:4px;letter-spacing:.8px;text-transform:uppercase;align-self:flex-start}
+.ldt-dir.ldt-long{background:rgba(34,197,94,.1);color:rgba(34,197,94,.9);border:1px solid rgba(34,197,94,.28)}
+.ldt-dir.ldt-short{background:rgba(239,68,68,.1);color:rgba(239,68,68,.9);border:1px solid rgba(239,68,68,.28)}
+.ldt-price-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ldt-px-cell{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:6px;padding:7px 9px}
+.ldt-px-entry{grid-column:1/-1;background:rgba(59,130,246,.05);border-color:rgba(59,130,246,.14)}
+.ldt-px-k{font-size:7px;text-transform:uppercase;letter-spacing:.7px;color:#2e3e56;margin-bottom:3px}
+.ldt-px-v{font-size:17px;font-weight:800;font-family:'Courier New',monospace;line-height:1}
+.ldt-px-v.ldt-entry-col{color:var(--accent)}
+.ldt-px-v.ldt-tp-col{color:rgba(34,197,94,.85)}
+.ldt-px-v.ldt-sl-col{color:rgba(239,68,68,.85)}
+.ldt-px-pct{font-size:8px;color:#3a5060;margin-top:2px}
+.ldt-rr-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ldt-rr-val{font-size:12px;font-weight:800;color:var(--green);background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:4px}
+.ldt-rr-na{font-size:10px;color:#2e3e56}
+.ldt-conf-wrap{display:flex;align-items:center;gap:10px}
+.ldt-conf-num{font-size:22px;font-weight:900;color:var(--accent);line-height:1}
+.ldt-conf-bar-wrap{flex:1}
+.ldt-conf-label{font-size:7px;text-transform:uppercase;letter-spacing:.5px;color:#2e3e56;margin-bottom:4px}
+.ldt-conf-track{height:4px;border-radius:2px;background:#0f1520;overflow:hidden}
+.ldt-conf-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--purple))}
+/* Checklist */
+.ldt-checks{flex:0 0 188px;padding:14px 12px;border-right:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:5px}
+.ldt-check-title{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#3a5060;margin-bottom:4px}
+.ldt-check{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:5px}
+.ldt-check.chk-ok{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.1)}
+.ldt-check.chk-warn{background:rgba(234,179,8,.05);border:1px solid rgba(234,179,8,.1)}
+.ldt-check.chk-no{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)}
+.chk-icon{font-size:10px;flex-shrink:0;width:14px;text-align:center;font-weight:900}
+.chk-text{font-size:9px;font-weight:600}
+.ldt-check.chk-ok .chk-text{color:#4a8060}
+.ldt-check.chk-warn .chk-text{color:#7a6020}
+.ldt-check.chk-no .chk-text{color:#3a5060}
+/* Ranked table */
+.ldt-table{flex:1;padding:14px 14px;overflow-x:auto;min-width:0}
+.ldt-table-title{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#3a5060;margin-bottom:8px}
+.ldt-row{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;margin-bottom:4px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);transition:background .15s}
+.ldt-row:hover{background:rgba(255,255,255,.04)}
+.ldt-row.ldt-top-row{background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.18)}
+.ldt-rank{font-size:8px;font-weight:800;color:#2e3e56;width:14px;text-align:center;flex-shrink:0}
+.ldt-row-asset{font-size:12px;font-weight:900;color:#b0bcd0;width:40px}
+.ldt-row-dir{font-size:8px;font-weight:900;padding:1px 6px;border-radius:3px;letter-spacing:.4px;text-transform:uppercase;flex-shrink:0}
+.ldt-rd-long{background:rgba(34,197,94,.1);color:rgba(34,197,94,.85);border:1px solid rgba(34,197,94,.22)}
+.ldt-rd-short{background:rgba(239,68,68,.1);color:rgba(239,68,68,.85);border:1px solid rgba(239,68,68,.22)}
+.ldt-row-entry{font-size:10px;font-family:monospace;color:#4a6080;flex:1}
+.ldt-row-wr{font-size:9px;color:#3a5060;min-width:42px;text-align:right}
+.ldt-row-conf{font-size:10px;font-weight:800;color:var(--accent);min-width:34px;text-align:right}
+.ldt-row-status{display:flex;align-items:center;gap:4px;font-size:8px;font-weight:700;text-transform:uppercase;min-width:72px;justify-content:flex-end}
+.ldt-row-status .ss-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.ldt-rs-signal .ss-dot{background:var(--accent);box-shadow:0 0 5px rgba(59,130,246,.5)}
+.ldt-rs-signal{color:rgba(59,130,246,.8)}
+.ldt-rs-entry .ss-dot{background:var(--green);animation:pulse 1.5s infinite}
+.ldt-rs-entry{color:rgba(34,197,94,.8)}
+.ldt-rs-approach .ss-dot{background:var(--yellow)}
+.ldt-rs-approach{color:rgba(234,179,8,.8)}
+.ldt-rs-watch .ss-dot{background:#2e3e56}
+.ldt-rs-watch{color:#2e3e56}
+.ldt-no-data{padding:32px;text-align:center;color:#2e3e56;font-size:11px;width:100%}
+
 /* ── Footer ──────────────────────────────────────────── */
 .page-foot{text-align:center;padding:16px;font-size:10px;color:var(--dim);border-top:1px solid var(--line)}
 
@@ -712,6 +786,23 @@ header{
 
   <!-- ── Main ─────────────────────────────────────── -->
   <div class="main">
+
+    <!-- Live Day Trade Setup -->
+    <div class="ldt-section">
+      <div class="ldt-banner">
+        <div class="sigs-title">
+          <span class="ldt-badge"><span class="ldt-badge-dot"></span>LIVE</span>
+          <div>
+            <div class="ldt-heading">Live Day Trade Setup</div>
+            <div class="ldt-sub">Best setup ranked by whale win rate consensus · entry zone · TP / SL · R:R · refreshes every 30s</div>
+          </div>
+        </div>
+        <span class="ldt-refresh" id="ldt-refresh-label">Refreshes every 30s</span>
+      </div>
+      <div class="ldt-body" id="ldt-body">
+        <div class="ldt-no-data">Loading whale data...</div>
+      </div>
+    </div>
 
     <!-- Day Trade Setups -->
     <div class="sigs-section">
@@ -1103,6 +1194,151 @@ function renderSignals(){
   el.innerHTML=cards||'<div style="padding:16px 20px;color:#2e3a52;font-size:11px">No aligned signals — whale data loading...</div>';
 }
 
+// ── Live Day Trade Setup ──────────────────────────────────────────
+function renderLiveDaySetup(){
+  var el=document.getElementById('ldt-body');
+  if(!el)return;
+  // Aggregate by asset
+  var assets={};
+  data.forEach(function(w){
+    if(!w.pos)return;
+    var a=w.pos.asset;
+    if(!assets[a])assets[a]={longs:[],shorts:[]};
+    if(w.pos.side==='long')assets[a].longs.push(w);
+    else assets[a].shorts.push(w);
+  });
+  var setups=[];
+  Object.keys(assets).forEach(function(asset){
+    var g=assets[asset];
+    var longScore=g.longs.reduce(function(s,w){return s+w.wr;},0);
+    var shortScore=g.shorts.reduce(function(s,w){return s+w.wr;},0);
+    if(!longScore&&!shortScore)return;
+    var isLong=longScore>=shortScore;
+    var aligned=isLong?g.longs:g.shorts;
+    if(!aligned.length)return;
+    var sumW=0,sumE=0;
+    aligned.forEach(function(w){sumW+=w.wr;sumE+=w.pos.entry*w.wr;});
+    var entry=sumE/sumW;
+    var tpVals=aligned.filter(function(w){return w.pos.tp;}).map(function(w){return w.pos.tp;});
+    var slVals=aligned.filter(function(w){return w.pos.sl;}).map(function(w){return w.pos.sl;});
+    var tp=tpVals.length?median(tpVals):null;
+    var sl=slVals.length?median(slVals):null;
+    var avgWR=aligned.reduce(function(s,w){return s+w.wr;},0)/aligned.length;
+    var totalScore=longScore+shortScore;
+    var alignScore=isLong?longScore:shortScore;
+    var conf=Math.round((avgWR*0.65+(alignScore/Math.max(totalScore,.01))*0.35)*100);
+    conf=Math.max(54,Math.min(96,conf));
+    var mark=MARKS[asset]||entry;
+    var rawDelta=isLong?(mark-entry)/entry:(entry-mark)/entry;
+    var deltaAbs=Math.abs((mark-entry)/entry*100);
+    var tpPct=tp?(isLong?(tp-entry)/entry*100:(entry-tp)/entry*100):null;
+    var slPct=sl?(isLong?(sl-entry)/entry*100:(entry-sl)/entry*100):null;
+    var rr=(tpPct&&slPct&&slPct<0)?Math.abs(tpPct/slPct):null;
+    var cvd=aligned.reduce(function(s,w){return s+w.of.cvd;},0);
+    var inFavorableDir=isLong?mark>entry:mark<entry;
+    var statusCls,statusTxt;
+    if(inFavorableDir&&deltaAbs>0.3){statusCls='ldt-rs-signal';statusTxt='In Signal';}
+    else if(deltaAbs<=0.6){statusCls='ldt-rs-entry';statusTxt='At Entry';}
+    else if(deltaAbs<=2.2){statusCls='ldt-rs-approach';statusTxt='Approaching';}
+    else{statusCls='ldt-rs-watch';statusTxt='Watching';}
+    setups.push({asset:asset,isLong:isLong,entry:entry,tp:tp,sl:sl,
+      avgWR:avgWR,conf:conf,aligned:aligned,mark:mark,rawDelta:rawDelta,
+      deltaAbs:deltaAbs,tpPct:tpPct,slPct:slPct,rr:rr,cvd:cvd,
+      statusCls:statusCls,statusTxt:statusTxt});
+  });
+  if(!setups.length){
+    el.innerHTML='<div class="ldt-no-data">No active whale positions — waiting for data...</div>';
+    return;
+  }
+  setups.sort(function(a,b){return b.conf-a.conf;});
+  var top=setups[0];
+  var dirCls=top.isLong?'ldt-long':'ldt-short';
+  var dirLabel=top.isLong?'\u25b2 LONG':'\u25bc SHORT';
+  var tpStr=top.tp?'$'+fPx(top.tp):'—';
+  var slStr=top.sl?'$'+fPx(top.sl):'—';
+  var rrStr=top.rr?'1 : '+top.rr.toFixed(1):null;
+  var deltaStr=(top.rawDelta>=0?'+':'')+( top.rawDelta*100).toFixed(2)+'%';
+  var deltaCls=top.rawDelta>=0?'smd-pos':'smd-neg';
+  // Condition checklist
+  var cvdConfirms=(top.isLong&&top.cvd>0)||(!top.isLong&&top.cvd<0);
+  var checks=[
+    {ok:top.aligned.length>=2,warn:top.aligned.length===1,text:top.aligned.length+' whale'+(top.aligned.length>1?'s':'')+' aligned'},
+    {ok:top.avgWR>=0.80,warn:top.avgWR>=0.70&&top.avgWR<0.80,text:'Avg WR '+Math.round(top.avgWR*100)+'%'},
+    {ok:cvdConfirms,warn:false,text:cvdConfirms?'CVD confirms direction':'CVD diverges'},
+    {ok:!!top.tp,warn:false,text:top.tp?'TP target set':'No TP set'},
+    {ok:!!top.sl,warn:false,text:top.sl?'Stop loss set':'No SL set'},
+    {ok:!!(top.rr&&top.rr>=1.5),warn:!!(top.rr&&top.rr>=1.0&&top.rr<1.5),text:top.rr?'R:R 1:'+top.rr.toFixed(1):'R:R unknown'}
+  ];
+  var chkHtml=checks.map(function(c){
+    var cls=c.ok?'chk-ok':c.warn?'chk-warn':'chk-no';
+    var icon=c.ok?'\u2713':c.warn?'\u007e':'\u2212';
+    var iconColor=c.ok?'var(--green)':c.warn?'var(--yellow)':'#2e3e56';
+    return '<div class="ldt-check '+cls+'"><span class="chk-icon" style="color:'+iconColor+'">'+icon+'</span><span class="chk-text">'+c.text+'</span></div>';
+  }).join('');
+  // Ranked rows
+  var rowsHtml=setups.map(function(s,i){
+    var topRow=i===0?' ldt-top-row':'';
+    var dirPill=s.isLong?'<span class="ldt-row-dir ldt-rd-long">L</span>':'<span class="ldt-row-dir ldt-rd-short">S</span>';
+    return '<div class="ldt-row'+topRow+'">'
+      +'<span class="ldt-rank">'+(i+1)+'</span>'
+      +dirPill
+      +'<span class="ldt-row-asset">'+s.asset+'</span>'
+      +'<span class="ldt-row-entry">$'+fPx(s.entry)+'</span>'
+      +'<span class="ldt-row-wr">WR '+Math.round(s.avgWR*100)+'%</span>'
+      +'<span class="ldt-row-conf">'+s.conf+'%</span>'
+      +'<div class="ldt-row-status '+s.statusCls+'"><span class="ss-dot"></span>'+s.statusTxt+'</div>'
+    +'</div>';
+  }).join('');
+  el.innerHTML=
+    // Hero panel
+    '<div class="ldt-hero">'
+    +'<div><span class="ldt-top-badge">#1 TOP PICK</span></div>'
+    +'<div class="ldt-asset-name">'+top.asset
+      +'</div>'
+    +'<div class="ldt-asset-meta">'+top.aligned.length+' whale'+(top.aligned.length>1?'s':'')+' aligned &middot; Avg WR '+Math.round(top.avgWR*100)+'%</div>'
+    +'<div class="ldt-dir '+dirCls+'">'+dirLabel+'</div>'
+    +'<div class="ldt-price-grid">'
+      +'<div class="ldt-px-cell ldt-px-entry">'
+        +'<div class="ldt-px-k">Entry Zone (WR-weighted)</div>'
+        +'<div class="ldt-px-v ldt-entry-col">$'+fPx(top.entry)+'</div>'
+        +'<div class="ldt-px-pct">Mark: $'+fPx(top.mark)+' &nbsp;<span class="'+deltaCls+'">'+deltaStr+'</span></div>'
+      +'</div>'
+      +'<div class="ldt-px-cell">'
+        +'<div class="ldt-px-k">Take Profit</div>'
+        +'<div class="ldt-px-v ldt-tp-col" style="font-size:'+(top.tp?'17':'13')+'px">'+tpStr+'</div>'
+        +(top.tpPct?'<div class="ldt-px-pct gn">+'+top.tpPct.toFixed(2)+'%</div>':'')
+      +'</div>'
+      +'<div class="ldt-px-cell">'
+        +'<div class="ldt-px-k">Stop Loss</div>'
+        +'<div class="ldt-px-v ldt-sl-col" style="font-size:'+(top.sl?'17':'13')+'px">'+slStr+'</div>'
+        +(top.slPct&&top.slPct<0?'<div class="ldt-px-pct rd">'+top.slPct.toFixed(2)+'%</div>':'')
+      +'</div>'
+    +'</div>'
+    +'<div class="ldt-rr-row">'
+      +(rrStr
+        ?'<span style="font-size:9px;color:#3a5060">Risk / Reward</span><span class="ldt-rr-val">'+rrStr+'</span>'
+        :'<span class="ldt-rr-na">Set TP &amp; SL for R:R</span>')
+    +'</div>'
+    +'<div class="ldt-conf-wrap">'
+      +'<span class="ldt-conf-num">'+top.conf+'%</span>'
+      +'<div class="ldt-conf-bar-wrap">'
+        +'<div class="ldt-conf-label">Signal Confidence</div>'
+        +'<div class="ldt-conf-track"><div class="ldt-conf-fill" style="width:'+top.conf+'%"></div></div>'
+      +'</div>'
+    +'</div>'
+  +'</div>'
+  // Checklist
+  +'<div class="ldt-checks">'
+    +'<div class="ldt-check-title">Conditions</div>'
+    +chkHtml
+  +'</div>'
+  // Ranked table
+  +'<div class="ldt-table">'
+    +'<div class="ldt-table-title">All Setups &mdash; Ranked by Confidence</div>'
+    +rowsHtml
+  +'</div>';
+}
+
 function wavg(arr,key){
   // weighted average by win rate
   var sumW=0,sumV=0;
@@ -1366,6 +1602,7 @@ function render(){
     if(fAge==="est"&&w.age<=30)return false;
     return true;
   }).sort(function(a,b){return b.wr-a.wr;});
+  renderLiveDaySetup();
   renderSignals();
   renderBTCSetup();
   renderGrid(list);
