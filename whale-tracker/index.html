@@ -175,25 +175,9 @@ header{
 /* ── Main content ────────────────────────────────────── */
 .main{flex:1;min-width:0;padding:18px 20px;display:flex;flex-direction:column;gap:20px}
 
-/* ── Signals row ─────────────────────────────────────── */
+/* ── Section labels ──────────────────────────────────── */
 .sec-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);margin-bottom:8px;display:flex;align-items:center;gap:8px}
 .sec-label::after{content:"";flex:1;height:1px;background:var(--line)}
-.sigs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
-.sig{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;min-width:180px;flex-shrink:0;cursor:default;transition:border-color .15s}
-.sig:hover{border-color:var(--dim)}
-.sig.bull{border-left:3px solid var(--green)}
-.sig.bear{border-left:3px solid var(--red)}
-.sig.neut{border-left:3px solid var(--dim)}
-.sig-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.sig-asset{font-size:16px;font-weight:900}
-.sig-tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase}
-.sig-tag.bull{background:rgba(34,197,94,.15);color:var(--green)}
-.sig-tag.bear{background:rgba(239,68,68,.15);color:var(--red)}
-.sig-tag.neut{background:rgba(58,69,96,.3);color:var(--sub)}
-.sig-row{display:flex;justify-content:space-between;font-size:10px;color:var(--sub);margin-bottom:3px}
-.sig-row span:last-child{font-weight:600;color:var(--text)}
-.sig-bs{height:4px;border-radius:2px;overflow:hidden;display:flex;margin-top:6px}
-.sig-bs-b{background:var(--green)}.sig-bs-s{background:var(--red)}
 
 /* ── Whale cards grid ────────────────────────────────── */
 .whale-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
@@ -610,12 +594,6 @@ header{
   <!-- ── Main ─────────────────────────────────────── -->
   <div class="main">
 
-    <!-- Flow Signals -->
-    <div>
-      <div class="sec-label">⚡ Order Flow Signals</div>
-      <div class="sigs" id="sigs"></div>
-    </div>
-
     <!-- BTC Setup -->
     <div class="setup-section">
       <div class="sec-label">🎯 BTC Trade Setup — Based on Whale Entries</div>
@@ -1008,29 +986,6 @@ function toggleHist(btn){
 }
 
 // ── Signals ───────────────────────────────────────────────────────
-function renderSigs(list){
-  var el=document.getElementById("sigs");
-  var act=list.filter(function(w){return w.pos;});
-  if(!act.length){el.innerHTML='<span style="color:var(--sub);font-size:11px">No open positions match filters.</span>';return;}
-  el.innerHTML=act.map(function(w){
-    var o=w.of, bPct=Math.round(o.buy/(o.buy+o.sell)*100);
-    var sc=o.sig==="bull"?"bull":o.sig==="bear"?"bear":"neut";
-    var lbl=o.sig==="bull"?"Buy Flow":o.sig==="bear"?"Sell Flow":"Neutral";
-    var cColor=o.cvdT==="up"?"var(--green)":o.cvdT==="down"?"var(--red)":"var(--sub)";
-    return '<div class="sig '+sc+'">'
-      +'<div class="sig-head"><span class="sig-asset">'+w.pos.asset+'</span><span class="sig-tag '+sc+'">'+lbl+'</span></div>'
-      +'<span class="tag tag-pair" style="margin-bottom:6px;display:inline-block">'+w.pair+'</span>'
-      +'<div class="sig-row"><span>CVD</span><span style="color:'+cColor+'">'+fS(o.cvd)+'</span></div>'
-      +'<div class="sig-row"><span>Delta</span><span style="color:'+(o.delta>=0?"rgba(34,197,94,.75)":"rgba(239,68,68,.75)")+'">'+fS(o.delta)+'</span></div>'
-      +'<div class="sig-row"><span>Side</span><span><span class="side-pill side-'+w.pos.side+'">'+w.pos.side.toUpperCase()+'</span></span></div>'
-      +'<div class="sig-bs" style="margin-top:8px">'
-        +'<div class="sig-bs-b" style="width:'+bPct+'%"></div>'
-        +'<div class="sig-bs-s" style="width:'+(100-bPct)+'%"></div>'
-      +'</div>'
-    +'</div>';
-  }).join("");
-}
-
 // ── Whale cards ───────────────────────────────────────────────────
 function renderGrid(list){
   var el=document.getElementById("grid");
@@ -1153,7 +1108,6 @@ function render(){
     if(fAge==="est"&&w.age<=30)return false;
     return true;
   }).sort(function(a,b){return b.wr-a.wr;});
-  renderSigs(list);
   renderBTCSetup();
   renderGrid(list);
   renderPulse(list);
