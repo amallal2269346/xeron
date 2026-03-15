@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude with Crypto — Buy Claude AI with USDC, USDT or SOL</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <span class="logo-icon">✦</span>
+      <span class="logo-text">Claude with Crypto</span>
+    </a>
+    <nav class="nav">
+      <a class="nav-link" href="#how-it-works">How it works</a>
+      <a class="nav-link" href="#plans">Plans</a>
+      <a class="nav-link" href="#faq">FAQ</a>
+    </nav>
+    <a class="btn-primary" href="#plans">Buy Now</a>
+  </div>
+</header>
+
+<!-- ─── HERO ──────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Unofficial Reseller · Trusted by 2,400+ users
+    </div>
+    <h1 class="hero-title">
+      Buy <span class="brand">✦ Claude AI</span><br/>
+      with <span class="crypto-word">Crypto</span>
+    </h1>
+    <p class="hero-sub">Pay with USDC, USDT, or SOL. Delivered within hours.<br/>No credit card. No bank. Just crypto.</p>
+    <div class="hero-coins">
+      <div class="coin usdc"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.svg" alt="USDC" /><span>USDC</span></div>
+      <div class="coin usdt"><img src="https://cryptologos.cc/logos/tether-usdt-logo.svg" alt="USDT" /><span>USDT</span></div>
+      <div class="coin sol"><img src="https://cryptologos.cc/logos/solana-sol-logo.svg" alt="SOL" /><span>SOL</span></div>
+    </div>
+    <a class="btn-hero" href="#plans">Choose Your Plan ↓</a>
+  </div>
+  <div class="hero-glow"></div>
+</section>
+
+<!-- ─── PLANS ─────────────────────────────────────────────────────────────── -->
+<section class="section" id="plans">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-tag">SELECT CLAUDE AI PLAN</p>
+      <h2 class="section-title">Choose Your Subscription</h2>
+    </div>
+
+    <!-- Plan selector -->
+    <div class="plan-tabs" id="planTabs">
+      <button class="plan-tab" data-plan="pro">
+        <span class="tab-label">Pro</span>
+        <span class="tab-sub">For the curious</span>
+        <span class="tab-price">from $130</span>
+      </button>
+      <button class="plan-tab active" data-plan="max5">
+        <span class="tab-popular">POPULAR</span>
+        <span class="tab-label">Max 5x</span>
+        <span class="tab-sub">For the enthusiast</span>
+        <span class="tab-price">from $360</span>
+      </button>
+      <button class="plan-tab" data-plan="max20">
+        <span class="tab-label">Max 20x</span>
+        <span class="tab-sub">For the power user</span>
+        <span class="tab-price">from $705</span>
+      </button>
+    </div>
+
+    <!-- Main configurator -->
+    <div class="configurator">
+      <div class="config-left">
+        <!-- Duration -->
+        <div class="config-section">
+          <h3 class="config-label">DURATION</h3>
+          <div class="duration-grid" id="durationGrid">
+            <button class="dur-btn" data-months="1">1 month</button>
+            <button class="dur-btn" data-months="3">3 months</button>
+            <button class="dur-btn active" data-months="6">6 months</button>
+            <button class="dur-btn" data-months="12">12 months</button>
+          </div>
+        </div>
+
+        <!-- Currency -->
+        <div class="config-section">
+          <h3 class="config-label">PAY WITH</h3>
+          <div class="currency-grid" id="currencyGrid">
+            <button class="cur-btn active" data-currency="usdc">
+              <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.svg" alt="USDC" />
+              USDC
+            </button>
+            <button class="cur-btn" data-currency="usdt">
+              <img src="https://cryptologos.cc/logos/tether-usdt-logo.svg" alt="USDT" />
+              USDT
+            </button>
+            <button class="cur-btn" data-currency="sol">
+              <img src="https://cryptologos.cc/logos/solana-sol-logo.svg" alt="SOL" />
+              SOL
+            </button>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="config-section">
+          <h3 class="config-label">YOUR EMAIL</h3>
+          <input class="email-input" type="email" id="emailInput" placeholder="you@example.com" />
+          <p class="email-note">We'll send your Claude subscription details here.</p>
+        </div>
+      </div>
+
+      <!-- Order summary -->
+      <div class="order-summary" id="orderSummary">
+        <h3 class="summary-title">Order Summary</h3>
+        <div class="summary-row">
+          <span>Plan</span>
+          <span id="sumPlan">Max 5x</span>
+        </div>
+        <div class="summary-row">
+          <span>Duration</span>
+          <span id="sumDuration">6 months</span>
+        </div>
+        <div class="summary-row">
+          <span>Currency</span>
+          <span id="sumCurrency">USDC</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span id="sumTotal">$705.00</span>
+        </div>
+        <div class="summary-row total-crypto">
+          <span></span>
+          <span id="sumCryptoAmount">705.00 USDC</span>
+        </div>
+        <button class="btn-checkout" id="checkoutBtn">
+          Continue to Payment →
+        </button>
+        <p class="summary-note">✓ Delivered within a few hours</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ───────────────────────────────────────────────────────── -->
+<section class="section section-dark" id="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-tag">HOW IT WORKS</p>
+      <h2 class="section-title">Simple. Fast. Crypto-native.</h2>
+      <p class="section-sub">Buying Claude with crypto takes four steps.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">🗂️</div>
+        <h3>Choose a plan</h3>
+        <p>Select your Claude AI tier (Pro, Max 5x, Max 20x) and your subscription duration.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">📬</div>
+        <h3>Receive deposit address</h3>
+        <p>We generate a unique wallet address for your order. Send exactly the amount shown.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">💸</div>
+        <h3>Send payment</h3>
+        <p>Transfer USDC, USDT, or SOL from any wallet or exchange. On-chain confirmation is automatic.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-icon">✉️</div>
+        <h3>Get your subscription</h3>
+        <p>Once confirmed, we deliver your Claude subscription credentials to your email within hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TRUST BADGES ───────────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="trust-grid">
+      <div class="trust-card">
+        <div class="trust-icon">🔒</div>
+        <h4>Non-custodial</h4>
+        <p>Your funds go directly on-chain. We never hold your wallet keys.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">⚡</div>
+        <h4>Fast delivery</h4>
+        <p>Most orders fulfilled within 2–4 hours of payment confirmation.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">🌐</div>
+        <h4>Global access</h4>
+        <p>Available worldwide. No bank account or credit card needed.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">💬</div>
+        <h4>Live support</h4>
+        <p>Telegram support team available 24/7 for any issues.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ───────────────────────────────────────────────────────────────── -->
+<section class="section section-dark" id="faq">
+  <div class="container faq-container">
+    <div class="section-header">
+      <p class="section-tag">FAQ</p>
+      <h2 class="section-title">Common Questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Is this official? <span class="faq-arrow">↓</span></button>
+        <div class="faq-a">No. This is an unofficial reseller service. We purchase Claude subscriptions on your behalf using your crypto payment.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Which networks are supported? <span class="faq-arrow">↓</span></button>
+        <div class="faq-a">We support USDC and USDT on Ethereum, Solana, and Polygon networks. SOL is accepted on the Solana network only.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How long does delivery take? <span class="faq-arrow">↓</span></button>
+        <div class="faq-a">Typically 2–4 hours after on-chain confirmation. In rare cases during peak hours it may take up to 12 hours.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What if I don't receive my subscription? <span class="faq-arrow">↓</span></button>
+        <div class="faq-a">Contact our Telegram support with your order ID and transaction hash. We guarantee delivery or a full refund in crypto.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can I get a refund? <span class="faq-arrow">↓</span></button>
+        <div class="faq-a">Refunds are issued within 24 hours for undelivered orders. Once a subscription is delivered, it follows Anthropic's standard refund policy.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-icon">✦</span>
+      <span>Claude with Crypto</span>
+    </div>
+    <p class="footer-note">Unofficial reseller. Not affiliated with Anthropic.</p>
+    <div class="footer-links">
+      <a href="#plans">Buy Now</a>
+      <a href="#faq">FAQ</a>
+      <a href="#">Telegram Support</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── PAYMENT MODAL ──────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-header">
+      <div class="modal-icon">💳</div>
+      <h2>Complete Your Payment</h2>
+      <p id="modalSubtitle">Send exactly <strong id="modalAmount"></strong> to the address below</p>
+    </div>
+    <div class="modal-network-tabs">
+      <button class="net-tab active" data-net="solana">Solana</button>
+      <button class="net-tab" data-net="ethereum">Ethereum</button>
+      <button class="net-tab" data-net="polygon">Polygon</button>
+    </div>
+    <div class="modal-address-box">
+      <p class="address-label">Deposit Address</p>
+      <div class="address-row">
+        <code class="address-text" id="depositAddress">Loading...</code>
+        <button class="copy-btn" id="copyBtn">Copy</button>
+      </div>
+    </div>
+    <div class="modal-qr" id="qrContainer">
+      <!-- QR placeholder -->
+      <div class="qr-placeholder">
+        <div class="qr-inner" id="qrCode"></div>
+        <p class="qr-caption">Scan with your wallet</p>
+      </div>
+    </div>
+    <div class="modal-steps">
+      <div class="mstep active" id="mstep1"><span class="mstep-dot"></span>Awaiting payment</div>
+      <div class="mstep" id="mstep2"><span class="mstep-dot"></span>On-chain confirmation</div>
+      <div class="mstep" id="mstep3"><span class="mstep-dot"></span>Subscription delivery</div>
+    </div>
+    <p class="modal-note">⚠ Send only on the selected network. Wrong network = lost funds.</p>
+    <p class="modal-timer">Order expires in: <strong id="countdown">30:00</strong></p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
