@@ -705,11 +705,6 @@ function renderGrid(list){
           +'<span class="bs-num rd">'+(100-bPct)+'%</span>'
         +'</div>'
       +'</div>'
-      // footprint
-      +'<div class="wc-fp">'
-        +'<div class="fp-title"><span>Footprint</span><span style="color:var(--dim)">&mdash; '+w.trades+' trades today</span></div>'
-        +fpHTML(o.fp)
-      +'</div>'
       // trade history (high WR ≥ 80% only)
       + (w.history&&w.history.length?histHTML(w):'')
       // card footer
