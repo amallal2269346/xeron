@@ -1,19 +1,23 @@
 """
-Fetches live cryptocurrency prices from the Binance public API.
-No API key required. Works from cloud servers (Railway, Heroku, etc.).
+Fetches live cryptocurrency prices.
+Primary source: Binance public API (no key needed).
+Fallback source: CryptoCompare public API (no key needed).
 """
 
-import time
+import json
 import logging
-import aiohttp
+import time
 from typing import Optional
+
+import aiohttp
 
 logger = logging.getLogger(__name__)
 
-BINANCE_API_URL = "https://api.binance.com/api/v3/ticker/price"
+BINANCE_URL = "https://api.binance.com/api/v3/ticker/price"
+CRYPTOCOMPARE_URL = "https://min-api.cryptocompare.com/data/pricemulti"
 
-# Map uppercase ticker → Binance USDT pair symbol
-SUPPORTED_TOKENS: dict[str, str] = {
+# Map ticker → Binance USDT pair
+BINANCE_SYMBOLS: dict[str, str] = {
     "BTC":   "BTCUSDT",
     "ETH":   "ETHUSDT",
     "BNB":   "BNBUSDT",
@@ -64,7 +68,9 @@ SUPPORTED_TOKENS: dict[str, str] = {
     "FLOW":  "FLOWUSDT",
 }
 
-# Cache: { ticker: (price_usd, fetched_at_unix_seconds) }
+SUPPORTED_TOKENS = BINANCE_SYMBOLS  # alias used by other modules
+
+# Cache: { ticker: (price_usd, fetched_at_monotonic) }
 _price_cache: dict[str, tuple[float, float]] = {}
 _CACHE_TTL = 10  # seconds
 
@@ -77,90 +83,108 @@ def supported_tokens_list() -> list[str]:
     return list(SUPPORTED_TOKENS.keys())
 
 
+# ── Binance ────────────────────────────────────────────────────────────────────
+
+async def _fetch_from_binance(session: aiohttp.ClientSession, tickers: list[str]) -> dict[str, Optional[float]]:
+    symbols = [BINANCE_SYMBOLS[t] for t in tickers]
+    try:
+        if len(symbols) == 1:
+            url = f"{BINANCE_URL}?symbol={symbols[0]}"
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status != 200:
+                    logger.warning("Binance HTTP %s for %s", resp.status, symbols[0])
+                    return {}
+                data = [await resp.json()]
+        else:
+            url = f"{BINANCE_URL}?symbols={json.dumps(symbols)}"
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status != 200:
+                    logger.warning("Binance HTTP %s", resp.status)
+                    return {}
+                data = await resp.json()
+
+        symbol_to_ticker = {v: k for k, v in BINANCE_SYMBOLS.items()}
+        return {symbol_to_ticker[item["symbol"]]: float(item["price"])
+                for item in data if item["symbol"] in symbol_to_ticker}
+
+    except Exception as exc:
+        logger.warning("Binance fetch failed (%s: %s) — trying fallback", type(exc).__name__, exc)
+        return {}
+
+
+# ── CryptoCompare fallback ─────────────────────────────────────────────────────
+
+async def _fetch_from_cryptocompare(session: aiohttp.ClientSession, tickers: list[str]) -> dict[str, Optional[float]]:
+    try:
+        params = {"fsyms": ",".join(tickers), "tsyms": "USD"}
+        async with session.get(CRYPTOCOMPARE_URL, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+            if resp.status != 200:
+                logger.error("CryptoCompare HTTP %s", resp.status)
+                return {}
+            data = await resp.json()
+            if "Response" in data and data["Response"] == "Error":
+                logger.error("CryptoCompare error: %s", data.get("Message", "unknown"))
+                return {}
+            return {ticker: float(data[ticker]["USD"])
+                    for ticker in tickers if ticker in data and "USD" in data[ticker]}
+    except Exception as exc:
+        logger.error("CryptoCompare fetch failed (%s: %s)", type(exc).__name__, exc)
+        return {}
+
+
+# ── Public API ─────────────────────────────────────────────────────────────────
+
 async def fetch_prices(tokens: list[str]) -> dict[str, Optional[float]]:
     """
-    Fetch USD prices for a list of token tickers (e.g. ["BTC", "ETH"]).
-    Returns { "BTC": 68000.0, "ETH": 3500.0, ... }.
+    Fetch USD prices for a list of token tickers.
+    Tries Binance first, falls back to CryptoCompare for any misses.
     """
     now = time.monotonic()
     results: dict[str, Optional[float]] = {}
-    tokens_to_fetch: list[str] = []
+    to_fetch: list[str] = []
 
     for token in tokens:
-        token_upper = token.upper()
-        if token_upper not in SUPPORTED_TOKENS:
-            results[token_upper] = None
-            continue
-        cached = _price_cache.get(token_upper)
-        if cached and (now - cached[1]) < _CACHE_TTL:
-            results[token_upper] = cached[0]
-        else:
-            tokens_to_fetch.append(token_upper)
-
-    if not tokens_to_fetch:
-        return results
-
-    # Build symbols list for Binance batch request
-    symbols = [SUPPORTED_TOKENS[t] for t in tokens_to_fetch]
-
-    try:
-        async with aiohttp.ClientSession() as session:
-            if len(symbols) == 1:
-                url = f"{BINANCE_API_URL}?symbol={symbols[0]}"
-                async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
-                    if resp.status != 200:
-                        logger.warning("Binance returned HTTP %s", resp.status)
-                        for t in tokens_to_fetch:
-                            results[t] = None
-                        return results
-                    data = await resp.json()
-                    data = [data]  # normalize to list
-            else:
-                import json
-                symbols_param = json.dumps(symbols)
-                url = f"{BINANCE_API_URL}?symbols={symbols_param}"
-                async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
-                    if resp.status != 200:
-                        logger.warning("Binance returned HTTP %s", resp.status)
-                        for t in tokens_to_fetch:
-                            results[t] = None
-                        return results
-                    data = await resp.json()
-    except Exception as exc:
-        logger.error("Price fetch error: %s", exc)
-        for t in tokens_to_fetch:
+        t = token.upper()
+        if t not in SUPPORTED_TOKENS:
             results[t] = None
+            continue
+        cached = _price_cache.get(t)
+        if cached and (now - cached[1]) < _CACHE_TTL:
+            results[t] = cached[0]
+        else:
+            to_fetch.append(t)
+
+    if not to_fetch:
         return results
 
-    # Build reverse map: binance symbol → ticker
-    symbol_to_ticker = {v: k for k, v in SUPPORTED_TOKENS.items()}
+    async with aiohttp.ClientSession() as session:
+        # Primary: Binance
+        fetched = await _fetch_from_binance(session, to_fetch)
+
+        # Fallback: CryptoCompare for anything Binance didn't return
+        missed = [t for t in to_fetch if t not in fetched]
+        if missed:
+            logger.info("Falling back to CryptoCompare for: %s", missed)
+            fallback = await _fetch_from_cryptocompare(session, missed)
+            fetched.update(fallback)
 
     fetch_time = time.monotonic()
-    fetched_tickers = set()
-    for item in data:
-        ticker = symbol_to_ticker.get(item["symbol"])
-        if ticker:
-            price = float(item["price"])
-            _price_cache[ticker] = (price, fetch_time)
-            results[ticker] = price
-            fetched_tickers.add(ticker)
-
-    # Fill None for any that weren't returned
-    for t in tokens_to_fetch:
-        if t not in fetched_tickers:
-            results[t] = None
+    for t in to_fetch:
+        price = fetched.get(t)
+        if price is not None:
+            _price_cache[t] = (price, fetch_time)
+        results[t] = price
 
     return results
 
 
 async def fetch_price(token: str) -> Optional[float]:
-    """Convenience wrapper to fetch a single token price."""
+    """Fetch a single token price."""
     prices = await fetch_prices([token])
     return prices.get(token.upper())
 
 
 def format_price(price: float) -> str:
-    """Format a USD price for display, e.g. $68,240 or $0.0042."""
     if price >= 1:
         return f"${price:,.2f}"
     return f"${price:.6f}"
