@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>WhaleTracker — Hyperliquid</title>
+<title>Hypex Tracker — Hyperliquid</title>
 <style>
 /* ── Reset & Base ─────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -34,32 +34,71 @@ a{text-decoration:none;color:inherit}
 .fw7{font-weight:700}.fw8{font-weight:800}.fw9{font-weight:900}
 .mono{font-family:'Courier New',monospace}
 
+/* ── Splash Screen ──────────────────────────────────────── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:#07090f;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .65s ease;
+}
+#splash.out{opacity:0;pointer-events:none}
+.spl-inner{display:flex;flex-direction:column;align-items:center;animation:spl-in .8s ease both}
+@keyframes spl-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.spl-icon{position:relative;margin-bottom:24px;display:flex;align-items:center;justify-content:center}
+.spl-ring{position:absolute;inset:-14px;border-radius:50%;border:1px solid rgba(59,130,246,.22);animation:spl-ring 2.2s ease-out infinite}
+.spl-ring2{position:absolute;inset:-26px;border-radius:50%;border:1px solid rgba(59,130,246,.1);animation:spl-ring 2.2s ease-out .5s infinite}
+@keyframes spl-ring{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.spl-name{font-size:28px;font-weight:900;letter-spacing:6px;color:#e2e8f5;text-transform:uppercase;margin-bottom:5px}
+.spl-name-accent{color:var(--accent)}
+.spl-tagline{font-size:8px;letter-spacing:3.5px;text-transform:uppercase;color:#1e2a3d;margin-bottom:32px}
+.spl-bar-wrap{width:160px;height:1px;background:#0f1520;margin-bottom:14px;overflow:hidden;border-radius:1px}
+.spl-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));width:0;animation:spl-bar 2.4s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes spl-bar{0%{width:0}60%{width:65%}100%{width:100%}}
+.spl-status{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#1e2d40}
+
 /* ── Header ──────────────────────────────────────────── */
 header{
   position:sticky;top:0;z-index:100;
-  background:rgba(12,14,20,.92);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line);
-  padding:0 20px;
+  background:rgba(7,9,15,.97);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(59,130,246,.1);
+  padding:0 24px;
 }
-.hdr{display:flex;align-items:center;gap:16px;height:52px;flex-wrap:wrap}
-.logo{font-size:17px;font-weight:900;color:var(--accent);letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
-.logo-chip{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:var(--accent);font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.3px}
-.live{display:flex;align-items:center;gap:5px;color:var(--green);font-size:10px;font-weight:700;margin-left:auto}
+.hdr{display:flex;align-items:center;gap:14px;height:56px}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;line-height:1.15}
+.logo-name{font-size:15px;font-weight:900;color:#e2e8f5;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:5px}
+.logo-name span{color:var(--accent)}
+.logo-pro{background:linear-gradient(135deg,#3b82f6,#a78bfa);font-size:7px;font-weight:800;padding:1px 5px;border-radius:3px;color:#fff;letter-spacing:.8px;position:relative;top:-1px}
+.logo-sub{font-size:8px;letter-spacing:1.8px;text-transform:uppercase;color:#263040;margin-top:2px}
+.hdr-sep{width:1px;height:22px;background:rgba(255,255,255,.07);flex-shrink:0}
+.hdr-net{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:#4a5a78;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:4px 11px;border-radius:6px;flex-shrink:0}
+.hdr-net-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 1.5s infinite}
+.live{display:flex;align-items:center;gap:5px;color:var(--green);font-size:10px;font-weight:700;margin-left:auto;flex-shrink:0}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 
-/* Filter row */
-.filters{display:flex;align-items:center;gap:20px;padding:8px 0 9px;border-top:1px solid var(--line);flex-wrap:wrap}
-.fgroup{display:flex;align-items:center;gap:5px}
-.fgroup-label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);margin-right:3px;white-space:nowrap}
-.pill{padding:3px 12px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--sub);cursor:pointer;font-size:11px;font-weight:500;transition:all .15s;white-space:nowrap}
-.pill:hover{border-color:var(--accent);color:var(--accent)}
-.pill.act-s{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
-.pill.act-w{background:var(--green);border-color:var(--green);color:#000;font-weight:700}
-.pill.act-v{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:700}
-.pill.act-a{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:700}
+/* Filter toolbar */
+.filters{
+  display:flex;align-items:center;
+  border-top:1px solid rgba(255,255,255,.04);
+  background:rgba(0,0,0,.35);
+  height:36px;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;
+}
+.filters::-webkit-scrollbar{display:none}
+.fgroup{display:flex;align-items:center;gap:3px;padding:0 14px;height:100%;flex-shrink:0;position:relative}
+.fgroup+.fgroup::before{content:"";position:absolute;left:0;top:22%;height:56%;width:1px;background:rgba(255,255,255,.06)}
+.fgroup-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#253040;margin-right:5px;white-space:nowrap}
+.pill{padding:2px 9px;border-radius:4px;border:1px solid transparent;background:transparent;color:#364558;cursor:pointer;font-size:10px;font-weight:600;transition:all .12s;white-space:nowrap;font-family:inherit}
+.pill:hover{background:rgba(255,255,255,.06);color:var(--sub);border-color:rgba(255,255,255,.08)}
+.pill.act-s{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.35);color:var(--accent);font-weight:700}
+.pill.act-w{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);color:var(--green);font-weight:700}
+.pill.act-v{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.35);color:var(--purple);font-weight:700}
+.pill.act-a{background:rgba(249,115,22,.12);border-color:rgba(249,115,22,.35);color:var(--orange);font-weight:700}
 
 /* ── Market Pulse ─────────────────────────────────────── */
 .pulse{display:flex;gap:1px;background:var(--line)}
@@ -75,8 +114,8 @@ header{
   width:280px;flex-shrink:0;
   border-right:1px solid var(--line);
   padding:18px 16px;
-  position:sticky;top:113px; /* header height */
-  max-height:calc(100vh - 113px);
+  position:sticky;top:94px; /* header height */
+  max-height:calc(100vh - 94px);
   overflow-y:auto;
 }
 .sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
@@ -352,24 +391,54 @@ header{
 </head>
 <body>
 
+<!-- ══ Splash ════════════════════════════════════════════ -->
+<div id="splash">
+  <div class="spl-inner">
+    <div class="spl-icon">
+      <div class="spl-ring"></div>
+      <div class="spl-ring2"></div>
+      <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M33 4L60 20V46L33 62L6 46V20L33 4Z" fill="rgba(59,130,246,0.07)" stroke="rgba(59,130,246,0.38)" stroke-width="1.4"/>
+        <path d="M33 14L52 25V47L33 58L14 47V25L33 14Z" fill="none" stroke="rgba(59,130,246,0.1)" stroke-width="1"/>
+        <polyline points="17,43 23,31 28,37 33,26 38,32 43,22 49,27" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="spl-name">HYPEX<span class="spl-name-accent">TRACKER</span></div>
+    <div class="spl-tagline">Hyperliquid &middot; Whale Intelligence</div>
+    <div class="spl-bar-wrap"><div class="spl-bar"></div></div>
+    <div class="spl-status" id="spl-status">Connecting to Hyperliquid...</div>
+  </div>
+</div>
+
 <!-- ══ Header ══════════════════════════════════════════ -->
 <header>
   <div class="hdr">
     <div class="logo">
-      🐋 WhaleTracker
-      <span class="logo-chip">HYPERLIQUID</span>
+      <div class="logo-icon">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 2L27 9V21L15 28L3 21V9L15 2Z" fill="rgba(59,130,246,0.08)" stroke="rgba(59,130,246,0.5)" stroke-width="1.2"/>
+          <polyline points="7,19 10,14 13,17 16,11 19,15 23,12" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <div class="logo-name">HYPEX<span>TRACKER</span> <span class="logo-pro">PRO</span></div>
+        <div class="logo-sub">Hyperliquid &middot; Whale Intelligence</div>
+      </div>
+    </div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-net">
+      <span class="hdr-net-dot"></span>
+      Hyperliquid Mainnet
     </div>
     <div class="live"><span class="live-dot"></span>LIVE</div>
   </div>
   <div class="filters">
-    <!-- Style -->
     <div class="fgroup">
       <span class="fgroup-label">Style</span>
       <button class="pill act-s" data-f="all">All</button>
       <button class="pill" data-f="day">Day</button>
       <button class="pill" data-f="swing">Swing</button>
     </div>
-    <!-- Win Rate -->
     <div class="fgroup">
       <span class="fgroup-label">Win Rate</span>
       <button class="pill act-w" data-wr="0">Any</button>
@@ -377,7 +446,6 @@ header{
       <button class="pill" data-wr="70">70%+</button>
       <button class="pill" data-wr="80">80%+</button>
     </div>
-    <!-- Mkt Volume -->
     <div class="fgroup">
       <span class="fgroup-label">Mkt Vol</span>
       <button class="pill act-v" data-v="0">Any</button>
@@ -385,7 +453,6 @@ header{
       <button class="pill" data-v="5000000000">$5B+</button>
       <button class="pill" data-v="10000000000">$10B+</button>
     </div>
-    <!-- Wallet Age -->
     <div class="fgroup">
       <span class="fgroup-label">Wallet</span>
       <button class="pill act-a" data-age="all">All</button>
@@ -985,6 +1052,21 @@ bindGroup(".pill[data-f]","act-s",function(b){fS2=b.getAttribute("data-f");});
 bindGroup(".pill[data-wr]","act-w",function(b){fWR=parseInt(b.getAttribute("data-wr"))||0;});
 bindGroup(".pill[data-v]","act-v",function(b){fV=parseFloat(b.getAttribute("data-v"))||0;});
 bindGroup(".pill[data-age]","act-a",function(b){fAge=b.getAttribute("data-age");});
+
+// ── Splash ────────────────────────────────────────────────────────
+(function(){
+  var msgs=['Connecting to Hyperliquid...','Fetching whale positions...','Computing order flow data...','Analyzing win rates...','Building liquidity map...','Ready.'];
+  var i=0, el=document.getElementById('spl-status');
+  var t=setInterval(function(){
+    i++;
+    if(i<msgs.length&&el) el.textContent=msgs[i];
+    else clearInterval(t);
+  },380);
+  setTimeout(function(){
+    var s=document.getElementById('splash');
+    if(s){s.classList.add('out');setTimeout(function(){s.style.display='none';},700);}
+  },2500);
+})();
 
 // ── Init ──────────────────────────────────────────────────────────
 load();
