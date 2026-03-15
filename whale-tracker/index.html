@@ -693,7 +693,7 @@ var WHALES = [
      {asset:"BTC",side:"short",size:"1.2 BTC",entry:73500,exit:74300,opened:"Mar 10 09:00",closed:"Mar 10 12:30",dur:"3h 30m",pnl:-9600,win:false},
      {asset:"ETH",side:"long",size:"35 ETH",entry:1900,exit:2000,opened:"Mar 09 16:00",closed:"Mar 10 07:45",dur:"15h 45m",pnl:35000,win:true},
    ]},
-  {w:"0xC5d6\u20268B7e",a:"0xC5d6E7f8A9B0C1D2E3F4A5B6C7D8E9F0A1B28B7e",style:"day",pair:"SOL-PERP",age:11,lev:50,wr:.71,pnl:-23100,vol:12700000,trades:61,mkt:4200000000,
+  {w:"0xC5d6\u20268B7e",a:"0xC5d6E7f8A9B0C1D2E3F4A5B6C7D8E9F0A1B28B7e",style:"day",pair:"SOL-PERP",age:11,lev:50,wr:.76,pnl:-23100,vol:12700000,trades:61,mkt:4200000000,
    pos:{side:"short",asset:"SOL",size:"3200 SOL",entry:91.5,liq:93.1,openedMinsAgo:47,tp:86.8,sl:null},
    of:{cvd:-540000,cvdT:"down",delta:-280000,buy:5900000,sell:6800000,sig:"bear",
      fp:[{p:92.0,b:120,s:410},{p:91.5,b:90,s:380},{p:91.0,b:210,s:140},{p:90.5,b:85,s:330},{p:90.0,b:140,s:290}]}},
@@ -724,7 +724,7 @@ var WHALES = [
      {asset:"ETH",side:"long",size:"80 ETH",entry:2060,exit:2000,opened:"Mar 05 11:00",closed:"Mar 05 20:30",dur:"9h 30m",pnl:-48000,win:false},
      {asset:"BTC",side:"long",size:"1.5 BTC",entry:69200,exit:71500,opened:"Mar 03 08:00",closed:"Mar 04 14:00",dur:"1d 6h",pnl:34500,win:true},
    ]},
-  {w:"0xA3b4\u20261F8c",a:"0xA3b4C5D6E7F8A9B0C1D2E3F4A5B6C7D8E9F01F8c",style:"day",pair:"SOL-PERP",age:7,lev:30,wr:.69,pnl:78900,vol:9300000,trades:47,mkt:4200000000,
+  {w:"0xA3b4\u20261F8c",a:"0xA3b4C5D6E7F8A9B0C1D2E3F4A5B6C7D8E9F01F8c",style:"day",pair:"SOL-PERP",age:7,lev:30,wr:.74,pnl:78900,vol:9300000,trades:47,mkt:4200000000,
    pos:{side:"long",asset:"SOL",size:"12K SOL",entry:87.5,liq:85.0,openedMinsAgo:68,tp:null,sl:83.5},
    of:{cvd:430000,cvdT:"up",delta:140000,buy:5100000,sell:4200000,sig:"bull",
      fp:[{p:88.5,b:330,s:120},{p:88.0,b:410,s:90},{p:87.5,b:280,s:200},{p:87.0,b:190,s:140},{p:86.5,b:240,s:110}]}},
@@ -763,6 +763,17 @@ var WHALES = [
    of:{cvd:-210000,cvdT:"down",delta:-85000,buy:980000,sell:1120000,sig:"bear",
      fp:[{p:1.090,b:95,s:290},{p:1.085,b:110,s:310},{p:1.080,b:180,s:190},{p:1.075,b:140,s:260},{p:1.070,b:120,s:200}]}},
 ];
+
+// Live mark prices — updated each 30s tick to simulate real-time movement
+var MARKS = {BTC:71300, ETH:2053, SOL:89.3, AVAX:23.50, ARB:0.620, OP:1.020};
+function jitterMarks(){
+  var drift={BTC:180,ETH:7,SOL:0.35,AVAX:0.12,ARB:0.004,OP:0.005};
+  Object.keys(MARKS).forEach(function(k){
+    var r=drift[k]||1;
+    var raw=MARKS[k]+(Math.random()*r*2-r);
+    MARKS[k]=+(raw.toFixed(k==='BTC'?0:(raw>=10?2:3)));
+  });
+}
 
 // BTC heatmap — prices aligned to current BTC ~$71,300 (Mar 15 2026)
 var HM = [
@@ -811,6 +822,8 @@ var data=[], fS2="all", fWR=0, fV=0, fAge="all";
 
 function jitter(w){
   var o=w.of, nb=Math.round(o.buy*(0.88+Math.random()*0.24)), ns=Math.round(o.sell*(0.88+Math.random()*0.24));
+  // Age open positions by 0.5 min (30s) per refresh tick
+  if(w.pos) w.pos.openedMinsAgo += 0.5;
   return Object.assign({},w,{
     pnl:Math.round(w.pnl*(0.96+Math.random()*0.08)),
     vol:Math.round(w.vol*(0.99+Math.random()*0.02)),
@@ -1066,17 +1079,24 @@ function renderGrid(list){
     var posRow;
     if(w.pos){
       var p=w.pos;
+      var mark=MARKS[p.asset]||p.entry;
+      var rawPct=p.side==='long'?(mark-p.entry)/p.entry:(p.entry-mark)/p.entry;
+      var unrealPct=rawPct*w.lev*100;
+      var unrealCls=unrealPct>=0?'gn':'rd';
+      var unrealStr=(unrealPct>=0?'+':'')+unrealPct.toFixed(1)+'%';
+      var markColor=unrealPct>=0?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)';
       var tpHtml=p.tp?'<span class="tv tv-tp">$'+fPx(p.tp)+'</span>':'<span class="tv tv-nt">No Target</span>';
       var slHtml=p.sl?'<span class="tv tv-sl">$'+fPx(p.sl)+'</span>':'<span class="tv tv-nt">No SL</span>';
       posRow='<div class="wc-pos">'
           +'<span class="side-pill side-'+p.side+'">'+p.side.toUpperCase()+'</span>'
           +'<span class="pos-detail"><b>'+p.asset+'</b> &nbsp;'+p.size+'</span>'
-          +'<span class="pos-entry">Entry <b>$'+fPx(p.entry)+'</b> &nbsp; Liq <b style="color:rgba(239,68,68,.6)">$'+fPx(p.liq)+'</b></span>'
+          +'<span class="pos-entry">Entry <b>$'+fPx(p.entry)+'</b> &nbsp; Mark <b style="color:'+markColor+'">$'+fPx(mark)+'</b> &nbsp; Liq <b style="color:rgba(239,68,68,.6)">$'+fPx(p.liq)+'</b></span>'
         +'</div>'
         +'<div class="wc-tpsl">'
           +'<div class="tpsl-cell"><span class="tk">Target (TP)</span>'+tpHtml+'</div>'
           +'<div class="tpsl-cell"><span class="tk">Stop Loss (SL)</span>'+slHtml+'</div>'
           +'<div class="tpsl-cell"><span class="tk">Opened</span><span class="tv tv-time">'+relTime(p.openedMinsAgo)+'</span></div>'
+          +'<div class="tpsl-cell"><span class="tk">Unrealized</span><span class="tv '+unrealCls+'">'+unrealStr+'</span></div>'
         +'</div>';
     } else {
       posRow='<div class="no-pos">No open position &mdash; watching market</div>';
@@ -1172,6 +1192,7 @@ function render(){
 }
 
 function load(){
+  jitterMarks();
   data=WHALES.map(jitter);
   HM.forEach(function(r){if(r.liq>0)r.liq=Math.round(r.liq*(0.97+Math.random()*0.06));});
   render();
