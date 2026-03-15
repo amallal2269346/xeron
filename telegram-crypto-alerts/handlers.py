@@ -62,10 +62,9 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 # ──────────────────────────────────────────────────────────────────────────────
 
 async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    tokens = ", ".join(pf.supported_tokens_list())
     text = (
         "📖 <b>Available Commands</b>\n\n"
-        f"<b>Supported tokens:</b> {tokens}\n\n"
+        "Supports <b>Top 50 cryptos</b> — use /tokens to see the full list.\n\n"
         "<b>Set an alert:</b>\n"
         "/alert &lt;token&gt; above &lt;price&gt;\n"
         "  Alert when price rises above target.\n"
@@ -212,6 +211,18 @@ async def cmd_remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         await _reply(update, f"🗑️ Alert for <b>{token}</b>{suffix} has been removed.")
     else:
         await _reply(update, f"⚠️ No matching alert found for <b>{token}</b>{ ' ' + direction if direction else '' } in this chat.")
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# /tokens
+# ──────────────────────────────────────────────────────────────────────────────
+
+async def cmd_tokens(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    tokens = sorted(pf.supported_tokens_list())
+    # Display in rows of 6
+    rows = [tokens[i:i+6] for i in range(0, len(tokens), 6)]
+    grid = "\n".join("  ".join(f"<code>{t}</code>" for t in row) for row in rows)
+    await _reply(update, f"🪙 <b>Supported Tokens ({len(tokens)})</b>\n\n{grid}")
 
 
 # ──────────────────────────────────────────────────────────────────────────────

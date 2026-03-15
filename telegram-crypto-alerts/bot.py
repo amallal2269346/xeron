@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 from telegram.ext import Application, CommandHandler
 
 import database as db
-from handlers import cmd_start, cmd_help, cmd_alert, cmd_list, cmd_remove, cmd_price
+from handlers import cmd_start, cmd_help, cmd_alert, cmd_list, cmd_remove, cmd_price, cmd_tokens
 from alert_checker import run_alert_loop
 
 load_dotenv()
@@ -77,6 +77,7 @@ def main() -> None:
     app.add_handler(CommandHandler("list",   cmd_list))
     app.add_handler(CommandHandler("remove", cmd_remove))
     app.add_handler(CommandHandler("price",  cmd_price))
+    app.add_handler(CommandHandler("tokens", cmd_tokens))
 
     logger.info("Xe Price Alert Bot is running…")
     app.run_polling(drop_pending_updates=True)
