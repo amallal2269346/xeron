@@ -21,6 +21,19 @@ import price_fetcher as pf
 logger = logging.getLogger(__name__)
 
 
+def _parse_price(value: str) -> float:
+    """
+    Parse a price string that may use k/m suffixes.
+    Examples: '69k' -> 69000, '1.5m' -> 1500000, '70000' -> 70000
+    """
+    value = value.replace(",", "").strip().lower()
+    if value.endswith("m"):
+        return float(value[:-1]) * 1_000_000
+    if value.endswith("k"):
+        return float(value[:-1]) * 1_000
+    return float(value)
+
+
 def _user_display(update: Update) -> str:
     user = update.effective_user
     return f"@{user.username}" if user and user.username else (user.first_name if user else "Someone")
@@ -123,11 +136,11 @@ async def cmd_alert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
 
     try:
-        target_price = float(price_str.replace(",", ""))
+        target_price = _parse_price(price_str)
         if target_price <= 0:
             raise ValueError
     except ValueError:
-        await _reply(update, "⚠️ Price must be a positive number.\nExample: /alert btc above 70000")
+        await _reply(update, "⚠️ Price must be a positive number.\nExamples: 70000 or 70k or 1.5m")
         return
 
     chat_id = update.effective_chat.id
