@@ -1,236 +1,218 @@
-/* ─── PRICING DATA ─────────────────────────────────────────────────────────── */
+/* ─── PRICING ($USD) ─────────────────────────────────────────────────────────── */
 const PRICES = {
-  pro:   { 1: 130,  3: 360,  6: 670,  12: 1260 },
-  max5:  { 1: 200,  3: 560,  6: 1050, 12: 1960 },
-  max20: { 1: 250,  3: 705,  6: 1380, 12: 2580 },
+  pro:   { 1: 130,  3: 360,  6: 670,   12: 1260 },
+  max5:  { 1: 200,  3: 560,  6: 1050,  12: 1960 },
+  max20: { 1: 250,  3: 705,  6: 1380,  12: 2580 },
 };
 
-// Approximate crypto rates (would be live in production)
-const RATES = { usdc: 1, usdt: 1, sol: 0.00645 };
+// SOL_PRICE is approximate; production would fetch live price
+const SOL_PRICE_USD = 155;
 
-const PLAN_NAMES = { pro: 'Pro', max5: 'Max 5x', max20: 'Max 20x' };
-const CURRENCY_NAMES = { usdc: 'USDC', usdt: 'USDT', sol: 'SOL' };
+const PLAN_LABELS = { pro: 'Pro', max5: 'Max 5x', max20: 'Max 20x' };
+const CURRENCY_LABELS = { usdc: 'USDC', usdt: 'USDT', sol: 'SOL' };
 
-// Demo deposit addresses per network
 const ADDRESSES = {
   solana:   'BvW7GQ3XHjXz8YrxC9tMk2nJpLqFzKdW5sRbUePoT4ah',
   ethereum: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
   polygon:  '0x3A5C2E9b4F1D7e8B06c3D9A2f5E4C1B8d7A6e9F2',
 };
 
-/* ─── STATE ─────────────────────────────────────────────────────────────────── */
-let state = {
-  plan: 'max5',
-  months: 6,
-  currency: 'usdc',
-  network: 'solana',
-};
+/* ─── STATE ──────────────────────────────────────────────────────────────────── */
+const state = { plan: 'max5', months: 6, currency: 'usdc', network: 'solana' };
 
-/* ─── HELPERS ───────────────────────────────────────────────────────────────── */
-function getUsdPrice() {
-  return PRICES[state.plan][state.months];
-}
-
-function getCryptoAmount() {
-  const usd = getUsdPrice();
-  const rate = RATES[state.currency];
-  if (state.currency === 'sol') {
-    const solPrice = 1 / rate; // ~$155
-    return (usd / solPrice).toFixed(3);
-  }
+/* ─── HELPERS ────────────────────────────────────────────────────────────────── */
+function usdPrice()    { return PRICES[state.plan][state.months]; }
+function fmtUsd(n)     { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function cryptoAmount() {
+  const usd = usdPrice();
+  if (state.currency === 'sol') return (usd / SOL_PRICE_USD).toFixed(3);
   return usd.toFixed(2);
 }
 
-function formatUsd(n) {
-  return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+/* ─── RENDER SUMMARY ─────────────────────────────────────────────────────────── */
+function renderSummary() {
+  const sym = CURRENCY_LABELS[state.currency];
+  const months = state.months === 1 ? '1 month' : `${state.months} months`;
+  document.getElementById('sumPlan').textContent     = PLAN_LABELS[state.plan];
+  document.getElementById('sumDuration').textContent = months;
+  document.getElementById('sumCurrency').textContent = sym;
+  document.getElementById('sumTotal').textContent    = fmtUsd(usdPrice());
+  document.getElementById('sumCrypto').textContent   = `${cryptoAmount()} ${sym}`;
 }
 
-/* ─── UPDATE UI ─────────────────────────────────────────────────────────────── */
-function updateSummary() {
-  const usd = getUsdPrice();
-  const crypto = getCryptoAmount();
-  const symbol = CURRENCY_NAMES[state.currency];
-  const monthLabel = state.months === 1 ? '1 month' : `${state.months} months`;
-
-  document.getElementById('sumPlan').textContent = PLAN_NAMES[state.plan];
-  document.getElementById('sumDuration').textContent = monthLabel;
-  document.getElementById('sumCurrency').textContent = symbol;
-  document.getElementById('sumTotal').textContent = formatUsd(usd);
-  document.getElementById('sumCryptoAmount').textContent = `${crypto} ${symbol}`;
-}
-
-/* ─── PLAN TABS ─────────────────────────────────────────────────────────────── */
-document.querySelectorAll('.plan-tab').forEach(btn => {
+/* ─── PLAN CARDS ─────────────────────────────────────────────────────────────── */
+document.querySelectorAll('.plan-card').forEach(btn => {
   btn.addEventListener('click', () => {
     state.plan = btn.dataset.plan;
-    document.querySelectorAll('.plan-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.plan-card').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    updateSummary();
+    renderSummary();
   });
 });
+// Set initial active
+document.querySelector('.plan-card[data-plan="max5"]').classList.add('active');
 
-/* ─── DURATION ──────────────────────────────────────────────────────────────── */
+/* ─── DURATION ───────────────────────────────────────────────────────────────── */
 document.querySelectorAll('.dur-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    state.months = parseInt(btn.dataset.months);
+    state.months = parseInt(btn.dataset.months, 10);
     document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    updateSummary();
+    renderSummary();
   });
 });
 
-/* ─── CURRENCY ──────────────────────────────────────────────────────────────── */
+/* ─── CURRENCY ───────────────────────────────────────────────────────────────── */
 document.querySelectorAll('.cur-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     state.currency = btn.dataset.currency;
     document.querySelectorAll('.cur-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    // Auto-select best network for currency
-    if (state.currency === 'sol') {
-      selectNetwork('solana');
-    } else {
-      selectNetwork('ethereum');
-    }
-    updateSummary();
+    renderSummary();
+    // Auto-switch modal network if open
+    if (state.currency === 'sol') setNetwork('solana');
+    else setNetwork('ethereum');
   });
 });
 
-/* ─── FAQ ACCORDION ─────────────────────────────────────────────────────────── */
+/* ─── FAQ ACCORDION ──────────────────────────────────────────────────────────── */
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.addEventListener('click', () => {
-    const item = btn.parentElement;
-    const isOpen = item.classList.contains('open');
+    const item = btn.closest('.faq-item');
+    const open = item.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
+    if (!open) item.classList.add('open');
   });
 });
 
-/* ─── MODAL ─────────────────────────────────────────────────────────────────── */
-const overlay = document.getElementById('modalOverlay');
-const modalClose = document.getElementById('modalClose');
+/* ─── MODAL ──────────────────────────────────────────────────────────────────── */
+const overlay     = document.getElementById('modalOverlay');
+const modalClose  = document.getElementById('modalClose');
 const checkoutBtn = document.getElementById('checkoutBtn');
-let countdownInterval = null;
+let timer = null;
+let qrInstance = null;
 
 function openModal() {
   const email = document.getElementById('emailInput').value.trim();
-  if (!email || !email.includes('@')) {
-    document.getElementById('emailInput').focus();
-    document.getElementById('emailInput').style.borderColor = '#f87171';
-    setTimeout(() => { document.getElementById('emailInput').style.borderColor = ''; }, 2000);
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const inp = document.getElementById('emailInput');
+    inp.focus();
+    inp.style.borderColor = '#f87171';
+    inp.style.boxShadow = '0 0 0 3px rgba(248,113,113,0.18)';
+    setTimeout(() => { inp.style.borderColor = ''; inp.style.boxShadow = ''; }, 2200);
     return;
   }
 
-  const crypto = getCryptoAmount();
-  const symbol = CURRENCY_NAMES[state.currency];
+  // Update modal content
+  const sym = CURRENCY_LABELS[state.currency];
+  document.getElementById('modalAmount').textContent = `${cryptoAmount()} ${sym}`;
 
-  document.getElementById('modalAmount').textContent = `${crypto} ${symbol}`;
-  updateDepositAddress();
+  // Reset tracker steps
+  ['ts1','ts2','ts3'].forEach((id, i) => {
+    document.getElementById(id).classList.toggle('active', i === 0);
+  });
+
+  // Set network from currency
+  const net = state.currency === 'sol' ? 'solana' : 'ethereum';
+  setNetwork(net);
+
   startCountdown(30 * 60);
-  overlay.classList.add('active');
-  generateQR();
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-  overlay.classList.remove('active');
-  if (countdownInterval) clearInterval(countdownInterval);
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if (timer) { clearInterval(timer); timer = null; }
 }
 
 checkoutBtn.addEventListener('click', openModal);
 modalClose.addEventListener('click', closeModal);
 overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-/* ─── NETWORK TABS ──────────────────────────────────────────────────────────── */
+/* ─── NETWORK TABS ───────────────────────────────────────────────────────────── */
 document.querySelectorAll('.net-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    selectNetwork(btn.dataset.net);
-  });
+  btn.addEventListener('click', () => setNetwork(btn.dataset.net));
 });
 
-function selectNetwork(net) {
+function setNetwork(net) {
   state.network = net;
-  document.querySelectorAll('.net-tab').forEach(b => b.classList.remove('active'));
-  const tab = document.querySelector(`.net-tab[data-net="${net}"]`);
-  if (tab) tab.classList.add('active');
-  updateDepositAddress();
+  document.querySelectorAll('.net-tab').forEach(b => b.classList.toggle('active', b.dataset.net === net));
+  document.getElementById('depositAddr').textContent = ADDRESSES[net];
+  buildQR(ADDRESSES[net]);
 }
 
-function updateDepositAddress() {
-  document.getElementById('depositAddress').textContent = ADDRESSES[state.network];
-  generateQR();
+/* ─── QR CODE ────────────────────────────────────────────────────────────────── */
+function buildQR(text) {
+  const container = document.getElementById('qrCanvas');
+  container.innerHTML = '';
+  if (typeof QRCode !== 'undefined') {
+    qrInstance = new QRCode(container, {
+      text: text,
+      width: 140,
+      height: 140,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M,
+    });
+  } else {
+    // Fallback if library fails to load
+    container.style.width = '140px';
+    container.style.height = '140px';
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.justifyContent = 'center';
+    container.style.fontSize = '12px';
+    container.style.color = '#666';
+    container.textContent = 'QR unavailable';
+  }
 }
 
-/* ─── COPY ADDRESS ──────────────────────────────────────────────────────────── */
+/* ─── COPY ADDRESS ───────────────────────────────────────────────────────────── */
 document.getElementById('copyBtn').addEventListener('click', () => {
-  const address = ADDRESSES[state.network];
-  navigator.clipboard.writeText(address).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = 'Copied!';
+  const addr = ADDRESSES[state.network];
+  const btn = document.getElementById('copyBtn');
+  navigator.clipboard.writeText(addr).then(() => {
+    btn.textContent = '✓ Copied';
     btn.style.background = '#22c55e';
-    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; }, 2000);
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; }, 2200);
+  }).catch(() => {
+    // Fallback for browsers without clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = addr;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copied';
+    btn.style.background = '#22c55e';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; }, 2200);
   });
 });
 
-/* ─── QR CODE (CSS-based) ────────────────────────────────────────────────────── */
-function generateQR() {
-  // Simple visual QR placeholder — in production use qrcode.js
-  const qr = document.getElementById('qrCode');
-  const address = ADDRESSES[state.network];
-  // Create a deterministic pattern based on address
-  let html = '';
-  const size = 14;
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size; c++) {
-      const charCode = address.charCodeAt((r * size + c) % address.length);
-      const dark = (charCode + r + c) % 3 !== 0;
-      html += `<div style="width:10px;height:10px;background:${dark?'#000':'#fff'};display:inline-block;"></div>`;
-    }
-    html += '<br/>';
-  }
-  qr.innerHTML = html;
-  qr.style.fontSize = 0;
-  qr.style.lineHeight = '10px';
-}
-
-/* ─── COUNTDOWN ─────────────────────────────────────────────────────────────── */
-function startCountdown(seconds) {
-  if (countdownInterval) clearInterval(countdownInterval);
-  let remaining = seconds;
+/* ─── COUNTDOWN ──────────────────────────────────────────────────────────────── */
+function startCountdown(secs) {
+  if (timer) clearInterval(timer);
+  let remaining = secs;
   const el = document.getElementById('countdown');
 
   function tick() {
+    if (remaining < 0) {
+      clearInterval(timer);
+      el.textContent = 'Expired';
+      el.style.color = '#f87171';
+      return;
+    }
     const m = Math.floor(remaining / 60);
     const s = remaining % 60;
     el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    if (remaining <= 0) {
-      clearInterval(countdownInterval);
-      el.textContent = 'Expired';
-      el.style.color = '#f87171';
-    }
     remaining--;
   }
   tick();
-  countdownInterval = setInterval(tick, 1000);
-}
-
-/* ─── SIMULATE PAYMENT DETECTION ────────────────────────────────────────────── */
-// In production this would poll a backend or use websockets
-function simulatePaymentFlow() {
-  let phase = 0;
-  const steps = ['mstep1', 'mstep2', 'mstep3'];
-  const interval = setInterval(() => {
-    phase++;
-    if (phase < steps.length) {
-      document.getElementById(steps[phase]).classList.add('active');
-    }
-    if (phase >= steps.length - 1) {
-      clearInterval(interval);
-      setTimeout(() => {
-        document.getElementById('modalAmount').parentElement.innerHTML =
-          '<strong style="color:#22c55e;font-size:16px;">✓ Payment confirmed! Subscription will be sent to your email.</strong>';
-      }, 1000);
-    }
-  }, 4000);
+  timer = setInterval(tick, 1000);
 }
 
 /* ─── INIT ───────────────────────────────────────────────────────────────────── */
-updateSummary();
+renderSummary();

@@ -1,3 +1,7 @@
 {
-  "outputDirectory": "claude-with-crypto"
+  "version": 2,
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": "claude-with-crypto",
+  "installCommand": null
 }
