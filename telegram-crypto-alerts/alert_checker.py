@@ -27,6 +27,8 @@ PRICE_CHECK_INTERVAL: int = int(os.getenv("PRICE_CHECK_INTERVAL", "15"))
 async def _send_alert(
     bot: Bot,
     chat_id: int,
+    user_id: int,
+    username: str | None,
     token: str,
     direction: str,
     target_price: float,
@@ -34,10 +36,18 @@ async def _send_alert(
 ) -> None:
     arrow = "📈" if direction == "above" else "📉"
     crossed = "risen above" if direction == "above" else "dropped below"
+
+    # Tag the user who set the alert
+    if username:
+        mention = f"@{username}"
+    else:
+        mention = f'<a href="tg://user?id={user_id}">Alert Owner</a>'
+
     text = (
         f"🚨 <b>Price Alert</b>\n\n"
         f"{arrow} <b>{token}</b> has {crossed} {pf.format_price(target_price)}\n\n"
-        f"Current Price: <b>{pf.format_price(current_price)}</b>"
+        f"Current Price: <b>{pf.format_price(current_price)}</b>\n\n"
+        f"👤 {mention}"
     )
     try:
         await bot.send_message(chat_id=chat_id, text=text, parse_mode="HTML")
@@ -81,6 +91,8 @@ async def check_alerts(bot: Bot) -> None:
                 await _send_alert(
                     bot,
                     chat_id=alert["chat_id"],
+                    user_id=alert["user_id"],
+                    username=alert.get("username"),
                     token=token,
                     direction=direction,
                     target_price=target,
