@@ -249,6 +249,41 @@ header{
 .view-btn{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--accent);padding:4px 10px;border:1px solid rgba(59,130,246,.3);border-radius:6px;transition:all .15s}
 .view-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 
+/* ── BTC Setup Section ───────────────────────────────── */
+.setup-section{margin-bottom:4px}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.setup-grid{grid-template-columns:1fr}}
+.setup-card{border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.setup-card.long-setup{border-top:3px solid var(--green)}
+.setup-card.short-setup{border-top:3px solid var(--red)}
+.sc-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.sc-head.long-h{background:rgba(34,197,94,.06)}
+.sc-head.short-h{background:rgba(239,68,68,.06)}
+.sc-title{display:flex;align-items:center;gap:10px}
+.sc-side{font-size:15px;font-weight:900;letter-spacing:.5px}
+.sc-side.gn{color:var(--green)}.sc-side.rd{color:var(--red)}
+.sc-pair{font-size:10px;font-weight:700;color:var(--sub);background:var(--line);padding:2px 8px;border-radius:4px}
+.sc-conf{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.sc-conf-label{font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:var(--sub)}
+.sc-conf-val{font-size:11px;font-weight:800}
+.conf-high{color:var(--green)}.conf-med{color:var(--yellow)}.conf-low{color:var(--red)}
+.sc-body{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.sc-cell{background:var(--card);padding:10px 14px;display:flex;flex-direction:column;gap:3px}
+.sc-cell.full{grid-column:1/-1}
+.sc-k{font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:var(--sub)}
+.sc-v{font-size:16px;font-weight:800}
+.sc-sub{font-size:9px;color:var(--sub);margin-top:1px}
+.sc-sub b{color:var(--text)}
+.rr-bar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;display:flex;margin-top:4px}
+.rr-profit{background:var(--green)}.rr-risk{background:var(--red)}
+.sc-whales{padding:10px 14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.sc-whales-label{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-right:2px}
+.whale-chip{font-family:monospace;font-size:9px;background:var(--card2);border:1px solid var(--line);color:var(--accent);padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:4px}
+.whale-chip-wr{font-size:8px;color:var(--green);font-weight:700;font-family:sans-serif}
+.sc-foot{padding:8px 14px;border-top:1px solid var(--line);font-size:9px;color:var(--sub);display:flex;justify-content:space-between;align-items:center;background:var(--card2)}
+.sc-bias{font-weight:700;font-size:10px}
+.bias-bull{color:var(--green)}.bias-bear{color:var(--red)}.bias-neut{color:var(--sub)}
+
 /* ── Empty state ─────────────────────────────────────── */
 .empty-state{text-align:center;padding:48px 20px;color:var(--sub)}
 .empty-state p{font-size:13px;margin-top:6px}
@@ -360,6 +395,12 @@ header{
     <div>
       <div class="sec-label">⚡ Order Flow Signals</div>
       <div class="sigs" id="sigs"></div>
+    </div>
+
+    <!-- BTC Setup -->
+    <div class="setup-section">
+      <div class="sec-label">🎯 BTC Trade Setup — Based on Whale Entries</div>
+      <div class="setup-grid" id="btc-setup"></div>
     </div>
 
     <!-- Whale Cards -->
@@ -580,6 +621,144 @@ function fpHTML(fp){
     +'<div class="fp-legend"><span class="rd">\u25c4 Sell pressure</span><span class="gn">Buy pressure \u25ba</span></div>';
 }
 
+// ── BTC Setup ─────────────────────────────────────────────────────
+function renderBTCSetup(){
+  var el=document.getElementById('btc-setup');
+
+  // Gather all BTC positions from ALL whales (not filtered)
+  var btcLongs=[], btcShorts=[];
+  WHALES.forEach(function(w){
+    if(!w.pos||w.pos.asset!=='BTC')return;
+    if(w.pos.side==='long')btcLongs.push(w);
+    else btcShorts.push(w);
+  });
+
+  el.innerHTML=setupCard(btcLongs,'long')+setupCard(btcShorts,'short');
+}
+
+function wavg(arr,key){
+  // weighted average by win rate
+  var sumW=0,sumV=0;
+  arr.forEach(function(w){sumW+=w.wr;sumV+=w.pos[key]*w.wr;});
+  return sumW?sumV/sumW:0;
+}
+function median(vals){
+  if(!vals.length)return null;
+  var s=vals.slice().sort(function(a,b){return a-b;});
+  var m=Math.floor(s.length/2);
+  return s.length%2?s[m]:(s[m-1]+s[m])/2;
+}
+
+function setupCard(whales,side){
+  var isLong=side==='long';
+  var isEmpty=!whales.length;
+
+  if(isEmpty){
+    return '<div class="setup-card '+(isLong?'long-setup':'short-setup')+'">'
+      +'<div class="sc-head '+(isLong?'long-h':'short-h')+'">'
+        +'<div class="sc-title">'
+          +'<span class="sc-side '+(isLong?'gn':'rd')+'">'+(isLong?'▲ LONG':'▼ SHORT')+'</span>'
+          +'<span class="sc-pair">BTC-PERP</span>'
+        +'</div>'
+      +'</div>'
+      +'<div style="padding:20px 16px;color:var(--sub);font-size:11px">No whale positioned '+(isLong?'long':'short')+' on BTC right now.</div>'
+    +'</div>';
+  }
+
+  // Weighted avg entry
+  var entry=Math.round(wavg(whales,'entry'));
+
+  // Consensus TP: whales with a TP set
+  var tps=whales.filter(function(w){return w.pos.tp;}).map(function(w){return w.pos.tp;});
+  var tp=tps.length?Math.round(median(tps)):null;
+
+  // Consensus SL: whales with an SL set
+  var sls=whales.filter(function(w){return w.pos.sl;}).map(function(w){return w.pos.sl;});
+  var sl=sls.length?Math.round(median(sls)):null;
+
+  // Avg WR
+  var avgWR=whales.reduce(function(s,w){return s+w.wr;},0)/whales.length;
+
+  // Confidence: based on whale count + avg WR
+  var score=Math.min(100,Math.round(whales.length*20+avgWR*40));
+  var confLabel=score>=75?'HIGH':score>=50?'MEDIUM':'LOW';
+  var confCls=score>=75?'conf-high':score>=50?'conf-med':'conf-low';
+
+  // R:R
+  var rrHtml='';
+  if(tp&&sl){
+    var profit=Math.abs(tp-entry), risk=Math.abs(entry-sl);
+    var rr=(profit/risk).toFixed(1);
+    var profitPct=Math.round(profit/(profit+risk)*100);
+    rrHtml='<div class="rr-bar"><div class="rr-profit" style="width:'+profitPct+'%"></div><div class="rr-risk" style="width:'+(100-profitPct)+'%"></div></div>';
+  }
+
+  // TP/SL % move from entry
+  var tpPct=tp?((Math.abs(tp-entry)/entry)*100).toFixed(1)+'%':null;
+  var slPct=sl?((Math.abs(sl-entry)/entry)*100).toFixed(1)+'%':null;
+
+  // Bias from CVD + heatmap direction (global state from renderHeatmap)
+  var netCvd=WHALES.reduce(function(s,w){return s+w.of.cvd;},0);
+  var biasLabel, biasCls;
+  if(isLong){
+    biasLabel=netCvd>0?'CVD supports':'CVD against';
+    biasCls=netCvd>0?'bias-bull':'bias-bear';
+  } else {
+    biasLabel=netCvd<0?'CVD supports':'CVD against';
+    biasCls=netCvd<0?'bias-bull':'bias-bear';
+  }
+
+  // Whale chips
+  var chips=whales.map(function(w){
+    return '<span class="whale-chip">'+w.w+'<span class="whale-chip-wr">'+Math.round(w.wr*100)+'%</span></span>';
+  }).join('');
+
+  return '<div class="setup-card '+(isLong?'long-setup':'short-setup')+'">'
+    // header
+    +'<div class="sc-head '+(isLong?'long-h':'short-h')+'">'
+      +'<div class="sc-title">'
+        +'<span class="sc-side '+(isLong?'gn':'rd')+'">'+(isLong?'▲ LONG':'▼ SHORT')+'</span>'
+        +'<span class="sc-pair">BTC-PERP</span>'
+        +'<span style="font-size:10px;color:var(--sub)">'+whales.length+' whale'+(whales.length>1?'s':'')+' aligned</span>'
+      +'</div>'
+      +'<div class="sc-conf">'
+        +'<span class="sc-conf-label">Confidence</span>'
+        +'<span class="sc-conf-val '+confCls+'">'+confLabel+'</span>'
+      +'</div>'
+    +'</div>'
+    // cells
+    +'<div class="sc-body">'
+      +'<div class="sc-cell full">'
+        +'<span class="sc-k">Entry Zone (whale avg)</span>'
+        +'<span class="sc-v">$'+entry.toLocaleString()+'</span>'
+        +'<span class="sc-sub">Avg win rate of aligned whales: <b>'+Math.round(avgWR*100)+'%</b></span>'
+      +'</div>'
+      +'<div class="sc-cell">'
+        +'<span class="sc-k">Take Profit</span>'
+        +(tp
+          ?'<span class="sc-v gn">$'+tp.toLocaleString()+'</span><span class="sc-sub">+'+(tpPct)+' from entry</span>'
+          :'<span class="sc-v" style="color:var(--dim);font-size:12px;font-style:italic">No consensus TP</span>')
+      +'</div>'
+      +'<div class="sc-cell">'
+        +'<span class="sc-k">Stop Loss</span>'
+        +(sl
+          ?'<span class="sc-v rd">$'+sl.toLocaleString()+'</span><span class="sc-sub">-'+(slPct)+' from entry</span>'
+          :'<span class="sc-v" style="color:var(--dim);font-size:12px;font-style:italic">No consensus SL</span>')
+      +'</div>'
+      +(tp&&sl
+        ?'<div class="sc-cell full"><span class="sc-k">Risk / Reward &nbsp;·&nbsp; 1 : '+((Math.abs(tp-entry)/Math.abs(entry-sl)).toFixed(1))+'</span>'+rrHtml+'</div>'
+        :'')
+    +'</div>'
+    // supporting whales
+    +'<div class="sc-whales"><span class="sc-whales-label">Whales</span>'+chips+'</div>'
+    // footer
+    +'<div class="sc-foot">'
+      +'<span style="color:var(--sub)">Based on '+whales.length+' live position'+(whales.length>1?'s':'')+' · updates every 30s</span>'
+      +'<span class="sc-bias '+biasCls+'">'+biasLabel+'</span>'
+    +'</div>'
+  +'</div>';
+}
+
 // ── Trade history HTML ────────────────────────────────────────────
 function histHTML(w){
   var wins=w.history.filter(function(t){return t.win;}).length;
@@ -741,6 +920,7 @@ function render(){
     return true;
   }).sort(function(a,b){return b.wr-a.wr;});
   renderSigs(list);
+  renderBTCSetup();
   renderGrid(list);
   renderPulse(list);
 }
