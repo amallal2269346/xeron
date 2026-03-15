@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whale Tracker — Pro Leverage Traders</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">🐋 WhaleTracker</div>
+    <div class="subtitle">Pro leverage traders · High volume · High win rate</div>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="day">Day Trade</button>
+      <button class="filter-btn" data-filter="swing">Swing Trade</button>
+    </div>
+  </header>
+
+  <section class="stats-bar">
+    <div class="stat"><span class="label">Total Whales</span><span class="value" id="total-whales">—</span></div>
+    <div class="stat"><span class="label">Avg Win Rate</span><span class="value" id="avg-winrate">—</span></div>
+    <div class="stat"><span class="label">Total Volume 24h</span><span class="value" id="total-volume">—</span></div>
+    <div class="stat"><span class="label">Active Positions</span><span class="value" id="active-pos">—</span></div>
+  </section>
+
+  <main>
+    <div class="table-wrapper">
+      <table id="whale-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Wallet</th>
+            <th>Style</th>
+            <th>Leverage</th>
+            <th>Win Rate</th>
+            <th>24h PnL</th>
+            <th>Volume 24h</th>
+            <th>Trades</th>
+            <th>Active Position</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody id="whale-body">
+          <tr><td colspan="10" class="loading">Loading whale data…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="position-cards" class="cards-grid"></div>
+  </main>
+
+  <footer>
+    <span>Data refreshes every 30s · Not financial advice · Track smarter, not harder.</span>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
