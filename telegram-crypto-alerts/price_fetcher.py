@@ -68,6 +68,7 @@ SUPPORTED_TOKENS: dict[str, str] = {
     "CRV":   "curve-dao-token",
     "SNX":   "havven",
     "ZEC":   "zcash",
+    "TAO":   "bittensor",
 }
 
 # Cache: { coin_id: (price_usd, fetched_at_unix_seconds) }
