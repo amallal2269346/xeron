@@ -201,12 +201,17 @@ header{
 .age-badge{font-size:8px;padding:1px 6px;border-radius:20px;font-weight:700;border:1px solid}
 .age-fresh{color:var(--orange);border-color:rgba(249,115,22,.22);background:rgba(249,115,22,.06)}
 .age-est{color:#3a4a60;border-color:#18202e;background:transparent}
-.wc-tags{display:flex;gap:4px;align-items:center}
-.tag{font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.3px}
-/* neutral tag colors — no competing greens */
-.tag-pair{background:rgba(100,120,220,.08);border:1px solid rgba(100,120,220,.18);color:#5868a8}
-.tag-day{background:rgba(180,140,40,.07);border:1px solid rgba(180,140,40,.15);color:#7a6020}
-.tag-swing{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.16);color:#3a5888}
+.wc-tags{display:flex;gap:5px;align-items:center}
+.tag{font-size:9px;font-weight:800;padding:3px 9px;border-radius:4px;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+/* Per-asset pair tags */
+.tag-btc{background:rgba(249,115,22,.16);border:1px solid rgba(249,115,22,.38);color:#fb923c}
+.tag-eth{background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.38);color:#b39af8}
+.tag-sol{background:rgba(20,214,190,.16);border:1px solid rgba(20,214,190,.36);color:#2ee8d0}
+.tag-avax{background:rgba(239,68,68,.16);border:1px solid rgba(239,68,68,.36);color:#f87171}
+.tag-alt{background:rgba(59,130,246,.16);border:1px solid rgba(59,130,246,.36);color:#7ab4f8}
+/* Style tags */
+.tag-day{background:rgba(234,179,8,.16);border:1px solid rgba(234,179,8,.38);color:#fbbf24}
+.tag-swing{background:rgba(167,139,250,.16);border:1px solid rgba(167,139,250,.36);color:#c4b5fd}
 
 /* Key metrics row */
 .wc-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid #18202e;border-bottom:1px solid #18202e;margin-top:10px}
@@ -1110,8 +1115,8 @@ function renderGrid(list){
           +'<span class="age-badge '+(isFresh?"age-fresh":"age-est")+'">'+(isFresh?w.age+'d \u2022 new':w.age+'d')+'</span>'
         +'</div>'
         +'<div class="wc-tags">'
-          +'<span class="tag tag-pair">'+w.pair+'</span>'
-          +'<span class="tag '+(w.style==="day"?"tag-day":"tag-swing")+'">'+w.style+'</span>'
+          +'<span class="tag '+(w.pair.startsWith('BTC')?'tag-btc':w.pair.startsWith('ETH')?'tag-eth':w.pair.startsWith('SOL')?'tag-sol':w.pair.startsWith('AVAX')?'tag-avax':'tag-alt')+'">'+w.pair+'</span>'
+          +'<span class="tag '+(w.style==="day"?"tag-day":"tag-swing")+'">'+(w.style==="day"?"Day Trade":"Swing")+'</span>'
         +'</div>'
       +'</div>'
       // metrics
