@@ -13,7 +13,8 @@ import os
 import sys
 
 from dotenv import load_dotenv
-from telegram.ext import Application, CommandHandler
+from telegram import Update
+from telegram.ext import Application, CommandHandler, ContextTypes
 
 import database as db
 from handlers import cmd_start, cmd_help, cmd_alert, cmd_list, cmd_remove, cmd_price, cmd_tokens, cmd_active
@@ -42,6 +43,10 @@ logging.getLogger("httpcore").setLevel(logging.WARNING)
 # ──────────────────────────────────────────────────────────────────────────────
 # Application lifecycle hooks
 # ──────────────────────────────────────────────────────────────────────────────
+
+async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
+    logger.error("Unhandled exception (update=%s): %s", update, context.error, exc_info=context.error)
+
 
 async def post_init(application: Application) -> None:
     """Called once after the bot is fully initialised."""
@@ -80,8 +85,13 @@ def main() -> None:
     app.add_handler(CommandHandler("tokens", cmd_tokens))
     app.add_handler(CommandHandler("active", cmd_active))
 
+    app.add_error_handler(error_handler)
+
     logger.info("Xe Price Alert Bot is running…")
-    app.run_polling(drop_pending_updates=True)
+    app.run_polling(
+        drop_pending_updates=True,
+        allowed_updates=Update.ALL_TYPES,  # explicitly receive all update types incl. group messages
+    )
 
 
 if __name__ == "__main__":
