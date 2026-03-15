@@ -475,6 +475,73 @@ header{
 .empty-state{text-align:center;padding:48px 20px;color:var(--sub)}
 .empty-state p{font-size:13px;margin-top:6px}
 
+/* ── Day Trade Setups Section ───────────────────────── */
+.sigs-section{margin-bottom:20px;border-radius:12px;overflow:hidden;border:1px solid rgba(59,130,246,.18);background:#08090f;position:relative;}
+.sigs-section::before{content:"";display:block;height:2px;background:linear-gradient(90deg,transparent,#3b82f6 30%,#a78bfa 70%,transparent);}
+.sigs-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;background:linear-gradient(135deg,rgba(59,130,246,.06),transparent);border-bottom:1px solid rgba(59,130,246,.08);}
+.sigs-title{display:flex;align-items:center;gap:10px}
+.sigs-live{display:inline-flex;align-items:center;gap:5px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.28);color:var(--green);font-size:7px;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;flex-shrink:0}
+.sigs-live-dot{width:4px;height:4px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+.sigs-heading{font-size:14px;font-weight:900;color:#d0d8f0;letter-spacing:-.1px}
+.sigs-sub{font-size:9px;color:#2e3e56;letter-spacing:.3px;margin-top:2px}
+.sigs-note{font-size:8px;color:#2a3850;text-transform:uppercase;letter-spacing:.8px;flex-shrink:0}
+.sigs-scroll{display:flex;gap:10px;padding:14px 16px;overflow-x:auto;scrollbar-width:none;}
+.sigs-scroll::-webkit-scrollbar{display:none}
+/* Signal card */
+.sig-card{flex-shrink:0;width:232px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.07);background:#0b0e18;display:flex;flex-direction:column;transition:border-color .2s,box-shadow .2s;}
+.sig-card:hover{border-color:rgba(59,130,246,.3);box-shadow:0 4px 24px rgba(59,130,246,.09)}
+.sig-card.sig-long{border-left:2px solid rgba(34,197,94,.45)}
+.sig-card.sig-short{border-left:2px solid rgba(239,68,68,.45)}
+.sig-top{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;gap:6px;border-bottom:1px solid rgba(255,255,255,.04)}
+.sig-dir-pill{font-size:10px;font-weight:900;padding:3px 10px;border-radius:4px;letter-spacing:.6px;text-transform:uppercase;flex-shrink:0}
+.sdp-l{background:rgba(34,197,94,.14);color:rgba(34,197,94,.9);border:1px solid rgba(34,197,94,.28)}
+.sdp-s{background:rgba(239,68,68,.14);color:rgba(239,68,68,.9);border:1px solid rgba(239,68,68,.28)}
+.sig-asset-name{font-size:17px;font-weight:900;color:#c8d4e8;letter-spacing:-.3px;flex:1;text-align:center}
+.sig-conf-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.sig-conf-pct{font-size:11px;font-weight:800;color:var(--accent)}
+.sig-conf-label{font-size:7px;text-transform:uppercase;letter-spacing:.5px;color:#2a3850}
+.sig-entry{padding:9px 12px 8px;border-bottom:1px solid rgba(255,255,255,.04)}
+.sig-entry-label{font-size:7px;text-transform:uppercase;letter-spacing:.8px;color:#2a3850;font-weight:700;margin-bottom:3px}
+.sig-entry-price{font-family:'Courier New',monospace;font-size:22px;font-weight:700;letter-spacing:-1px;line-height:1}
+.sig-entry-price.long{color:rgba(34,197,94,.85);text-shadow:0 0 18px rgba(34,197,94,.15)}
+.sig-entry-price.short{color:rgba(239,68,68,.85);text-shadow:0 0 18px rgba(239,68,68,.15)}
+.sig-entry-range{font-size:8px;color:#2e3e56;margin-top:3px}
+.sig-mark-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.sig-mark-label{font-size:8px;color:#2e3e56;text-transform:uppercase;letter-spacing:.5px}
+.sig-mark-val{font-size:10px;font-weight:700;color:#6080a0;font-family:monospace}
+.sig-mark-delta{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+.smd-pos{background:rgba(34,197,94,.1);color:rgba(34,197,94,.8)}
+.smd-neg{background:rgba(239,68,68,.1);color:rgba(239,68,68,.8)}
+.sig-tpsl{display:flex;align-items:flex-start;gap:0;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}
+.sig-tp,.sig-sl{flex:1;display:flex;flex-direction:column;gap:2px}
+.sig-tp{border-right:1px solid rgba(255,255,255,.04);padding-right:10px}
+.sig-sl{padding-left:10px}
+.sig-tpsl-lbl{font-size:7px;text-transform:uppercase;letter-spacing:.6px;color:#2a3850;font-weight:700}
+.sig-tp-val{font-size:12px;font-weight:800;color:rgba(34,197,94,.8)}
+.sig-sl-val{font-size:12px;font-weight:800;color:rgba(239,68,68,.8)}
+.sig-pct{font-size:8px;color:#3a5060}
+.sig-rr-row{display:flex;align-items:center;justify-content:center;padding:5px 12px;border-bottom:1px solid rgba(255,255,255,.04);gap:5px}
+.sig-rr{font-size:9px;font-weight:700;color:#4a6080;padding:2px 7px;border:1px solid rgba(59,130,246,.15);border-radius:3px;background:rgba(59,130,246,.06)}
+.sig-rr-na{font-size:9px;color:#2a3850}
+.sig-strength{padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.04)}
+.sig-strength-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.sig-strength-lbl{font-size:7px;text-transform:uppercase;letter-spacing:.6px;color:#2a3850;font-weight:700}
+.sig-strength-info{font-size:8px;color:#304858}
+.sig-bar-track{height:3px;border-radius:2px;background:#0f1520;overflow:hidden}
+.sig-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--purple))}
+.sig-footer{padding:7px 12px;display:flex;align-items:center;justify-content:space-between}
+.sig-cvd{font-size:8px;color:#2e3e56}
+.sig-status{display:flex;align-items:center;gap:4px;font-size:8px;font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+.sig-status-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ss-signal .sig-status-dot{background:#3b82f6;box-shadow:0 0 6px rgba(59,130,246,.5)}
+.ss-signal{color:rgba(59,130,246,.85)}
+.ss-active .sig-status-dot{background:#22c55e;animation:pulse 1.5s infinite;box-shadow:0 0 6px rgba(34,197,94,.4)}
+.ss-active{color:rgba(34,197,94,.8)}
+.ss-approach .sig-status-dot{background:#eab308}
+.ss-approach{color:rgba(234,179,8,.8)}
+.ss-wait .sig-status-dot{background:#2e3e56}
+.ss-wait{color:#2e3e56}
+
 /* ── Footer ──────────────────────────────────────────── */
 .page-foot{text-align:center;padding:16px;font-size:10px;color:var(--dim);border-top:1px solid var(--line)}
 
@@ -645,6 +712,21 @@ header{
 
   <!-- ── Main ─────────────────────────────────────── -->
   <div class="main">
+
+    <!-- Day Trade Setups -->
+    <div class="sigs-section">
+      <div class="sigs-banner">
+        <div class="sigs-title">
+          <span class="sigs-live"><span class="sigs-live-dot"></span>LIVE</span>
+          <div>
+            <div class="sigs-heading">Day Trade Setups</div>
+            <div class="sigs-sub">Profitable whale entries · smart money consensus · lower timeframe signals</div>
+          </div>
+        </div>
+        <span class="sigs-note">HyperLiquid whale data</span>
+      </div>
+      <div class="sigs-scroll" id="signals-grid"></div>
+    </div>
 
     <!-- BTC Setup -->
     <div class="setup-feature">
@@ -930,6 +1012,97 @@ function renderBTCSetup(){
   +'</div>';
 }
 
+// ── Day Trade Signals ─────────────────────────────────────────────
+function renderSignals(){
+  var el=document.getElementById('signals-grid');
+  if(!el)return;
+  // Group current data by asset
+  var assets={};
+  data.forEach(function(w){
+    if(!w.pos)return;
+    var a=w.pos.asset;
+    if(!assets[a])assets[a]={longs:[],shorts:[]};
+    if(w.pos.side==='long')assets[a].longs.push(w);
+    else assets[a].shorts.push(w);
+  });
+  // Asset display order
+  var order=['BTC','ETH','SOL','BNB','HYPE','TAO'];
+  var cards='';
+  order.forEach(function(asset){
+    var g=assets[asset];
+    if(!g)return;
+    var longScore=g.longs.reduce(function(s,w){return s+w.wr;},0);
+    var shortScore=g.shorts.reduce(function(s,w){return s+w.wr;},0);
+    if(!longScore&&!shortScore)return;
+    var isLong=longScore>=shortScore;
+    var aligned=isLong?g.longs:g.shorts;
+    if(!aligned.length)return;
+    // WR-weighted entry
+    var sumW=0,sumE=0;
+    aligned.forEach(function(w){sumW+=w.wr;sumE+=w.pos.entry*w.wr;});
+    var entry=sumE/sumW;
+    var entryMin=Math.min.apply(null,aligned.map(function(w){return w.pos.entry;}));
+    var entryMax=Math.max.apply(null,aligned.map(function(w){return w.pos.entry;}));
+    // TP / SL (median)
+    var tpVals=aligned.filter(function(w){return w.pos.tp;}).map(function(w){return w.pos.tp;});
+    var slVals=aligned.filter(function(w){return w.pos.sl;}).map(function(w){return w.pos.sl;});
+    var tp=tpVals.length?median(tpVals):null;
+    var sl=slVals.length?median(slVals):null;
+    // Confidence
+    var totalScore=longScore+shortScore;
+    var alignScore=isLong?longScore:shortScore;
+    var avgWR=aligned.reduce(function(s,w){return s+w.wr;},0)/aligned.length;
+    var conf=Math.round((avgWR*0.65+(alignScore/Math.max(totalScore,.01))*0.35)*100);
+    conf=Math.max(54,Math.min(96,conf));
+    // Mark + delta
+    var mark=MARKS[asset]||entry;
+    var rawDelta=isLong?(mark-entry)/entry:(entry-mark)/entry;
+    var deltaAbs=Math.abs((mark-entry)/entry*100);
+    var deltaStr=(rawDelta>=0?'+':'')+( rawDelta*100).toFixed(2)+'%';
+    var deltaCls=rawDelta>=0?'smd-pos':'smd-neg';
+    // TP/SL %
+    var tpPct=tp?(isLong?(tp-entry)/entry*100:(entry-tp)/entry*100):null;
+    var slPct=sl?(isLong?(sl-entry)/entry*100:(entry-sl)/entry*100):null;
+    var rr=(tpPct&&slPct&&slPct<0)?Math.abs(tpPct/slPct).toFixed(1):null;
+    // CVD
+    var cvd=aligned.reduce(function(s,w){return s+w.of.cvd;},0);
+    var cvdStr=cvd>0?'\u2191 Bullish CVD':'\u2193 Bearish CVD';
+    // Status
+    var inFavorableDir=isLong?mark>entry:mark<entry;
+    var statusCls,statusTxt;
+    if(inFavorableDir&&(sl?Math.abs((mark-entry)/entry*100)>0.3:true)){
+      statusCls='ss-signal';statusTxt='In Signal';
+    } else if(deltaAbs<=0.6){
+      statusCls='ss-active';statusTxt='At Entry';
+    } else if(deltaAbs<=2.2){
+      statusCls='ss-approach';statusTxt='Approaching';
+    } else {
+      statusCls='ss-wait';statusTxt='Watching';
+    }
+    var dirCls=isLong?'sig-long':'sig-short';
+    var dirPill=isLong?'<span class="sig-dir-pill sdp-l">LONG</span>':'<span class="sig-dir-pill sdp-s">SHORT</span>';
+    var entryColor=isLong?'long':'short';
+    var rangeHtml=entryMin!==entryMax?'<div class="sig-entry-range">Zone $'+fPx(entryMin)+' &ndash; $'+fPx(entryMax)+'</div>':'';
+    var tpHtml=tp?'<span class="sig-tp-val">$'+fPx(tp)+'</span><div class="sig-pct">+'+(tpPct?tpPct.toFixed(1):'—')+'%</div>':'<span class="sig-tp-val" style="color:#2a3850">No TP</span>';
+    var slHtml=sl?'<span class="sig-sl-val">$'+fPx(sl)+'</span><div class="sig-pct">'+(slPct?slPct.toFixed(1):'—')+'%</div>':'<span class="sig-sl-val" style="color:#2a3850">No SL</span>';
+    cards+=
+      '<div class="sig-card '+dirCls+'">'
+      +'<div class="sig-top">'+dirPill+'<span class="sig-asset-name">'+asset+'</span><div class="sig-conf-wrap"><span class="sig-conf-pct">'+conf+'%</span><span class="sig-conf-label">Confidence</span></div></div>'
+      +'<div class="sig-entry">'
+        +'<div class="sig-entry-label">Best Entry</div>'
+        +'<div class="sig-entry-price '+entryColor+'">$'+fPx(entry)+'</div>'
+        +rangeHtml
+        +'<div class="sig-mark-row"><span class="sig-mark-label">Mark</span><span class="sig-mark-val">$'+fPx(mark)+'</span><span class="sig-mark-delta '+deltaCls+'">'+deltaStr+'</span></div>'
+      +'</div>'
+      +'<div class="sig-tpsl"><div class="sig-tp"><span class="sig-tpsl-lbl">Target (TP)</span>'+tpHtml+'</div><div class="sig-sl"><span class="sig-tpsl-lbl">Stop Loss</span>'+slHtml+'</div></div>'
+      +'<div class="sig-rr-row">'+(rr?'<span class="sig-rr">R:R &nbsp;1 : '+rr+'</span>':'<span class="sig-rr-na">R:R — (set TP/SL)</span>')+'</div>'
+      +'<div class="sig-strength"><div class="sig-strength-row"><span class="sig-strength-lbl">Signal Strength</span><span class="sig-strength-info">'+aligned.length+' whale'+(aligned.length>1?'s':'')+' &middot; Avg WR '+Math.round(avgWR*100)+'%</span></div><div class="sig-bar-track"><div class="sig-bar-fill" style="width:'+conf+'%"></div></div></div>'
+      +'<div class="sig-footer"><span class="sig-cvd">'+cvdStr+'</span><div class="sig-status '+statusCls+'"><div class="sig-status-dot"></div>'+statusTxt+'</div></div>'
+      +'</div>';
+  });
+  el.innerHTML=cards||'<div style="padding:16px 20px;color:#2e3a52;font-size:11px">No aligned signals — whale data loading...</div>';
+}
+
 function wavg(arr,key){
   // weighted average by win rate
   var sumW=0,sumV=0;
@@ -1193,6 +1366,7 @@ function render(){
     if(fAge==="est"&&w.age<=30)return false;
     return true;
   }).sort(function(a,b){return b.wr-a.wr;});
+  renderSignals();
   renderBTCSetup();
   renderGrid(list);
   renderPulse(list);
