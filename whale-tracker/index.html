@@ -273,13 +273,57 @@ header{
 .tv-nt{color:#2e3e50;font-weight:400;font-style:italic;font-size:10px}
 .tv-time{color:#4a5e74;font-weight:500}
 
-/* History toggle */
-.hist-toggle{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;cursor:pointer;border-top:1px solid #18202e;background:transparent;width:100%;text-align:left;transition:background .12s}
-.hist-toggle:hover{background:rgba(255,255,255,.015)}
-.hist-toggle-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#304050;display:flex;align-items:center;gap:6px}
-.hist-count{background:#18202e;color:#4a5e74;font-size:8px;font-weight:700;padding:1px 6px;border-radius:10px}
-.hist-arrow{font-size:9px;color:#2e3e50;transition:transform .2s}
-.hist-arrow.open{transform:rotate(180deg)}
+/* History toggle — visible, clearly clickable */
+.hist-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px 10px 16px;
+  cursor:pointer;
+  border-top:1px solid rgba(59,130,246,.12);
+  background:linear-gradient(to right,rgba(59,130,246,.05),transparent 70%);
+  box-shadow:inset 3px 0 0 rgba(59,130,246,.28);
+  width:100%;text-align:left;
+  transition:background .15s;
+}
+.hist-toggle:hover{background:linear-gradient(to right,rgba(59,130,246,.09),rgba(59,130,246,.02) 80%)}
+.hist-toggle.open{
+  background:linear-gradient(to right,rgba(59,130,246,.08),rgba(59,130,246,.01) 80%);
+  border-top-color:rgba(59,130,246,.22);
+}
+/* small chart icon box */
+.hist-ticon{
+  display:flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:5px;flex-shrink:0;
+  background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.22);
+  color:rgba(59,130,246,.7);
+}
+.hist-toggle-label{
+  font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;
+  color:#6888a8;flex:1;
+}
+.hist-stats{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.hist-count{
+  background:rgba(255,255,255,.04);border:1px solid #1e2a3a;
+  color:#4a6070;font-size:8px;font-weight:700;
+  padding:2px 8px;border-radius:4px;letter-spacing:.4px;white-space:nowrap;
+}
+.hist-wins{
+  background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.22);
+  color:rgba(34,197,94,.82);font-size:8px;font-weight:800;
+  padding:2px 8px;border-radius:4px;letter-spacing:.4px;white-space:nowrap;
+}
+/* chevron in a box */
+.hist-arrow{
+  display:flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:5px;flex-shrink:0;
+  background:rgba(255,255,255,.04);border:1px solid #1e2a3a;
+  color:#4a6070;
+  transition:transform .22s,background .15s,border-color .15s,color .15s;
+}
+.hist-arrow.open{
+  transform:rotate(180deg);
+  background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.28);
+  color:var(--accent);
+}
 
 /* History rows */
 .hist-body{display:none;border-top:1px solid #18202e}
@@ -944,18 +988,23 @@ function histHTML(w){
     +'</div>';
   }).join('');
   return '<button class="hist-toggle" onclick="toggleHist(this)">'
-    +'<span class="hist-toggle-label">📋 Trade History <span class="hist-count">'+w.history.length+' trades</span> <span style="color:var(--green);font-size:9px">'+wins+' wins</span></span>'
-    +'<span class="hist-arrow">&#9660;</span>'
+    +'<span class="hist-ticon"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><polyline points="1,7.5 3.5,4 6,5.5 8.5,1.5 11,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
+    +'<span class="hist-toggle-label">Trade History</span>'
+    +'<span class="hist-stats">'
+      +'<span class="hist-count">'+w.history.length+' TRADES</span>'
+      +'<span class="hist-wins">'+wins+' WINS</span>'
+    +'</span>'
+    +'<span class="hist-arrow"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
     +'</button>'
     +'<div class="hist-body">'+rows+'</div>';
 }
 
 function toggleHist(btn){
-  var arrow=btn.querySelector('.hist-arrow');
   var body=btn.nextElementSibling;
   var isOpen=body.classList.contains('open');
   body.classList.toggle('open',!isOpen);
-  arrow.classList.toggle('open',!isOpen);
+  btn.classList.toggle('open',!isOpen);
+  btn.querySelector('.hist-arrow').classList.toggle('open',!isOpen);
 }
 
 // ── Signals ───────────────────────────────────────────────────────
