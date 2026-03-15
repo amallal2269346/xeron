@@ -75,12 +75,14 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "/alert &lt;token&gt; &lt;price&gt;\n"
         "  Shorthand for 'above'.\n"
         "  <i>Example:</i> /alert eth 4000\n\n"
+        "  You can set as many alerts per coin as you like.\n\n"
         "/list\n"
         "  Show all active alerts in this chat.\n\n"
-        "/remove &lt;token&gt; [above|below]\n"
-        "  Remove an alert.\n"
-        "  <i>Example:</i> /remove btc above\n"
-        "  <i>Example:</i> /remove btc  (removes all BTC alerts)\n\n"
+        "/remove &lt;token&gt; [above|below] [price]\n"
+        "  Remove alert(s). Narrows by direction and/or price.\n"
+        "  <i>Example:</i> /remove btc above 70000  (one specific alert)\n"
+        "  <i>Example:</i> /remove btc above  (all BTC above alerts)\n"
+        "  <i>Example:</i> /remove btc  (all BTC alerts)\n\n"
         "/price &lt;token&gt;\n"
         "  Show the current live price.\n"
         "  <i>Example:</i> /price eth"
@@ -197,20 +199,44 @@ async def cmd_remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     args = context.args or []
 
     if not args:
-        await _reply(update, "⚠️ Usage: /remove &lt;token&gt; [above|below]\nExamples:\n• /remove btc above\n• /remove btc")
+        await _reply(
+            update,
+            "⚠️ Usage: /remove &lt;token&gt; [above|below] [price]\n"
+            "Examples:\n"
+            "• /remove btc above 70000  — one specific alert\n"
+            "• /remove btc above  — all BTC above alerts\n"
+            "• /remove btc  — all BTC alerts",
+        )
         return
 
     token = args[0].upper()
-    direction = args[1].lower() if len(args) >= 2 and args[1].lower() in ("above", "below") else None
     chat_id = update.effective_chat.id
 
-    deleted = await db.remove_alert(chat_id, token, direction)
+    direction: str | None = None
+    price: float | None = None
+
+    remaining = args[1:]
+    if remaining and remaining[0].lower() in ("above", "below"):
+        direction = remaining[0].lower()
+        remaining = remaining[1:]
+    if remaining:
+        try:
+            price = _parse_price(remaining[0])
+        except ValueError:
+            await _reply(update, "⚠️ Invalid price. Example: /remove btc above 70000")
+            return
+
+    deleted = await db.remove_alert(chat_id, token, direction, price)
 
     if deleted:
-        suffix = f" ({direction})" if direction else " (all)"
-        await _reply(update, f"🗑️ Alert for <b>{token}</b>{suffix} has been removed.")
+        parts = [f"<b>{token}</b>"]
+        if direction:
+            parts.append(direction)
+        if price is not None:
+            parts.append(pf.format_price(price))
+        await _reply(update, f"🗑️ Removed <b>{deleted}</b> alert(s) for {' '.join(parts)}.")
     else:
-        await _reply(update, f"⚠️ No matching alert found for <b>{token}</b>{ ' ' + direction if direction else '' } in this chat.")
+        await _reply(update, f"⚠️ No matching alert found for <b>{token}</b>{ ' ' + direction if direction else '' }{ ' ' + pf.format_price(price) if price is not None else '' } in this chat.")
 
 
 # ──────────────────────────────────────────────────────────────────────────────

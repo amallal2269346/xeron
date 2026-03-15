@@ -52,10 +52,6 @@ async def add_alert(
     Returns the new alert id.
     """
     async with aiosqlite.connect(DB_PATH) as db:
-        await db.execute(
-            "DELETE FROM alerts WHERE chat_id = ? AND token = ? AND direction = ?",
-            (chat_id, token, direction),
-        )
         cursor = await db.execute(
             """
             INSERT INTO alerts (chat_id, user_id, username, token, direction, target_price)
@@ -88,24 +84,28 @@ async def get_all_alerts() -> list[dict]:
             return [dict(row) for row in rows]
 
 
-async def remove_alert(chat_id: int, token: str, direction: Optional[str] = None) -> bool:
+async def remove_alert(
+    chat_id: int,
+    token: str,
+    direction: Optional[str] = None,
+    price: Optional[float] = None,
+) -> int:
     """
-    Delete alert(s) by (chat_id, token) and optionally direction.
-    Returns True if at least one was deleted.
+    Delete alert(s) by chat_id + token, optionally filtered by direction and/or price.
+    Returns number of rows deleted.
     """
     async with aiosqlite.connect(DB_PATH) as db:
+        query = "DELETE FROM alerts WHERE chat_id = ? AND token = ?"
+        params: list = [chat_id, token]
         if direction:
-            cursor = await db.execute(
-                "DELETE FROM alerts WHERE chat_id = ? AND token = ? AND direction = ?",
-                (chat_id, token, direction),
-            )
-        else:
-            cursor = await db.execute(
-                "DELETE FROM alerts WHERE chat_id = ? AND token = ?",
-                (chat_id, token),
-            )
+            query += " AND direction = ?"
+            params.append(direction)
+        if price is not None:
+            query += " AND target_price = ?"
+            params.append(price)
+        cursor = await db.execute(query, params)
         await db.commit()
-        return cursor.rowcount > 0
+        return cursor.rowcount
 
 
 async def remove_alert_by_id(alert_id: int) -> None:
