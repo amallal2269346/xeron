@@ -207,7 +207,9 @@ header{
 .tag-btc{background:rgba(249,115,22,.16);border:1px solid rgba(249,115,22,.38);color:#fb923c}
 .tag-eth{background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.38);color:#b39af8}
 .tag-sol{background:rgba(20,214,190,.16);border:1px solid rgba(20,214,190,.36);color:#2ee8d0}
-.tag-avax{background:rgba(239,68,68,.16);border:1px solid rgba(239,68,68,.36);color:#f87171}
+.tag-bnb{background:rgba(240,185,11,.16);border:1px solid rgba(240,185,11,.38);color:#f0c040}
+.tag-hype{background:rgba(6,182,212,.16);border:1px solid rgba(6,182,212,.36);color:#22d3ee}
+.tag-tao{background:rgba(74,222,128,.16);border:1px solid rgba(74,222,128,.36);color:#86efac}
 .tag-alt{background:rgba(59,130,246,.16);border:1px solid rgba(59,130,246,.36);color:#7ab4f8}
 /* Style tags */
 .tag-day{background:rgba(234,179,8,.16);border:1px solid rgba(234,179,8,.38);color:#fbbf24}
@@ -743,10 +745,10 @@ var WHALES = [
      {asset:"BTC",side:"long",size:"1.5 BTC",entry:70400,exit:69800,opened:"Mar 07 08:00",closed:"Mar 07 18:30",dur:"10h 30m",pnl:-7200,win:false},
      {asset:"SOL",side:"long",size:"4K SOL",entry:81,exit:89,opened:"Mar 05 09:00",closed:"Mar 06 21:00",dur:"1d 12h",pnl:32000,win:true},
    ]},
-  {w:"0xC7d8\u20265B4e",a:"0xC7d8E9F0A1B2C3D4E5F6A7B8C9D0E1F2A3B45B4e",style:"day",pair:"AVAX-PERP",age:22,lev:40,wr:.73,pnl:66100,vol:7600000,trades:52,mkt:1300000000,
-   pos:{side:"long",asset:"AVAX",size:"8K AVAX",entry:23.40,liq:22.90,openedMinsAgo:93,tp:26.20,sl:null},
+  {w:"0xC7d8\u20265B4e",a:"0xC7d8E9F0A1B2C3D4E5F6A7B8C9D0E1F2A3B45B4e",style:"day",pair:"BNB-PERP",age:22,lev:20,wr:.73,pnl:66100,vol:7600000,trades:52,mkt:89000000000,
+   pos:{side:"long",asset:"BNB",size:"520 BNB",entry:640,liq:613,openedMinsAgo:93,tp:682,sl:null},
    of:{cvd:190000,cvdT:"up",delta:80000,buy:4100000,sell:3500000,sig:"bull",
-     fp:[{p:23.6,b:280,s:100},{p:23.5,b:310,s:130},{p:23.4,b:250,s:95},{p:23.3,b:180,s:220},{p:23.2,b:140,s:90}]}},
+     fp:[{p:646,b:280,s:100},{p:644,b:310,s:130},{p:642,b:250,s:95},{p:640,b:180,s:220},{p:638,b:140,s:90}]}},
   {w:"0xD9e0\u20267C6f",a:"0xD9e0F1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C67C6f",style:"swing",pair:"BTC-PERP",age:520,lev:6,wr:.93,pnl:428000,vol:4400000,trades:5,mkt:38000000000,
    pos:{side:"long",asset:"BTC",size:"7.3 BTC",entry:68200,liq:58500,openedMinsAgo:4320,tp:76000,sl:65500},
    of:{cvd:3400000,cvdT:"up",delta:920000,buy:2800000,sell:1600000,sig:"bull",
@@ -759,24 +761,24 @@ var WHALES = [
      {asset:"BTC",side:"long",size:"5.0 BTC",entry:64200,exit:69500,opened:"Feb 18 07:00",closed:"Feb 22 14:00",dur:"4d 7h",pnl:265000,win:true},
      {asset:"AVAX",side:"short",size:"20K AVAX",entry:28.50,exit:24.00,opened:"Feb 14 09:00",closed:"Feb 16 18:00",dur:"2d 9h",pnl:90000,win:true},
    ]},
-  {w:"0xE1f2\u20269D0a",a:"0xE1f2A3B4C5D6E7F8A9B0C1D2E3F4A5B6C7D89D0a",style:"day",pair:"ARB-PERP",age:14,lev:35,wr:.74,pnl:91400,vol:6200000,trades:39,mkt:820000000,
-   pos:{side:"long",asset:"ARB",size:"450K ARB",entry:0.614,liq:0.599,openedMinsAgo:210,tp:null,sl:0.570},
+  {w:"0xE1f2\u20269D0a",a:"0xE1f2A3B4C5D6E7F8A9B0C1D2E3F4A5B6C7D89D0a",style:"day",pair:"HYPE-PERP",age:14,lev:25,wr:.74,pnl:91400,vol:6200000,trades:39,mkt:7600000000,
+   pos:{side:"long",asset:"HYPE",size:"18K HYPE",entry:27.80,liq:26.85,openedMinsAgo:210,tp:null,sl:26.20},
    of:{cvd:310000,cvdT:"up",delta:120000,buy:3400000,sell:2800000,sig:"bull",
-     fp:[{p:0.628,b:220,s:90},{p:0.622,b:300,s:110},{p:0.618,b:260,s:80},{p:0.614,b:190,s:240},{p:0.610,b:150,s:95}]}},
-  {w:"0xF3a4\u20260E1b",a:"0xF3a4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E00E1b",style:"swing",pair:"OP-PERP",age:60,lev:8,wr:.79,pnl:44600,vol:2100000,trades:7,mkt:980000000,
-   pos:{side:"short",asset:"OP",size:"800K OP",entry:1.080,liq:1.195,openedMinsAgo:560,tp:0.930,sl:null},
+     fp:[{p:28.20,b:220,s:90},{p:28.00,b:300,s:110},{p:27.80,b:260,s:80},{p:27.60,b:190,s:240},{p:27.40,b:150,s:95}]}},
+  {w:"0xF3a4\u20260E1b",a:"0xF3a4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E00E1b",style:"swing",pair:"TAO-PERP",age:60,lev:10,wr:.79,pnl:44600,vol:2100000,trades:7,mkt:2300000000,
+   pos:{side:"short",asset:"TAO",size:"4.2K TAO",entry:285,liq:309,openedMinsAgo:560,tp:248,sl:null},
    of:{cvd:-210000,cvdT:"down",delta:-85000,buy:980000,sell:1120000,sig:"bear",
-     fp:[{p:1.090,b:95,s:290},{p:1.085,b:110,s:310},{p:1.080,b:180,s:190},{p:1.075,b:140,s:260},{p:1.070,b:120,s:200}]}},
+     fp:[{p:287,b:95,s:290},{p:286,b:110,s:310},{p:285,b:180,s:190},{p:284,b:140,s:260},{p:283,b:120,s:200}]}},
 ];
 
 // Live mark prices — updated each 30s tick to simulate real-time movement
-var MARKS = {BTC:71300, ETH:2053, SOL:89.3, AVAX:23.50, ARB:0.620, OP:1.020};
+var MARKS = {BTC:71300, ETH:2053, SOL:89.3, BNB:654, HYPE:28.76, TAO:268};
 function jitterMarks(){
-  var drift={BTC:180,ETH:7,SOL:0.35,AVAX:0.12,ARB:0.004,OP:0.005};
+  var drift={BTC:180,ETH:7,SOL:0.35,BNB:1.8,HYPE:0.12,TAO:0.9};
   Object.keys(MARKS).forEach(function(k){
     var r=drift[k]||1;
     var raw=MARKS[k]+(Math.random()*r*2-r);
-    MARKS[k]=+(raw.toFixed(k==='BTC'?0:(raw>=10?2:3)));
+    MARKS[k]=+(raw.toFixed(k==='BTC'||k==='BNB'||k==='TAO'?0:(raw>=10?2:3)));
   });
 }
 
@@ -1115,7 +1117,7 @@ function renderGrid(list){
           +'<span class="age-badge '+(isFresh?"age-fresh":"age-est")+'">'+(isFresh?w.age+'d \u2022 new':w.age+'d')+'</span>'
         +'</div>'
         +'<div class="wc-tags">'
-          +'<span class="tag '+(w.pair.startsWith('BTC')?'tag-btc':w.pair.startsWith('ETH')?'tag-eth':w.pair.startsWith('SOL')?'tag-sol':w.pair.startsWith('AVAX')?'tag-avax':'tag-alt')+'">'+w.pair+'</span>'
+          +'<span class="tag '+(w.pair.startsWith('BTC')?'tag-btc':w.pair.startsWith('ETH')?'tag-eth':w.pair.startsWith('SOL')?'tag-sol':w.pair.startsWith('BNB')?'tag-bnb':w.pair.startsWith('HYPE')?'tag-hype':w.pair.startsWith('TAO')?'tag-tao':'tag-alt')+'">'+w.pair+'</span>'
           +'<span class="tag '+(w.style==="day"?"tag-day":"tag-swing")+'">'+(w.style==="day"?"Day Trade":"Swing")+'</span>'
         +'</div>'
       +'</div>'
