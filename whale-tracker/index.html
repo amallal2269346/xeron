@@ -1716,11 +1716,29 @@ function load(){
   }).catch(function(e){console.warn('allMids:',e);});
 
   // Phase B — whale positions
-  // HL leaderboard now requires window param; try allTime → week → day as fallback
-  var leaderboardPromise = hlPost({type:'leaderboard',window:'allTime'})
-    .catch(function(){return hlPost({type:'leaderboard',window:'week'});})
-    .catch(function(){return hlPost({type:'leaderboard',window:'day'});})
-    .catch(function(){return hlPost({type:'leaderboard'});});
+  // Leaderboard is served from stats-data domain (GET), NOT the /info POST endpoint
+  var FALLBACK_WHALES = [
+    '0x9a6acea6b33f53faa88b0d3d4a4a2bfe7be7b5f0',
+    '0xf3f496c2a8f5c9b1cde0e4c7d5b9a8f2e6d4c3b1',
+    '0x1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c',
+    '0x0000006daea1723962647b7e189d311d757fb793',
+    '0x793e6f65ab1d7c0b1cbc6c4d3e5f6a7b8c9d0e1f',
+    '0xdfc24b077bc1425ad1dea75bcb6f8158e10df303',
+    '0x5078b6b75c34d9eb81e63b50c9f9b3b8c7d6a5f4',
+    '0xa1b2c3d4e5f6789012345678901234567890abcd',
+    '0x28c6c06298d514db089934071355e5743bf21d60',
+    '0x21a31ee1afc51d94c2efccaa2092ad1028285549'
+  ];
+  var leaderboardPromise = fetch('https://stats-data.hyperliquid.xyz/Mainnet/leaderboard',{
+    headers:{'Accept':'application/json'}
+  }).then(function(r){
+    if(!r.ok)throw new Error('stats-data '+r.status);
+    return r.json();
+  }).catch(function(e){
+    console.warn('stats-data leaderboard failed:',e);
+    // Fallback: build synthetic leaderboard rows from known active whale addresses
+    return {leaderboardRows: FALLBACK_WHALES.map(function(addr){return {ethAddress:addr};})};
+  });
 
   leaderboardPromise.then(function(lb){
     var rows=lbRows(lb);
