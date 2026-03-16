@@ -1715,8 +1715,14 @@ function load(){
     renderHeatmap();
   }).catch(function(e){console.warn('allMids:',e);});
 
-  // Phase B — whale positions (sorted by allTime VLM = most active = most likely to have positions)
-  hlPost({type:'leaderboard'}).then(function(lb){
+  // Phase B — whale positions
+  // HL leaderboard now requires window param; try allTime → week → day as fallback
+  var leaderboardPromise = hlPost({type:'leaderboard',window:'allTime'})
+    .catch(function(){return hlPost({type:'leaderboard',window:'week'});})
+    .catch(function(){return hlPost({type:'leaderboard',window:'day'});})
+    .catch(function(){return hlPost({type:'leaderboard'});});
+
+  leaderboardPromise.then(function(lb){
     var rows=lbRows(lb);
     if(!rows.length){
       setApiStatus('\u26a0 Leaderboard empty — check HyperLiquid API. Retrying in 30s.',true);
