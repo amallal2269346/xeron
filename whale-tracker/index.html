@@ -944,7 +944,8 @@ function buildHistFromFills(fills){
 // ── Map HyperLiquid API data → whale card format ──────────────────
 var MKT_CAPS={BTC:1.4e12,ETH:2.5e11,SOL:4e10,BNB:9e10,HYPE:8e9,TAO:2.5e9,AVAX:1e10,ARB:3e9,OP:5e9};
 function mapWhale(trader,state,fills){
-  var addr=trader.ethAddress;
+  var addr=traderAddr(trader);
+  if(!addr)return null;
   var shortAddr=addr.slice(0,6)+'\u2026'+addr.slice(-4);
   // Performance
   var perf={};
@@ -973,9 +974,11 @@ function mapWhale(trader,state,fills){
   var entry=parseFloat(p.entryPx||0);
   var liqPx=p.liquidationPx&&parseFloat(p.liquidationPx)>0?parseFloat(p.liquidationPx):null;
   var posVal=Math.abs(parseFloat(p.positionValue||0));
-  var marginUsed=Math.abs(parseFloat((p.marginUsed||state.marginSummary&&state.marginSummary.totalMarginUsed)||posVal/10||1));
-  var lev=marginUsed>0?Math.round(posVal/marginUsed):10;
-  lev=Math.max(1,Math.min(125,lev||10));
+  var rawMargin=parseFloat(p.marginUsed||0)||parseFloat((state.marginSummary||{}).totalMarginUsed||0)||(posVal/10);
+  var marginUsed=Math.abs(rawMargin)||1;
+  var lev=posVal>0&&marginUsed>0?Math.round(posVal/marginUsed):10;
+  if(!lev||!isFinite(lev)||lev<1)lev=10;
+  lev=Math.min(125,lev);
   var unrealPnl=parseFloat(p.unrealizedPnl||0);
   var mark=MARKS[coin]||entry;
   var style=lev>15?'day':'swing';
@@ -1555,16 +1558,17 @@ function renderGrid(list){
 
 // ── Stats bar ─────────────────────────────────────────────────────
 function renderPulse(list){
-  if(!list.length)return;
-  var avgWR=list.reduce(function(s,w){return s+w.wr;},0)/list.length;
+  var avgWR=list.length?list.reduce(function(s,w){return s+w.wr;},0)/list.length:0;
   var tvol=list.reduce(function(s,w){return s+w.vol;},0);
   var op=list.filter(function(w){return w.pos;}).length;
   var ncvd=list.reduce(function(s,w){return s+w.of.cvd;},0);
-  document.getElementById("p-n").textContent=list.length;
-  document.getElementById("p-wr").textContent=fP(avgWR);
-  document.getElementById("p-vol").textContent=fM(tvol);
-  document.getElementById("p-pos").textContent=op;
-  var ce=document.getElementById("p-cvd"); ce.textContent=fS(ncvd); ce.className="v "+(ncvd>=0?"gn":"rd");
+  document.getElementById("p-n").textContent=list.length||'—';
+  document.getElementById("p-wr").textContent=list.length?fP(avgWR):'—';
+  document.getElementById("p-vol").textContent=tvol?fM(tvol):'—';
+  document.getElementById("p-pos").textContent=list.length?op:'—';
+  var ce=document.getElementById("p-cvd");
+  ce.textContent=ncvd?fS(ncvd):'—';
+  ce.className="v "+(ncvd>=0?"gn":"rd");
 }
 
 // ── Filter panel (mobile) ─────────────────────────────────────────
@@ -1629,77 +1633,101 @@ function setApiStatus(msg,isErr){
   if(el)el.innerHTML='<div class="ldt-no-data" style="color:'+(isErr?'#ef4444':'#3a5060')+'">'+msg+'</div>';
 }
 
-// ── Main async loader ─────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────
+function traderAddr(t){return t.ethAddress||t.address||t.user||'';}
+function lbRows(lb){
+  if(Array.isArray(lb))return lb;
+  if(lb&&Array.isArray(lb.leaderboardRows))return lb.leaderboardRows;
+  if(lb&&typeof lb==='object'){
+    var keys=Object.keys(lb);
+    for(var i=0;i<keys.length;i++){if(Array.isArray(lb[keys[i]]))return lb[keys[i]];}
+  }
+  return [];
+}
+function monthPnl(r){
+  var perfs=r.windowPerformances||r.performances||[];
+  var p=Array.isArray(perfs)?perfs.find(function(x){return Array.isArray(x)?x[0]==='month':x.window==='month';}):null;
+  if(!p)return 0;
+  var obj=Array.isArray(p)?p[1]:p;
+  return parseFloat(obj&&(obj.pnl||obj.Pnl)||0);
+}
+function hasOpenPos(state){
+  return (state.assetPositions||[]).some(function(ap){
+    return ap.position&&parseFloat(ap.position.szi||0)!==0;
+  });
+}
+
+// ── Main async loader — two-phase: positions first, fills second ──
 function load(){
   startCountdown();
-  var el=document.getElementById('ldt-refresh-label');
-  if(el)el.textContent='Fetching live data...';
+  var lbl=document.getElementById('ldt-refresh-label');
+  if(lbl)lbl.textContent='Fetching live data...';
 
-  // Step 1: fetch real prices
+  // ── Phase A: Prices (independent, renders immediately) ───────────
   hlPost({type:'allMids'}).then(function(mids){
-    Object.keys(mids).forEach(function(k){
-      var v=parseFloat(mids[k]);
-      if(!isNaN(v))MARKS[k]=v;
-    });
+    if(mids&&typeof mids==='object'){
+      Object.keys(mids).forEach(function(k){
+        var v=parseFloat(mids[k]);
+        if(!isNaN(v)&&v>0)MARKS[k]=v;
+      });
+    }
     updateHMPrice(MARKS.BTC);
     renderHeatmap();
+  }).catch(function(e){console.warn('allMids failed:',e);});
 
-    // Step 2: fetch leaderboard
-    return hlPost({type:'leaderboard'}).then(function(lb){
-      var rows=(lb.leaderboardRows||lb||[]);
-      // Sort by 30-day PnL descending
-      rows.sort(function(a,b){
-        function monthPnl(r){
-          var p=(r.windowPerformances||[]).find(function(x){return x[0]==='month';});
-          return p?parseFloat(p[1].pnl||0):0;
-        }
-        return monthPnl(b)-monthPnl(a);
+  // ── Phase B: Whale positions ──────────────────────────────────────
+  hlPost({type:'leaderboard'}).then(function(lb){
+    var rows=lbRows(lb);
+    if(!rows.length){
+      setApiStatus('Leaderboard returned no data — retrying in 30s',false);
+      return;
+    }
+    rows.sort(function(a,b){return monthPnl(b)-monthPnl(a);});
+    var top=rows.slice(0,30); // wider net — more traders likely to have open positions
+
+    // Fetch all positions in parallel
+    return Promise.allSettled(top.map(function(trader){
+      var addr=traderAddr(trader);
+      if(!addr)return Promise.resolve(null);
+      return hlPost({type:'clearinghouseState',user:addr})
+        .then(function(state){return {trader:trader,state:state};})
+        .catch(function(){return null;});
+    })).then(function(results){
+      var withPos=[];
+      results.forEach(function(r){
+        if(r.status!=='fulfilled'||!r.value)return;
+        if(hasOpenPos(r.value.state))withPos.push(r.value);
       });
-      var top=rows.slice(0,16);
-
-      // Step 3: fetch positions for all top traders in parallel
-      return Promise.allSettled(top.map(function(trader){
-        return hlPost({type:'clearinghouseState',user:trader.ethAddress})
-          .then(function(state){return {trader:trader,state:state};});
-      }));
-    }).then(function(stateResults){
-      // Filter to traders with open positions
-      var withPos=stateResults.filter(function(r){
-        if(r.status!=='fulfilled')return false;
-        return (r.value.state.assetPositions||[]).some(function(ap){
-          return ap.position&&parseFloat(ap.position.szi)!==0;
-        });
-      }).map(function(r){return r.value;});
 
       if(!withPos.length){
-        setApiStatus('No open whale positions found right now — retrying in 30s',false);
-        data=[];render();return;
+        setApiStatus('Top '+top.length+' whales currently flat — retrying in 30s',false);
+        data=[];render();
+        return;
       }
 
-      // Step 4: fetch fills for win rate (parallel, ignore failures)
-      return Promise.allSettled(withPos.map(function(item){
-        return hlPost({type:'userFills',user:item.trader.ethAddress})
+      // Phase B1: render immediately with estimated win rates
+      var phase1=withPos.map(function(item){return mapWhale(item.trader,item.state,null);}).filter(Boolean);
+      if(phase1.length){WHALES=phase1;data=WHALES;render();}
+
+      // Phase B2: fetch fills async, re-render with real win rates
+      Promise.allSettled(withPos.map(function(item){
+        var addr=traderAddr(item.trader);
+        return hlPost({type:'userFills',user:addr})
           .then(function(fills){return {trader:item.trader,state:item.state,fills:fills};})
           .catch(function(){return {trader:item.trader,state:item.state,fills:null};});
       })).then(function(fillResults){
-        var whales=[];
+        var phase2=[];
         fillResults.forEach(function(r){
-          if(r.status!=='fulfilled')return;
+          if(r.status!=='fulfilled'||!r.value)return;
           var w=mapWhale(r.value.trader,r.value.state,r.value.fills);
-          if(w)whales.push(w);
+          if(w)phase2.push(w);
         });
-        if(!whales.length){
-          setApiStatus('Unable to map whale positions — retrying in 30s',false);
-          return;
-        }
-        WHALES=whales;
-        data=WHALES;
-        render();
+        if(phase2.length){WHALES=phase2;data=WHALES;render();}
       });
     });
   }).catch(function(e){
-    console.error('HyperLiquid API error:',e);
-    setApiStatus('API error: '+e.message+' — retrying in 30s',true);
+    console.error('Leaderboard/positions error:',e);
+    setApiStatus('API error — '+e.message+'. Retrying in 30s.',true);
   });
 }
 
