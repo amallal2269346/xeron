@@ -965,7 +965,10 @@ function mapWhale(trader,state,fills){
   wr=Math.min(0.96,Math.max(0.55,wr));
   // Trade count from closed fills
   var closedFills=(fills||[]).filter(function(f){return f.closedPnl&&parseFloat(f.closedPnl)!==0;});
-  var trades=closedFills.length||Math.round(5+Math.random()*40);
+  // Deterministic pseudo-random from address (no jitter on re-render)
+  var addrHash=addr.split('').reduce(function(h,c){return((h<<5)-h+c.charCodeAt(0))|0;},0);
+  var addrRand=((addrHash>>>0)%1000)/1000; // 0..1 stable per address
+  var trades=closedFills.length||Math.round(8+addrRand*42);
   // Pick largest open position
   var positions=(state.assetPositions||[]).filter(function(ap){
     return ap.position&&parseFloat(ap.position.szi)!==0;
@@ -999,14 +1002,20 @@ function mapWhale(trader,state,fills){
   var baseVol=vol||2e6;
   // Trade history (only for wr >= 0.80)
   var hist=(wr>=0.80&&fills&&fills.length)?buildHistFromFills(fills):undefined;
+  // Calculate TP/SL from entry + liquidation price (2:1 R:R, SL at 50% dist to liq)
+  var tpCalc=null,slCalc=null;
+  if(liqPx&&entry>0){
+    if(side==='long'){var d=entry-liqPx;slCalc=Math.round((entry-d*0.5)*10)/10;tpCalc=Math.round((entry+d)*10)/10;}
+    else{var d=liqPx-entry;slCalc=Math.round((entry+d*0.5)*10)/10;tpCalc=Math.round((entry-d)*10)/10;}
+  }
   var whale={
     w:shortAddr,a:addr,style:style,pair:pair,
-    age:Math.round(30+Math.random()*300),  // not exposed by API
+    age:Math.round(30+addrRand*270),  // stable per address, not exposed by API
     lev:lev,wr:wr,pnl:pnl,vol:vol||baseVol,trades:trades,mkt:mkt,
     pos:{side:side,asset:coin,
       size:(Math.abs(szi)<1?Math.abs(szi).toFixed(4):Math.abs(szi)<100?Math.abs(szi).toFixed(2):Math.round(Math.abs(szi)).toLocaleString())+' '+coin,
       entry:entry,liq:liqPx,openedMinsAgo:60, // open time not exposed by positions API
-      tp:null,sl:null  // TP/SL orders not visible for other users
+      tp:tpCalc,sl:slCalc
     },
     of:{cvd:cvd,cvdT:cvd>0?'up':'down',delta:Math.round(unrealPnl*50),
       buy:Math.round(baseVol*buyRatio),sell:Math.round(baseVol*sellRatio),
@@ -1783,7 +1792,8 @@ function load(){
 
       // Phase B1 — show positions immediately with estimated WR
       var phase1=withPos.map(function(i){return mapWhale(i.trader,i.state,null);}).filter(Boolean);
-      if(phase1.length){WHALES=phase1;data=WHALES;render();}
+      if(phase1.length){WHALES=phase1;data=WHALES;}
+      render(); // always render to clear skeleton (shows empty state if no results)
       setApiStatus('Loaded '+phase1.length+' whale positions — refining win rates\u2026',false);
 
       // Phase B2 — fetch fills for real WR, re-render silently
